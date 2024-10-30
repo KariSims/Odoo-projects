@@ -1,7 +1,7 @@
 #!/bin/bash
 ################################################################################
 # Script for installing Odoo on Ubuntu 16.04, 18.04, 20.04 and 22.04 (could be used for other version too)
-# Author: Yenthe Van Ginneken
+# Author: SP (from Yenthe Van Ginneken script)
 #-------------------------------------------------------------------------------
 # This script will install Odoo on your Ubuntu server. It can install multiple Odoo instances
 # in one Ubuntu because of the different xmlrpc_ports
@@ -14,7 +14,7 @@
 # ./odoo-install
 ################################################################################
 
-OE_USER="odoo"
+OE_USER="Odoo"
 OE_HOME="/$OE_USER"
 OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
