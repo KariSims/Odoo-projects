@@ -1,7 +1,6 @@
 # One of my projetcs Odoo
+Canada d'ici is implemented on Odoo version 18 
 
 ## Odoo presentation
-
-## Projects list
 
 1. [canadadici](#)
