@@ -1,4 +1,4 @@
-# My all projects Odoo
+# One of my projetcs Odoo
 
 ## Odoo presentation
 
