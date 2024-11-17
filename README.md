@@ -3,4 +3,4 @@ Canada d'ici is implemented on Odoo version 18
 
 ## Odoo presentation
 
-## Canada d'ici presentqtion
+## Canada d'ici presentation
