@@ -4,6 +4,8 @@ Canada d'ici is implemented on Odoo version 18
 ## Canada d'ici presentation
 Canada d'ici is an e-commerce site for food products integrating inventory management, invoicing, customer and supplier management.
 
+For more informations, follow [issues document](https://docs.google.com/document/d/1ZmNW1l4KSepmwWEK93zLUJ0Al6_8afuKQik7Ulh6pbw/edit?usp=sharing)
+
 Odoo presentation
 ----
 

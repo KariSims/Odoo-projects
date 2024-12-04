@@ -23,6 +23,5 @@ odoo
 /filestore
 
 # js tooling
-node_modules
 jsconfig.json
 tsconfig.json
