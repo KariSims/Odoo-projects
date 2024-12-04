@@ -1,8 +1,11 @@
-# One of my projects Odoo : **Canada d'Ici**
-Canada d'ici is implemented on Odoo version 18
+# All my Odoo ERP projects
 
-## Canada d'ici presentation
-Canada d'ici is an e-commerce site for food products integrating inventory management, invoicing, customer and supplier management.
+Projects
+----
+
+1. Canada d'Ici : first in a long series, no doubt
+   is an e-commerce site for food products integrating inventory management, invoicing, customer and supplier management.
+2. 
 
 Odoo presentation
 ----
@@ -23,3 +26,8 @@ The main Odoo Apps include an <a href="https://www.odoo.com/page/crm">Open Sourc
 
 Odoo Apps can be used as stand-alone applications, but they also integrate seamlessly so you get
 a full-featured <a href="https://www.odoo.com">Open Source ERP</a> when you install several Apps.
+
+[![Build Status](https://runbot.odoo.com/runbot/badge/flat/1/master.svg)](https://runbot.odoo.com/runbot)
+[![Tech Doc](https://img.shields.io/badge/master-docs-875A7B.svg?style=flat&colorA=8F8F8F)](https://www.odoo.com/documentation/master)
+[![Help](https://img.shields.io/badge/master-help-875A7B.svg?style=flat&colorA=8F8F8F)](https://www.odoo.com/forum/help-1)
+[![Nightly Builds](https://img.shields.io/badge/master-nightly-875A7B.svg?style=flat&colorA=8F8F8F)](https://nightly.odoo.com/)
