@@ -1,7 +1,7 @@
 # All my Odoo ERP projects
 
 Projects
---------
+----
 
 1. [Canada d'Ici](https://github.com/KariSims/Odoo-projects/tree/main/canadadici_addons) : first in a long series, no doubt
    
