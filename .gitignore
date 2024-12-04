@@ -1,0 +1,29 @@
+# window installation config file
+/odoo.conf
+/odoo_install.sh
+/odoo_v18.code-workspace
+/canadadici/__pycache__
+
+# odoo files
+/README_Odoo.md
+
+# dotfiles
+.*
+!.gitignore
+!.github
+!.mailmap
+
+# hg stuff
+*.orig
+status
+odoo
+
+# odoo filestore
+/filestore
+
+# js tooling
+node_modules
+jsconfig.json
+tsconfig.json
+package-lock.json
+package.json
