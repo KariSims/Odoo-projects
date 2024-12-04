@@ -2,7 +2,7 @@
 /odoo.conf
 /odoo_install.sh
 /odoo_v18.code-workspace
-/canadadici/__pycache__
+/canadadici_addons/__pycache__
 
 # odoo files
 /README_Odoo.md
