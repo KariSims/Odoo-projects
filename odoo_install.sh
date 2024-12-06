@@ -17,6 +17,7 @@
 OE_USER="Odoo"
 OE_HOME="/$OE_USER"
 OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
+UBUNTU_V="24.04"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="True"
@@ -51,8 +52,8 @@ ADMIN_EMAIL="odoo@example.com"
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/18.0/administration/install.html
 
-# Check if the operating system is Ubuntu 22.04
-if [[ $(lsb_release -r -s) == "22.04" ]]; then
+# Check if the operating system is Ubuntu 24.04
+if [[ $(lsb_release -r -s) == UBUNTU_V ]]; then
     WKHTMLTOX_X64="https://packages.ubuntu.com/jammy/wkhtmltopdf"
     WKHTMLTOX_X32="https://packages.ubuntu.com/jammy/wkhtmltopdf"
     #No Same link works for both 64 and 32-bit on Ubuntu 22.04
@@ -121,8 +122,8 @@ if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
   sudo wget $_url
   
 
-  if [[ $(lsb_release -r -s) == "22.04" ]]; then
-    # Ubuntu 22.04 LTS
+  if [[ $(lsb_release -r -s) == UBUNTU_V ]]; then
+    # Ubuntu 24.04 LTS
     sudo apt install wkhtmltopdf -y
   else
       # For older versions of Ubuntu
