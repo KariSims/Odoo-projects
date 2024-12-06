@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-  <record id="list_product_with_img" model="ir.ui.view">
+    <record id="list_product_with_img" model="ir.ui.view">
         <field name="name">product.list.inherit</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="product.product_template_tree_view"/>
@@ -10,8 +10,14 @@
             </xpath>
         </field>
     </record>
-    <!-- <record id="settings_view" model="res.config.settings">
-          <field name="key">Change theme Odoo</field>
-          <field name="value">#7C7BAD</field>
-    </record> -->
+    <record id="list_prod_stock_with_img" model="ir.ui.view">
+        <field name="name">product.stock.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='name']" position="after">
+                <field name="image_1920" widget="image" options="{&quot;size&quot;: [40, 40]}"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>
