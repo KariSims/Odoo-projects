@@ -1,6 +1,6 @@
 #!/bin/bash
 ################################################################################
-# Script for installing Odoo on Ubuntu 18.04, 18.04, 20.04 and 22.04 (could be used for other version too)
+# Script for installing Odoo on Ubuntu 18.04, 18.04, 20.04 and 24.04 (could be used for other version too)
 # Author: KariSims (from Yenthe Van Ginneken script)
 #-------------------------------------------------------------------------------
 # This script will install Odoo on your Ubuntu server. It can install multiple Odoo instances
@@ -17,6 +17,7 @@
 OE_USER="Odoo"
 OE_HOME="/$OE_USER"
 OE_HOME_EXT="/$OE_USER/${OE_USER}-server"
+UBUNTU_V="24.04"
 # The default port where this Odoo instance will run under (provided you use the command -c in the terminal)
 # Set to true if you want to install it, false if you don't need it or have it already installed.
 INSTALL_WKHTMLTOPDF="True"
@@ -51,11 +52,11 @@ ADMIN_EMAIL="odoo@example.com"
 ## https://github.com/odoo/odoo/wiki/Wkhtmltopdf ):
 ## https://www.odoo.com/documentation/18.0/administration/install.html
 
-# Check if the operating system is Ubuntu 22.04
-if [[ $(lsb_release -r -s) == "22.04" ]]; then
+# Check if the operating system is Ubuntu 24.04
+if [[ $(lsb_release -r -s) == UBUNTU_V ]]; then
     WKHTMLTOX_X64="https://packages.ubuntu.com/jammy/wkhtmltopdf"
     WKHTMLTOX_X32="https://packages.ubuntu.com/jammy/wkhtmltopdf"
-    #No Same link works for both 64 and 32-bit on Ubuntu 22.04
+    #No Same link works for both 64 and 32-bit on Ubuntu 24.04
 else
     # For older versions of Ubuntu
     WKHTMLTOX_X64="https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.$(lsb_release -c -s)_amd64.deb"
@@ -121,8 +122,8 @@ if [ $INSTALL_WKHTMLTOPDF = "True" ]; then
   sudo wget $_url
   
 
-  if [[ $(lsb_release -r -s) == "22.04" ]]; then
-    # Ubuntu 22.04 LTS
+  if [[ $(lsb_release -r -s) == UBUNTU_V ]]; then
+    # Ubuntu 24.04 LTS
     sudo apt install wkhtmltopdf -y
   else
       # For older versions of Ubuntu
