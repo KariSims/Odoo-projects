@@ -8,6 +8,12 @@
             <xpath expr="//field[@name='street2']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
+            <!-- <xpath expr="//field[@name='street2']" position="attributes">
+                <attribute name="placeholder">téléphone</attribute>
+            </xpath>
+            <xpath expr="//form//div[@name='div_address']" position="inside">
+                <field name="street2" position="after"/>
+            </xpath> -->
             <xpath expr="//field[@name='zip']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
