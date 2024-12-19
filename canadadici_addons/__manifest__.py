@@ -32,7 +32,8 @@
         # 'security/ir.model.access.csv',
         'views/contacts.xml',
         'views/devis.xml',
-        'views/settings-front.xml',
+        'views/reports.xml',
+        # 'views/settings-front.xml',
         'views/products.xml'
     ],
 }

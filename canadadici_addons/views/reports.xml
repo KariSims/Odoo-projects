@@ -1,7 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="sale_invoice_inherit" inherit_id="sale.report_saleorder_document">
-        <xpath expr="//template/div/table[@name='table_optional_products']" position="attributes">
+    <template id="sale_invoice_inherit" inherit_id="account.report_invoice_document">
+        <xpath expr='//div[@class="row mb-4"]' position="attributes">
+            <attribute name="style">font-size: 11px;</attribute>
+        </xpath>
+        <xpath expr='//table[@name="invoice_line_table"]' position="attributes">
+            <attribute name="style">font-size: 11px;</attribute>
+        </xpath>
+        <!-- Renommage des colonnes -->
+        <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_description"]' position="replace">
+            <th name="th_description" class="text-center"><span>Produit</span></th>
+        </xpath>
+        <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_quantity"]' position="replace">
+            <th name="th_quantity" class="text-center"><span>Qte</span></th>
+        </xpath>
+        <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_priceunit"]' position="replace">
+            <th name="th_priceunit" t-attf-class="text-center text-nowrap {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                <span>P.U</span>
+            </th>
+        </xpath>
+        <!-- <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_taxes"]' position="replace">
+            <th name="th_taxes" t-attf-class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                <span>New Taxes Label</span>
+            </th>
+        </xpath> -->
+
+        <xpath expr='//div[@id="right-elements"]' position="attributes">
+            <attribute name="style">font-size: 11px;</attribute>
+        </xpath>
+        <xpath expr='//p[@name="payment_communication"]' position="replace">
+        </xpath>
+    </template>
+
+    <template id="extern_invoice_inherit" inherit_id="web.external_layout_standard">
+        <xpath expr='//div/div/div[@name="company_address"]' position="attributes">
+            <attribute name="style">font-size:7px;</attribute>
+        </xpath>
+        <xpath expr='//t/div/t[@t-call="web.address_layout"]' position="attributes">
+            <attribute name="style">font-size:10px;</attribute>
+        </xpath>
+        <xpath expr='//div/h2' position="attributes">
+            <attribute name="style">font-size: 20px;</attribute>
+            <!-- <attribute name="style">font-size: 16px; color:rgba(133, 3, 166, 0.79);</attribute> -->
+            <attribute name="class">text-epsilon</attribute>
+        </xpath>
+        <xpath expr='//div/div[@class="o_footer_content d-flex border-top pt-2"]' position="attributes">
             <attribute name="style">font-size:8px;</attribute>
         </xpath>
     </template>
