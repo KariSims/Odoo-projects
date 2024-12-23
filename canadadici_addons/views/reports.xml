@@ -30,6 +30,8 @@
         </xpath>
         <xpath expr='//p[@name="payment_communication"]' position="replace">
         </xpath>
+        <xpath expr='//div[@name="origin"]' position="replace">
+        </xpath>
     </template>
 
     <template id="extern_invoice_inherit" inherit_id="web.external_layout_standard">
@@ -48,4 +50,25 @@
             <attribute name="style">font-size:8px;</attribute>
         </xpath>
     </template>
+
+    <data>
+        <!-- Héritage de la vue 'account.view_move_form' -->
+        <record id="view_invoice_form_inherit" model="ir.ui.view">
+            <field name="name">account.move.form.custom</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field type="xml" name="arch">
+                <!-- Modification du texte du bouton principal "Payer" -->
+                <xpath expr="//button[@name='action_register_payment' and @id='account_invoice_payment_btn']" position="attributes">
+                    <attribute name="string">Mode de paiement</attribute>
+                </xpath>
+                
+                <!-- Modification du texte du bouton secondaire "Payer" -->
+                <xpath expr="//button[@name='action_register_payment' and @id='account_invoice_payment_secondary_btn']" position="attributes">
+                    <attribute name="string">Mode de paiement</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+
 </odoo>
