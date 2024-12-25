@@ -2,8 +2,28 @@
 
 <template id="report_invoice_with_delivery" inherit_id="account.report_invoice_document">
     <xpath expr="//div[@id='right-elements']" position="inside">
-        <t t-field="o.delivery_amount"></t>
-        
+        <div id="total" class="clearfix row mt-n3">
+            <div class="ms-auto">
+                <table class="o_total_table table table-borderless avoid-page-break-inside">
+                    
+                    <!-- Tax totals summary (invoice currency) -->
+                    <t t-if="o.tax_totals" t-call="account.document_tax_totals">
+                        <t t-set="tax_totals" t-value="o.tax_totals"/>
+                        <t t-set="currency" t-value="o.currency_id"/>
+                    </t>
+                    <!-- Ligne de livraison -->
+                    <t t-if="o.delivery_amount">
+                        <tr class="is-subtotal text-end">
+                            <td colspan="99">
+                                <strong class="mr16">Delivery Charges</strong>
+                                <span t-out="o.delivery_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'>15.00</span>
+                            </td>
+                        </tr>
+                    </t>
+                </table>
+            </div>
+        </div>
+
     </xpath>
     
 </template>
