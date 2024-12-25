@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<template id="report_invoice_with_delivery" inherit_id="account.report_invoice_document">
+    <xpath expr="//div[@id='right-elements']" position="inside">
+        <t t-field="o.delivery_amount"></t>
+        
+    </xpath>
+    
+</template>
