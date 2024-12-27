@@ -33,6 +33,9 @@
         'views/contacts.xml',
         'views/devis.xml',
         'views/reports.xml',
+        'views/invoice_report.xml',
+        'views/product_template_view.xml',
+        'account_move_view.xml',
         # 'views/settings-front.xml',
         'views/products.xml'
     ],
