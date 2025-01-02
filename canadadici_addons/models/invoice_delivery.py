@@ -11,7 +11,7 @@ class AccountMove(models.Model):
     def _compute_delivery_amount(self):
         for record in self:
             # Filtrer les lignes de la facture liées à la catégorie de livraison
-            delivery_lines = record.invoice_line_ids.filtered(lambda line: line.product_id.default_code in ['Delivery_03', 'Delivery_04', 'Delivery_05','Delivery_06', 'Delivery_07', 'Delivery_08', 'Delivery_09'])
+            delivery_lines = record.invoice_line_ids.filtered(lambda line: line.product_id.default_code in ['Delivery_007', 'Delivery_02', 'Delivery_03', 'Delivery_04', 'Delivery_05','Delivery_06', 'Delivery_07', 'Delivery_08', 'Delivery_09'])
             
             if delivery_lines:
                 record.delivery_amount = sum(delivery_lines.mapped('price_total'))

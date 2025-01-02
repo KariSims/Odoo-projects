@@ -49,6 +49,23 @@
         <xpath expr='//div/div[@class="o_footer_content d-flex border-top pt-2"]' position="attributes">
             <attribute name="style">font-size:8px;</attribute>
         </xpath>
+
+        <!-- custom header -->
+        <!-- <xpath expr="//div[1]" position="replace">
+            <div t-attf-class="header o_company_#{company.id}_layout" t-att-style="report_header_style">
+                <div class="row" style="font-family: 'Trebuchet MS', sans-serif;">
+                    <div class="col-2 mb4"> -->
+                        <!-- <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 80px;" alt="Logo"/> -->
+                        <!-- <img t-if="company.logo" t-att-src="'/web/image/res.company/' + str(company_id.id) + '/logo'" style="max-height: 80px;" alt="Logo"/>
+                    </div>
+                </div>
+                <div t-if="company.logo or company.report_header" class="row zero_min_height">
+                    <div class="col-12">
+                        <div style="border-bottom: 1px solid black;"/>
+                    </div>
+                </div>
+            </div>
+        </xpath> -->
     </template>
 
     <data>
