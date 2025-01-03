@@ -17,5 +17,5 @@ class AccountMove(models.Model):
     def _compute_is_delivery(self):
         for record in self:
             record.is_delivery_line = False
-            if record.product_id and record.product_id.detailed_type == 'service' and record.product_id.is_delivery_service:
+            if record.product_id and record.product_id.type == 'service' and record.product_id.is_delivery_service:
                 record.is_delivery_line = True
