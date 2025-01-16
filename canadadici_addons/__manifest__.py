@@ -21,15 +21,18 @@
 
     # any module necessary for this one to work correctly
     'depends': [
+        'account',
         'base',
+        'delivery',
         'product',
-        'sale',
-        'account'
+        'sale'
         ],
 
     # always loaded
     'data': [
         # 'security/ir.model.access.csv',
+        # 'data/delivery_mode.xml',
+        'data/payment_mode.xml',
         'views/contacts.xml',
         'views/devis.xml',
         'views/reports.xml',

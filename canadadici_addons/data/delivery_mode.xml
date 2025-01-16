@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- <record id="product_category_deliveries" model="product.category">
+        <field name="parent_id" ref="product.product_category_all"/>
+        <field name="name">Deliveries</field>
+    </record>-->
+    <record id="prod_delivery001" model="product.product"> 
+        <field name="name">LIVRAISON ZONE 1 : PLATEAU - MEDINA</field>
+        <field name="default_code">Delivery_0003</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">1000.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="delivery_carrier001" model="delivery.carrier">
+        <field name="name">LIVRAISON ZONE 1 : PLATEAU - MEDINA</field>
+        <field name="fixed_price">1000.0</field>
+        <field name="sequence">2</field>
+        <field name="delivery_type">fixed</field>
+        <field name="product_id" ref="delivery.product_product_delivery"/>
+    </record>
+    
+    <record id="prod_delivery002" model="product.product">
+        <field name="name">LIVRAISON ZONE 2 : POINT E, FASS, GUEULE TAPÉ, COLOBANE</field>
+        <field name="default_code">Delivery_0004</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">1500.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="delivery_carrier002" model="delivery.carrier">
+        <field name="name">LIVRAISON ZONE 2 : POINT E, FASS, GUEULE TAPÉ, COLOBANE</field>
+        <field name="fixed_price">1500.0</field>
+        <field name="sequence">3</field>
+        <field name="delivery_type">fixed</field>
+        <field name="product_id" ref="delivery.product_product_delivery"/>
+    </record>
+    
+    <record id="prod_delivery003" model="product.product">
+        <field name="name">LIVRAISON ZONE 3 : HLM,OUAKAM, MAMELLES,SICAP, LIBERTE, GRAND YOFF, OUEST FOIRE, NORD FOIRE, AMITIE, MERMOZ, PATTE D'OIE, MARISTE, DALIFORT, BEL AIR</field>
+        <field name="default_code">Delivery_0005</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">2000.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="delivery_carrier003" model="delivery.carrier">
+        <field name="name">LIVRAISON ZONE 3 : HLM,OUAKAM, MAMELLES,SICAP, LIBERTE, GRAND YOFF, OUEST FOIRE, NORD FOIRE, AMITIE, MERMOZ, PATTE D'OIE, MARISTE, DALIFORT, BEL AIR</field>
+        <field name="fixed_price">2000.0</field>
+        <field name="sequence">4</field>
+        <field name="delivery_type">fixed</field>
+        <field name="product_id" ref="delivery.product_product_delivery"/>
+    </record>
+    
+    <record id="prod_delivery004" model="product.product">
+        <field name="name">LIVRAISON ZONE 4 : PARCELLES,AEROPORT,Gd-YOFF, ALMADIES, NGOR, VIRAGE</field>
+        <field name="default_code">Delivery_0006</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">2500.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="delivery_carrier004" model="delivery.carrier">
+        <field name="name">LIVRAISON ZONE 4 : PARCELLES,AEROPORT,Gd-YOFF, ALMADIES, NGOR, VIRAGE</field>
+        <field name="fixed_price">2500.0</field>
+        <field name="sequence">5</field>
+        <field name="delivery_type">fixed</field>
+        <field name="product_id" ref="delivery.product_product_delivery"/>
+    </record>
+    
+    <record id="prod_delivery005" model="product.product">
+        <field name="name">LIVRAISON ZONE 5 : GUEDIAWAYE, PIKINE, GOLF, HAMO, THIAROYE, DIAMAGUENE</field>
+        <field name="default_code">Delivery_0007</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">3000.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="delivery_carrier005" model="delivery.carrier">
+        <field name="name">LIVRAISON ZONE 5 : GUEDIAWAYE, PIKINE, GOLF, HAMO, THIAROYE, DIAMAGUENE</field>
+        <field name="fixed_price">3000.0</field>
+        <field name="sequence">6</field>
+        <field name="delivery_type">fixed</field>
+        <field name="product_id" ref="delivery.product_product_delivery"/>
+    </record>
+    
+    <record id="prod_delivery006" model="product.product">
+        <field name="name">LIVRAISON ZONE 6 : MALIKA, SICAP MBAO,YEUMBEUL</field>
+        <field name="default_code">Delivery_0008</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">4000.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="delivery_carrier006" model="delivery.carrier">
+        <field name="name">LIVRAISON ZONE 6 : MALIKA, SICAP MBAO,YEUMBEUL</field>
+        <field name="fixed_price">4000.0</field>
+        <field name="sequence">7</field>
+        <field name="delivery_type">fixed</field>
+        <field name="product_id" ref="delivery.product_product_delivery"/>
+    </record>
+    
+    <record id="prod_delivery007" model="product.product">
+        <field name="name">LIVRAISON ZONE 7 : KEUR MASSAR, RUFISQUE, BARGNY, TIVAOUNE PEULH</field>
+        <field name="default_code">Delivery_0009</field>
+        <field name="type">service</field>
+        <field name="categ_id" ref="delivery.product_category_deliveries"/>
+        <field name="sale_ok" eval="False"/>
+        <field name="purchase_ok" eval="False"/>
+        <field name="list_price">5000.0</field>
+        <field name="invoice_policy">order</field>
+    </record>
+    <record id="delivery_carrier007" model="delivery.carrier">
+        <field name="name">LIVRAISON ZONE 7 : KEUR MASSAR, RUFISQUE, BARGNY, TIVAOUNE PEULH</field>
+        <field name="fixed_price">5000.0</field>
+        <field name="sequence">8</field>
+        <field name="delivery_type">fixed</field>
+        <field name="product_id" ref="delivery.product_product_delivery"/>
+    </record>
+
+</odoo>

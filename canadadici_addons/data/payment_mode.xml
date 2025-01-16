@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Payment mode -->
+        <record id="account_payment_mode01" model="account.payment.method">
+            <field name="name">Orange Money</field>
+            <field name="code">om</field>
+            <field name="payment_type">inbound</field>
+        </record>
+        <record id="account_payment_mode02" model="account.payment.method">
+            <field name="name">Wave</field>
+            <field name="code">wave</field>
+            <field name="payment_type">inbound</field>
+        </record>
+        <record id="account_payment_mode03" model="account.payment.method">
+            <field name="name">Livreur</field>
+            <field name="code">liv</field>
+            <field name="payment_type">inbound</field>
+        </record>
+    </data>
+</odoo>
