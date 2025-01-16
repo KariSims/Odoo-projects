@@ -23,7 +23,6 @@
     'depends': [
         'base',
         'product',
-        'web',
         'sale',
         'account'
         ],
@@ -34,8 +33,7 @@
         'views/contacts.xml',
         'views/devis.xml',
         'views/reports.xml',
-        'views/invoice_pdf.xml',
-        # 'views/settings-front.xml',
+
         'views/products.xml'
     ],
 }

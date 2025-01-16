@@ -45,7 +45,7 @@
             </field>
             
             <field name="titel" position="attributes">
-                <attribute name="required">1</attribute>
+                <attribute name="invisible">1</attribute>
             </field>
 
             <field name="title" position="attributes">
