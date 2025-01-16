@@ -3,14 +3,14 @@ from odoo import fields, models, api
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    # titel = fields.Char('Vitre')
+
     titel = fields.Selection([
         ('', 'Choisissez un titre'),
         ('mr', 'Mr'),
         ('mme', 'Mme'),
         ],
         string="Ttitre",
-        required=True,
+        # required=True,
         default='')
     
     phone = fields.Char('phone')
