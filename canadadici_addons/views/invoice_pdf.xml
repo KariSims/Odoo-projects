@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id="report_invoice_with_delivery" inherit_id="account.report_invoice_document">
+        <xpath expr="//table/t[1]" position="before">
+            <t t-if="o.delivery_amount > -1">
+                <tr class="fw-bold">
+                    <td>Livraison</td>
+                    <td class="text-end">
+                        <span class="text-end" t-out="o.delivery_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id}'>15.00</span>
+                    </td>
+                </tr>
+            </t>
+        </xpath>
+
+        <xpath expr="//t[@t-foreach='lines']" position="attributes">
+                <attribute name="t-foreach">lines.filtered(lambda x: x.product_id.default_code not in ['Delivery_007','Delivery_02','Delivery_03', 'Delivery_04', 'Delivery_05','Delivery_06', 'Delivery_07', 'Delivery_08', 'Delivery_09'])</attribute>
+        </xpath>
+    </template>
+</odoo>

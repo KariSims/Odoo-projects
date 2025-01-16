@@ -33,7 +33,7 @@
         'views/contacts.xml',
         'views/devis.xml',
         'views/reports.xml',
-
+        'views/invoice_pdf.xml',
         'views/products.xml'
     ],
 }
