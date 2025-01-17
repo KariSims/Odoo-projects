@@ -33,6 +33,14 @@
         'views/contacts.xml',
         'views/devis.xml',
         'views/reports.xml',
+        'views/invoice_report.xml',
+        'views/product_template_view.xml',
+        'views/account_move_view.xml',
         'views/products.xml'
     ],
+    'assets': {
+        'web.assets_backend': [
+            'canadadici_addons/static/src/components/**/*',
+        ]
+    },
 }
