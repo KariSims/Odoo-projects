@@ -23,8 +23,8 @@
     'depends': [
         'base',
         'product',
-        'web',
-        'sale'
+        'sale',
+        'account'
         ],
 
     # always loaded
@@ -36,7 +36,11 @@
         'views/invoice_report.xml',
         'views/product_template_view.xml',
         'account_move_view.xml',
-        # 'views/settings-front.xml',
         'views/products.xml'
     ],
+    'assets': {
+        'web.assets_backend': [
+            'canadadici_sale/static/src/components/**/*',
+        ]
+    },
 }

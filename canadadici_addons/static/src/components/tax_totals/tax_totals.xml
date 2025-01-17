@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<odoo> -->
+<templates>
+
+    <t t-name="account.TaxTotalsField_">
+        <table t-if="totals" class="float-end">
+            <tbody>
+                
+                <tr>
+                    <td class="o_td_label">
+                        <label class="o_form_label o_tax_total_label">Montant de la livraison</label>
+                    </td>
+
+                    <td class="o_list_monetary">
+                        
+                        <span t-att-name="delivery_amount"
+                                style="white-space: nowrap; font-weight: bold;"
+                                t-out="formatMonetary(totals.delivery_amount)"/> 
+                    </td>
+                </tr>
+                
+                <t t-foreach="totals.subtotals" t-as="subtotal" t-key="subtotal_index">
+                    <tr>
+                        <td class="o_td_label">
+                            <label class="o_form_label o_tax_total_label" t-out="subtotal.name"/>
+                        </td>
+
+                        <td class="o_list_monetary">
+                            <span t-att-name="subtotal.name"
+                                    style="white-space: nowrap; font-weight: bold;"
+                                    t-out="formatMonetary(subtotal.base_amount_currency)"/>
+                        </td>
+                    </tr>
+
+                    <t t-foreach="subtotal.tax_groups" t-as="taxGroup" t-key="taxGroup_index">
+                        <TaxGroupComponent
+                            totals="totals"
+                            subtotal="subtotal"
+                            taxGroup="taxGroup"
+                            isReadonly="readonly"
+                            onChangeTaxGroup.bind="_onChangeTaxValueByTaxGroup"
+                            invalidate.bind="invalidate"
+                        />
+                    </t>
+                </t>
+
+                <tr t-if="'cash_rounding_base_amount_currency' in totals">
+                    <td class="o_td_label">
+                        <label class="o_form_label o_tax_total_label">Rounding</label>
+                    </td>
+                    <td class="o_list_monetary">
+                        <span
+                            t-out="formatMonetary(totals.cash_rounding_base_amount_currency)"
+                        />
+                    </td>
+                </tr>
+
+                <!-- Total amount with all taxes-->
+                <tr>
+                    <td class="o_td_label">
+                        <label class="o_form_label o_tax_total_label">Total</label>
+                    </td>
+
+                    <td class="o_list_monetary">
+                        <span
+                            name="amount_total"
+                            t-att-class="{'oe_subtotal_footer_separator': totals.has_tax_groups}"
+                            t-out="formatMonetary(totals.total_amount_currency)"
+                            style="font-size: 1.3em; font-weight: bold; white-space: nowrap;"
+                        />
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </t>
+</templates>
+<!-- </odoo> -->

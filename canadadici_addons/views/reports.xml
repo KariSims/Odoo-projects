@@ -5,7 +5,7 @@
             <attribute name="style">font-size: 11px;</attribute>
         </xpath>
         <xpath expr='//table[@name="invoice_line_table"]' position="attributes">
-            <attribute name="style">font-size: 11px;</attribute>
+            <attribute name="style">font-size: 10px;</attribute>
         </xpath>
         <!-- Renommage des colonnes -->
         <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_description"]' position="replace">
@@ -49,16 +49,16 @@
         <xpath expr='//div/div[@class="o_footer_content d-flex border-top pt-2"]' position="attributes">
             <attribute name="style">font-size:8px;</attribute>
         </xpath>
+
+        
     </template>
 
     <data>
-        <!-- Héritage de la vue 'account.view_move_form' -->
         <record id="view_invoice_form_inherit" model="ir.ui.view">
             <field name="name">account.move.form.custom</field>
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"/>
-            <field type="xml" name="arch">
-                <!-- Modification du texte du bouton principal "Payer" -->
+            <field name="arch" type="xml">
                 <xpath expr="//button[@name='action_register_payment' and @id='account_invoice_payment_btn']" position="attributes">
                     <attribute name="string">Mode de paiement</attribute>
                 </xpath>
