@@ -35,12 +35,12 @@
         'views/reports.xml',
         'views/invoice_report.xml',
         'views/product_template_view.xml',
-        'account_move_view.xml',
+        'views/account_move_view.xml',
         'views/products.xml'
     ],
     'assets': {
         'web.assets_backend': [
-            'canadadici_sale/static/src/components/**/*',
+            'canadadici_addons/static/src/components/**/*',
         ]
     },
 }
