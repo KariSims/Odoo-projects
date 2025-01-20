@@ -41,7 +41,6 @@
         'views/account_move_view.xml',
         'views/products.xml',
         'views/stocks.xml'
-
     ],
     'assets': {
         'web.assets_backend': [

@@ -7,6 +7,7 @@
     </record>-->
     <record id="prod_delivery001" model="product.product"> 
         <field name="name">LIVRAISON ZONE 1 : PLATEAU - MEDINA</field>
+        <field name="image_1920" file="canadadici_addons/static/description/delivery.jpg" type="base64"/>
         <field name="default_code">Delivery_0003</field>
         <field name="type">service</field>
         <field name="categ_id" ref="delivery.product_category_deliveries"/>
@@ -25,6 +26,7 @@
     
     <record id="prod_delivery002" model="product.product">
         <field name="name">LIVRAISON ZONE 2 : POINT E, FASS, GUEULE TAPÉ, COLOBANE</field>
+        <field name="image_1920" file="canadadici_addons/static/description/delivery.jpg" type="base64"/>
         <field name="default_code">Delivery_0004</field>
         <field name="type">service</field>
         <field name="categ_id" ref="delivery.product_category_deliveries"/>
@@ -43,6 +45,7 @@
     
     <record id="prod_delivery003" model="product.product">
         <field name="name">LIVRAISON ZONE 3 : HLM,OUAKAM, MAMELLES,SICAP, LIBERTE, GRAND YOFF, OUEST FOIRE, NORD FOIRE, AMITIE, MERMOZ, PATTE D'OIE, MARISTE, DALIFORT, BEL AIR</field>
+        <field name="image_1920" file="canadadici_addons/static/description/delivery.jpg" type="base64"/>
         <field name="default_code">Delivery_0005</field>
         <field name="type">service</field>
         <field name="categ_id" ref="delivery.product_category_deliveries"/>
@@ -61,6 +64,7 @@
     
     <record id="prod_delivery004" model="product.product">
         <field name="name">LIVRAISON ZONE 4 : PARCELLES,AEROPORT,Gd-YOFF, ALMADIES, NGOR, VIRAGE</field>
+        <field name="image_1920" file="canadadici_addons/static/description/delivery.jpg" type="base64"/>
         <field name="default_code">Delivery_0006</field>
         <field name="type">service</field>
         <field name="categ_id" ref="delivery.product_category_deliveries"/>
@@ -79,6 +83,7 @@
     
     <record id="prod_delivery005" model="product.product">
         <field name="name">LIVRAISON ZONE 5 : GUEDIAWAYE, PIKINE, GOLF, HAMO, THIAROYE, DIAMAGUENE</field>
+        <field name="image_1920" file="canadadici_addons/static/description/delivery.jpg" type="base64"/>
         <field name="default_code">Delivery_0007</field>
         <field name="type">service</field>
         <field name="categ_id" ref="delivery.product_category_deliveries"/>
@@ -97,6 +102,7 @@
     
     <record id="prod_delivery006" model="product.product">
         <field name="name">LIVRAISON ZONE 6 : MALIKA, SICAP MBAO,YEUMBEUL</field>
+        <field name="image_1920" file="canadadici_addons/static/description/delivery.jpg" type="base64"/>
         <field name="default_code">Delivery_0008</field>
         <field name="type">service</field>
         <field name="categ_id" ref="delivery.product_category_deliveries"/>
@@ -115,6 +121,7 @@
     
     <record id="prod_delivery007" model="product.product">
         <field name="name">LIVRAISON ZONE 7 : KEUR MASSAR, RUFISQUE, BARGNY, TIVAOUNE PEULH</field>
+        <field name="image_1920" file="canadadici_addons/static/description/delivery.jpg" type="base64"/>
         <field name="default_code">Delivery_0009</field>
         <field name="type">service</field>
         <field name="categ_id" ref="delivery.product_category_deliveries"/>
