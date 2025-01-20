@@ -11,7 +11,7 @@
             <xpath expr="//form/header/button[@name='action_preview_sale_order']" position="attributes">
                 <attribute name="invisible">True</attribute>
             </xpath>
-            <xpath expr="//form/sheet/notebook/page[@name='order_lines']" position="after">
+            <xpath expr="//form/sheet/notebook/page[@name='order_lines']" position="before">
                 <page string="Lignes de commandes" name="new_order_lines">
                     <field
                         name="new_order_line"
