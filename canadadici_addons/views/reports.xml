@@ -1,33 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="sale_invoice_inherit" inherit_id="account.report_invoice_document">
+        <xpath expr="//div" position="attributes">
+            <attribute name="lang">fr_FR</attribute>
+        </xpath>
         <xpath expr='//div[@class="row mb-4"]' position="attributes">
-            <attribute name="style">font-size: 11px;</attribute>
+            <attribute name="style">font-size: 12px;</attribute>
         </xpath>
         <xpath expr='//table[@name="invoice_line_table"]' position="attributes">
-            <attribute name="style">font-size: 10px;</attribute>
+            <attribute name="style">font-size: 11px;</attribute>
+        </xpath>
+
+        <xpath expr='//div[1]' position="replace">
+        </xpath>
+
+        <!-- <xpath expr='//div[@id="informations"]' position="before"> -->
+        <xpath expr='//t[@t-set="layout_document_title"]' position="after">
+            <div class="row">
+                <div class="col-6">
+                    <strong>Client :</strong>
+                    <span t-field="o.partner_id.name" />
+                </div>
+                <div class="col-6">
+                    <strong><span t-field="o.partner_id.phone"/></strong>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr='//div[@id="informations"]' position="inside">
+            <div id="informations" class="row mb-4">
+                <div class="col" t-if="o.invoice_date" name="invoice_date">
+                    <t t-if="o.move_type == 'out_invoice'">
+                        <strong>Date de facture</strong>
+                    </t>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr='//div[@name="due_date"]' position="replace">
+        </xpath>
+        <xpath expr="//tbody" position="before">
+            <div style="margin-top: -0.6cm !important;"></div>
         </xpath>
         <!-- Renommage des colonnes -->
         <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_description"]' position="replace">
-            <th name="th_description" class="text-center"><span>Produit</span></th>
+            <th name="th_description" class="text-center"><strong><span>Produit</span></strong></th>
         </xpath>
         <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_quantity"]' position="replace">
-            <th name="th_quantity" class="text-center"><span>Qte</span></th>
+            <th name="th_quantity" class="text-center"><strong><span>Qte</span></strong></th>
         </xpath>
         <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_priceunit"]' position="replace">
             <th name="th_priceunit" t-attf-class="text-center text-nowrap {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
-                <span>P.U</span>
+                <strong><span>P.U</span></strong>
             </th>
         </xpath>
-        <!-- <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_taxes"]' position="replace">
-            <th name="th_taxes" t-attf-class="text-center {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
-                <span>New Taxes Label</span>
+        <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_taxes"]' position="replace">
+            <th name="th_taxes" t-attf-class="text-center {{ 'd-none d-md-table-cell' if report_type == 'pdf' else '' }}">
+                <span>Taxe</span>
             </th>
-        </xpath> -->
+        </xpath>
+        <xpath expr="//td[@name='td_taxes']" position="replace">
+        </xpath>
 
         <xpath expr='//div[@id="right-elements"]' position="attributes">
-            <attribute name="style">font-size: 11px;</attribute>
+            <attribute name="style">font-size: 13px;</attribute>
         </xpath>
+        
         <xpath expr='//p[@name="payment_communication"]' position="replace">
         </xpath>
         <xpath expr='//div[@name="origin"]' position="replace">
@@ -35,8 +71,31 @@
     </template>
 
     <template id="extern_invoice_inherit" inherit_id="web.external_layout_standard">
-        <xpath expr='//div/div/div[@name="company_address"]' position="attributes">
-            <attribute name="style">font-size:7px;</attribute>
+        <!-- Logo and Header -->
+        <xpath expr='//div[1]' position="replace">
+            <div t-attf-class="header o_company_#{company.id}_layout" t-attf-style="report_header_style">
+                <div class="col" style="font-family: 'Trebuchet MS', sans-serif;">
+                    <div class="row-1 text-center" style="margin-bottom:0px !important;">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height:70px;" alt="logo"/>
+                    </div>
+                    <div class="row-1 text-center" style="margin-bottom: 0 !important;">
+                        <hr style="border-top: 1px solid black; width: 80%; margin: 10px auto;" />
+                    </div>
+                    <div class="row-1 text-center" style="margin-top: 0 !important;">
+                        <div t-field="company.partner_id"
+                            t-options='{"widget":"contact", "fields":["address","name"], "no_marker":true}'
+                        />
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top:3px;"></div>
+        </xpath> 
+        <xpath expr='//div[1]' position="before">
+            <div style="margin-top: -1cm !important;"></div>
+        </xpath>       
+        
+        <xpath expr='//div[1]/div[3]' position="attributes"> 
+            <attribute name="style">font-size:12px;</attribute>
         </xpath>
         <xpath expr='//t/div/t[@t-call="web.address_layout"]' position="attributes">
             <attribute name="style">font-size:10px;</attribute>
@@ -46,11 +105,19 @@
             <!-- <attribute name="style">font-size: 16px; color:rgba(133, 3, 166, 0.79);</attribute> -->
             <attribute name="class">text-epsilon</attribute>
         </xpath>
-        <xpath expr='//div/div[@class="o_footer_content d-flex border-top pt-2"]' position="attributes">
-            <attribute name="style">font-size:8px;</attribute>
+        <xpath expr='//div/h2' position="before">
+            <div style="height: 118px;"></div>
         </xpath>
-
         
+        <xpath expr='//div/div[@class="o_footer_content d-flex border-top pt-2"]' position="replace">
+            <div class="text-center" style="font-size: 12px !important;">
+                <!-- <i><span style="font-size:12px;">NB. Veuillez bien conservez cette copie</span></i> -->
+                <i><span>NB. Veuillez bien conserver cette copie</span></i>
+                    <br/>
+                <i><span>Merci, à bientôt</span></i>
+            </div>
+            <div class="text-end"><span style="font-size: 8px !important;" t-field="o.user_id.name"/></div>
+        </xpath>
     </template>
 
     <data>
