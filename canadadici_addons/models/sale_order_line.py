@@ -11,5 +11,5 @@ class SaleOrderLine(models.Model):
     def _compute_is_delivery(self):
         for record in self:
             record.is_delivery_line = False
-            if record.product_template_id and record.product_template_id.type == 'service' and record.product_template_id.is_delivery_service:
+            if (record.product_template_id and record.product_template_id.type == 'service' and record.product_template_id.is_delivery_service) or (record.product_id and record.product_id.type == 'service' and record.product_id.is_delivery_service) :
                 record.is_delivery_line = True
