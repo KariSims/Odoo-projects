@@ -18,6 +18,7 @@ class SaleOrder(models.Model):
     delivery_amount_to_print = fields.Char("Montant de la livraison à imprimer", compute="_compute_amount", readonly=True)
 
     @api.depends('order_line')
+    # @api.onchange('order_line')
     def _compute_delivery_amount(self):
         for record in self:
             record.delivery_amount = 0

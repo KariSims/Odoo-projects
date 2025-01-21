@@ -116,7 +116,7 @@
                     <br/>
                 <i><span>Merci, à bientôt</span></i>
             </div>
-            <div class="text-end"><span style="font-size: 8px !important;" t-field="o.user_id.name"/></div>
+            <div class="text-end"><span style="font-size: 9px !important;" t-field="o.user_id.name"/></div>
         </xpath>
     </template>
 
