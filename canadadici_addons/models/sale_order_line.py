@@ -8,9 +8,8 @@ class SaleOrderLine(models.Model):
     is_delivery_line = fields.Boolean("Est une ligne de livraison", compute="_compute_is_delivery", store=True)
 
     @api.depends('product_template_id')
-    # @api.onchange('product_template_id')
     def _compute_is_delivery(self):
         for record in self:
             record.is_delivery_line = False
-            if record.product_template_id and record.product_template_id.type == 'service' and getattr(record.product_id, 'is_delivery_service', False) and record.product_template_id.is_delivery_service:
+            if (record.product_template_id and record.product_template_id.type == 'service' and record.product_template_id.is_delivery_service) or (record.product_id and record.product_id.type == 'service' and record.product_id.is_delivery_service) :
                 record.is_delivery_line = True

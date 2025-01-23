@@ -83,6 +83,10 @@
                                     </div>
                                     <field name="product_packaging_qty" invisible="not product_id or not product_packaging_id" groups="product.group_stock_packaging"/>
                                     <field name="product_packaging_id" invisible="not product_id" context="{'default_product_id': product_id, 'list_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" groups="product.group_stock_packaging" />
+                                    <!-- delivery line -->
+                                    <field name="recompute_delivery_price" column_invisible="True"/>
+                                    <field name="is_delivery" column_invisible="True"/>
+
                                     <field name="price_unit"/>
                                     <field name="tax_id" widget="many2many_tags" options="{'no_create': True}" context="{'search_view_ref': 'account.account_tax_view_search'}" domain="[('type_tax_use', '=', 'sale'), ('company_id', 'parent_of', parent.company_id), ('country_id', '=', parent.tax_country_id)]"
                                         readonly="qty_invoiced &gt; 0"/>
@@ -125,7 +129,7 @@
                             string="Sales Order Lines"
                             editable="bottom"
                             limit="200"
-                            decoration-warning="state in ['draft', 'sent'] and is_product_archived"
+                            decoration-warning="(state in ['draft', 'sent'] and is_product_archived) or (recompute_delivery_price and is_delivery)"
                         >
                             <control>
                                 <create name="add_product_control" string="Ajouter un produit"/>
@@ -251,6 +255,10 @@
                                 readonly="parent.state not in ['draft', 'sent', 'sale'] or is_downpayment"/>
                             <field name="product_packaging_qty" invisible="not product_id or not product_packaging_id" groups="product.group_stock_packaging" optional="show"/>
                             <field name="product_packaging_id" invisible="not product_id" context="{'default_product_id': product_id, 'list_view_ref':'product.product_packaging_tree_view', 'form_view_ref':'product.product_packaging_form_view'}" groups="product.group_stock_packaging" optional="show"/>
+                            <!-- delivery line -->
+                            <field name="recompute_delivery_price" column_invisible="True"/>
+                            <field name="is_delivery" column_invisible="True"/>
+
                             <field
                                 name="price_unit"
                                 readonly="qty_invoiced &gt; 0"/>
@@ -353,6 +361,24 @@
                                 type="object"
                                 class="btn btn-secondary"
                                 groups="sale.group_discount_per_so_line"/>
+                        <button
+                            string="Ajouter l'expédition"
+                            name="action_open_delivery_wizard"
+                            type="object"
+                            invisible="is_all_service or not order_line or delivery_set"/>
+                        <button
+                            string="Mettre à jour les frais d'expédition"
+                            name="action_open_delivery_wizard"
+                            context="{'carrier_recompute':True}"
+                            type="object"
+                            class="text-warning btn-secondary"
+                            invisible="is_all_service or not recompute_delivery_price or not delivery_set"/>
+                        <button
+                            string="Mettre à jour les frais d'expédition"
+                            name="action_open_delivery_wizard"
+                            context="{'carrier_recompute':True}"
+                            type="object"
+                            invisible="is_all_service or recompute_delivery_price or not delivery_set"/>
                     </div>
                     <group name="note_group" col="6" class="mt-2 mt-md-0">
                         <group colspan="4" class="order-1 order-lg-0">
