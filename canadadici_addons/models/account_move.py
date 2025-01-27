@@ -22,6 +22,8 @@ class AccountMove(models.Model):
         # help='Custom address field from the partner'
     )
     
+    invoice_time = fields.Char(string="Heure de livraison", size=6, index=True, required=True, help="Saisir l'heure et les minutes au format HH:MM")
+
     new_invoice_line_ids = fields.One2many(  # /!\ invoice_line_ids is just a subset of line_ids.
         'account.move.line',
         'move_id',

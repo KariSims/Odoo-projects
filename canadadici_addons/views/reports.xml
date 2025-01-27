@@ -57,7 +57,7 @@
         <xpath expr='//div[@name="due_date"]' position="replace">
         </xpath>
         <xpath expr="//tbody" position="before">
-            <div style="margin-top: -0.6cm !important;"></div>
+            <div style="margin-top: -0.4cm !important;"></div>
         </xpath>
         <!-- Renommage des colonnes -->
         <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_description"]' position="replace">
@@ -149,7 +149,9 @@
                 <span t-field="o.partner_id.street"/>
                 <span> </span><span t-field="o.partner_id.city"/>
             </div>
-            <div class="text-center" style="font-size: 13px !important;"><span>Heure de livraison : </span></div>
+            <div class="text-center" style="font-size: 13px !important;">
+                <span>Heure de livraison : </span><span t-out="o.invoice_time"/>
+            </div>
             <div class="text-center" style="font-size: 13px !important;">
                 <span>NB. Conserver cette copie pour votre dossier</span>
                     <br/>
@@ -206,54 +208,7 @@
         </xpath>
         
         <xpath expr='//div/div[@class="o_footer_content d-flex border-top pt-2"]' position="replace">
-            <!-- <div class="text-center" style="font-size: 12px !important;"> -->
-                <!-- <i><span style="font-size:12px;">NB. Veuillez bien conservez cette copie</span></i> -->
-                <!-- <i><span>NB. Veuillez bien conserver cette copie</span></i>
-                    <br/>
-                <i><span>Merci, à bientôt</span></i>
-            </div> -->
-            <!-- <div class="text-center"><span style="font-size: 9px !important;" t-field="o.user_id.name"/></div> -->
-        </xpath>
-    </template>
-
-    <!-- template sub_total -->
-    <template id="invoice_total_view_inherit01" inherit_id="account.document_tax_totals_template">
-        <xpath expr='//' position="replace">
-            <t t-set="same_tax_base" t-value="tax_totals['same_tax_base']"/>
-            <t t-foreach="tax_totals['subtotals']" t-as="subtotal">
-                <tr class="o_subtotal">
-                    <td>
-                        <span> </span>
-                    </td>
-                    <td>
-                        <span> </span>
-                    </td>
-                </tr>
-
-                <t t-foreach="subtotal['tax_groups']" t-as="tax_group">
-                    <tr class="o_taxes">
-                        
-                    </tr>
-                </t>
-            </t>
-
-            <tr t-if="'cash_rounding_base_amount_currency' in tax_totals">
-                <td>Rounding</td>
-                <td class="text-end">
-                    <span></span>
-                </td>
-            </tr>
             
-            <!--Total amount with all taxes-->
-            <tr class="o_total">
-                <td><strong>Total</strong></td>
-                <td class="text-end">
-                    <strong t-out="tax_totals['total_amount_currency']"
-                            t-options='{"widget": "monetary", "display_currency": currency}'
-                    >31.05</strong>
-                </td>
-            </tr>
-
         </xpath>
     </template>
 

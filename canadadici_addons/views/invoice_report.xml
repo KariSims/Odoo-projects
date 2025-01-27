@@ -4,9 +4,16 @@
     <template id="report_invoice_with_delivery" inherit_id="account.report_invoice_document">
         <xpath expr="//div[@id='total']/div/table/t" position="replace">
 
+            <tr class="o_subtotal">
+                <td><strong>Commande :</strong></td>
+
+                <td class="text-end">
+                    <strong t-out="o.amount_total - o.delivery_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id, "digits": [12, 0]}'>31.05</strong>
+                </td>
+            </tr>
             <t t-if="o.delivery_amount">
                 <tr class="o_subtotal">
-                    <td>Livraison : </td>
+                    <td>Livraison   :</td>
 
                     <td class="text-end">
                         <span t-att-class="oe_subtotal_footer_separator">
@@ -16,10 +23,11 @@
                 </tr>
             </t>
             <tr class="o_subtotal">
-                <td><strong>Total</strong></td>
+                <td><strong>Total Facture :</strong></td>
 
                 <td class="text-end">
-                    <strong t-out="o.amount_total">31.05</strong><span> </span><span t-out="o.currency_id.symbol" />
+                    <strong t-out="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id, "digits": [12, 0]}'>31.05</strong>
+                        <!-- <span> </span><span t-out="o.currency_id.symbol" /> -->
                         <!-- t-options='{"widget": "monetary", "display_currency": currency}' -->
                 </td>
             </tr>
