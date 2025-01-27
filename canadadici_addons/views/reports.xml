@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     
-    <template id="invoice_total_view_inherit02" inherit_id="account.document_tax_totals_company_currency_template">
+    <!-- <template id="invoice_total_view_inherit02" inherit_id="account.document_tax_totals_company_currency_template">
         <xpath expr='//tr[@class="o_subtotal"]' position="replace">
             <tr class="o_subtotal">
                 <td>
@@ -9,7 +9,7 @@
                 </td>
             </tr>
         </xpath>
-    </template>
+    </template> -->
 
     <template id="sale_invoice_inherit" inherit_id="account.report_invoice_document">
         <xpath expr="//div" position="attributes">
@@ -217,7 +217,7 @@
     </template>
 
     <!-- template sub_total -->
-    <template id="invoice_total_view_inherit01" inherit_id="account.document_tax_totals_template">
+    <!-- <template id="invoice_total_view_inherit01" inherit_id="account.document_tax_totals_template">
         <xpath expr='//' position="replace">
             <t t-set="same_tax_base" t-value="tax_totals['same_tax_base']"/>
             <t t-foreach="tax_totals['subtotals']" t-as="subtotal">
@@ -242,10 +242,10 @@
                 <td class="text-end">
                     <span></span>
                 </td>
-            </tr>
+            </tr> -->
             
             <!--Total amount with all taxes-->
-            <tr class="o_total">
+            <!-- <tr class="o_total">
                 <td><strong>Total</strong></td>
                 <td class="text-end">
                     <strong t-out="tax_totals['total_amount_currency']"
@@ -255,7 +255,7 @@
             </tr>
 
         </xpath>
-    </template>
+    </template> -->
 
     <data>
         <record id="view_invoice_form_inherit" model="ir.ui.view">
