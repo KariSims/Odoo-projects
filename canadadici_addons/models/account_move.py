@@ -15,6 +15,13 @@ class AccountMove(models.Model):
     _inherit = "account.move"
  
     
+    phone_sale = fields.Char(
+        related='partner_id.phone',
+        string=' ',
+        readonly=True,
+        # help='Custom address field from the partner'
+    )
+    
     new_invoice_line_ids = fields.One2many(  # /!\ invoice_line_ids is just a subset of line_ids.
         'account.move.line',
         'move_id',

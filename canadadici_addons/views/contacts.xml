@@ -38,16 +38,18 @@
             <field name="title" position="attributes">
                 <attribute name="required">1</attribute>
             </field>
-        </field>
+        </field>        
     </record>
+
     <record id="view_partner_kanban_inherit" model="ir.ui.view">
         <field name="name">res.partner.kanban.inherit</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.res_partner_kanban_view"/>
         <field name="arch" type="xml">
             <xpath expr="//kanban/templates/t/main/div/field[@name='display_name']" position="before">
-                <field name="title"/><field name="function"/><span style="margin-right: 4px;"></span>
+                <field name="title_shortcut"/><field name="function"/><span style="margin-right: 4px;"></span>
             </xpath>
+
             <xpath expr="//kanban/templates/t/main/field[@name='email']" position="after">
                 <field name="phone"/>
             </xpath>

@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
         <!-- Payment mode -->
+    <data>
+        <record id="account_payment_mode00" model="account.payment.method">
+            <field name="name">Virement bancaire</field>
+            <field name="code">vbk</field>
+            <field name="payment_type">inbound</field>
+        </record>
         <record id="account_payment_mode01" model="account.payment.method">
             <field name="name">Orange Money</field>
             <field name="code">om</field>

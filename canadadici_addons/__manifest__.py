@@ -35,6 +35,7 @@
         'data/payment_mode.xml',
         'views/contacts.xml',
         'views/devis.xml',
+        'views/invoices.xml',
         'views/reports.xml',
         'views/invoice_report.xml',
         'views/product_template_view.xml',

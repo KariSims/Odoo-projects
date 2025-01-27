@@ -186,6 +186,7 @@
                                 domain="[('sale_ok', '=', True), ('is_delivery_service', '=', False)]"
                                 widget="sol_product_many2one"
                                 placeholder="Type to find a product..."/>
+                            <field name="product_image" widget="image" options="{&quot;size&quot;: [60, 60]}"/>
                             <field name="product_template_attribute_value_ids" column_invisible="1" />
                             <field name="product_custom_attribute_value_ids" column_invisible="1" >
                                 <list>

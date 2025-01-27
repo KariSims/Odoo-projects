@@ -7,6 +7,13 @@ class SaleOrderLine(models.Model):
     
     is_delivery_line = fields.Boolean("Est une ligne de livraison", compute="_compute_is_delivery", store=True)
 
+    product_image = fields.Binary(
+        string='Image',
+        related='product_id.image_1920',
+        store=False,
+        readonly=True
+    )
+
     @api.depends('product_template_id')
     def _compute_is_delivery(self):
         for record in self:
