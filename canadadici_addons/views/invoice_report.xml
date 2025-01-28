@@ -5,13 +5,13 @@
         <xpath expr="//div[@id='total']/div/table/t" position="replace">
 
             <tr class="o_subtotal">
-                <td><strong>Commande :</strong></td>
+                <td>Commande :</td>
 
                 <td class="text-end">
                     <strong t-out="o.amount_total - o.delivery_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id, "digits": [12, 0]}'>31.05</strong>
                 </td>
             </tr>
-            <t t-if="o.delivery_amount">
+            <t t-if="o.delivery_amount > -1">
                 <tr class="o_subtotal">
                     <td>Livraison   :</td>
 
@@ -27,8 +27,6 @@
 
                 <td class="text-end">
                     <strong t-out="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id, "digits": [12, 0]}'>31.05</strong>
-                        <!-- <span> </span><span t-out="o.currency_id.symbol" /> -->
-                        <!-- t-options='{"widget": "monetary", "display_currency": currency}' -->
                 </td>
             </tr>
             <tr class="o_total">

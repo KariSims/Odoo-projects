@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    
-    <template id="invoice_total_view_inherit02" inherit_id="account.document_tax_totals_company_currency_template">
-        <xpath expr='//tr[@class="o_subtotal"]' position="replace">
-            <tr class="o_subtotal">
-                <td>
-                    <span></span>
-                </td>
-            </tr>
-        </xpath>
-    </template>
-
     <template id="sale_invoice_inherit" inherit_id="account.report_invoice_document">
         <xpath expr="//div" position="attributes">
             <attribute name="lang">fr_FR</attribute>
@@ -29,10 +18,10 @@
         <xpath expr='//div[@class="clearfix invoice_main"]/div/t[1]' position="replace">
             <t t-set="layout_document_title">
                 <div class="row">
-                    <div class="col-7">
-                        <span>Membre </span>
+                    <div class="col-8">
+                        <span>N°  Membre</span>
                     </div>
-                    <div class="col-6">
+                    <div class="col-4 text-end">
                         <span t-field="o.partner_id.id"/><br/>
                     </div>
                 </div>
@@ -41,18 +30,15 @@
 
         <xpath expr='//t[@t-set="layout_document_title"]' position="after">
             <div class="row">
-                <div class="col-7">
-                    <span t-field="o.partner_id.name" />
+                <div class="col-8">
+                    <span t-field="o.title_shortcut" /><span>  </span><span t-field="o.partner_id.name" />
                 </div>
-                <div class="col-6">
+                <div class="col-4 text-end">
                     <span t-field="o.partner_id.phone"/><br/>
                 </div>
             </div>
         </xpath>
         <xpath expr='//div[@name="invoice_date"]' position="replace">
-            <!-- <div class="col" t-if="o.invoice_date" name="invoice_date">
-                <div t-field="o.invoice_date">2023-09-12</div>
-            </div> -->
         </xpath>
         <xpath expr='//div[@name="due_date"]' position="replace">
         </xpath>
@@ -78,12 +64,12 @@
         </xpath>
         <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_subtotal"]' position="replace">
             <th name="th_subtotal" class="text-end">
-                <span>Montant</span>
+                <strong><span>Montant</span></strong>
             </th>
         </xpath>
 
         <xpath expr='//div[@id="right-elements"]' position="replace">
-            <div id="right-elements" t-attf-class="#{'col-12' if report_type != 'html' else 'col-12 col-md-5'} ms-5 d-inline-block float-end">
+            <div id="right-elements" style="font-size: 10px !important;" t-attf-class="#{'col-12' if report_type != 'html' else 'col-12 col-md-5'} ms-5 d-inline-block float-end">
                 <div id="total" class="clearfix row mt-n3">
                     <div class="ms-auto">
                         <table class="o_total_table table table-borderless avoid-page-break-inside">
@@ -96,12 +82,12 @@
 
                             <!--Payments-->
                             <t t-if="print_with_payments">
-                                <t t-if="o.payment_state != 'invoicing_legacy'">
+                                <t style="font-size: 10px !important; margin-top: -1cm !important;" t-if="o.payment_state != 'invoicing_legacy'">
                                     <t t-set="payments_vals" t-value="o.sudo().invoice_payments_widget and o.sudo().invoice_payments_widget['content'] or []"/>
                                     <t t-foreach="payments_vals" t-as="payment_vals">
                                         <tr t-if="payment_vals['is_exchange'] == 0">
                                             <td>
-                                                <i class="oe_form_field text-end oe_payment_label">Paid on <t t-out="payment_vals['date']" t-options='{"widget": "date"}'>2021-09-19</t></i>
+                                                <i class="oe_form_field text-end oe_payment_label">Payé le <t t-out="payment_vals['date']" t-options='{"widget": "date"}'>2021-09-19</t></i>
                                             </td>
                                             <td class="text-end">
                                                 <span t-out="payment_vals['amount']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'>20.00</span>
@@ -110,7 +96,7 @@
                                     </t>
                                     <t t-if="len(payments_vals) > 0">
                                         <tr class="fw-bold">
-                                            <td>Amount Due</td>
+                                            <td>Montant Dû</td>
                                             <td class="text-end">
                                                 <span t-field="o.amount_residual">11.05</span>
                                             </td>
@@ -157,7 +143,7 @@
                     <br/>
                 <span>Merci, à bientôt</span>
             </div>
-            <div class="text-center" t-if="o.invoice_date" name="invoice_date" style="font-size: 13px !important; margin-top: 0.5cm !important;">
+            <div class="text-center" t-if="o.invoice_date" name="invoice_date" style="font-size: 12px !important; margin-top: 0.3cm !important;">
                 <div t-field="o.invoice_date">2023-09-12</div>
             </div>
         </xpath>

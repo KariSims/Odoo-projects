@@ -21,6 +21,12 @@ class AccountMove(models.Model):
         readonly=True,
         # help='Custom address field from the partner'
     )
+    title_shortcut = fields.Char(
+        related='partner_id.title.shortcut',
+        string='Title Shortcut',
+        readonly=True,  # Le champ est en lecture seule car c'est un champ "related"
+        help="Shortcut of the partner's title"
+    )
     
     invoice_time = fields.Char(string="Heure de livraison", size=6, index=True, required=True, help="Saisir l'heure et les minutes au format HH:MM")
 
