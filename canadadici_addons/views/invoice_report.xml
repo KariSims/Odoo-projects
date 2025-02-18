@@ -4,6 +4,7 @@
     <template id="report_invoice_with_delivery" inherit_id="account.report_invoice_document">
         <xpath expr="//div[@id='total']/div/table/t" position="replace">
 
+            <!-- <div style="margin-top: 1cm !important;"> -->
             <tr class="o_subtotal">
                 <td>Commande :</td>
 
@@ -33,6 +34,7 @@
                 <td></td>
                 <td class="text-end"></td>
             </tr>
+            <!-- </div> -->
         </xpath>
         <xpath expr="//tbody[@class='invoice_tbody']" position="replace">
 

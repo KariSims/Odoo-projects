@@ -22,5 +22,26 @@
             <field name="code">liv</field>
             <field name="payment_type">inbound</field>
         </record>
+        <!-- Outbound -->
+        <record id="account_payment_mode10" model="account.payment.method">
+            <field name="name">Virement bancaire</field>
+            <field name="code">vbk</field>
+            <field name="payment_type">outbound</field>
+        </record>
+        <record id="account_payment_mode11" model="account.payment.method">
+            <field name="name">Orange Money</field>
+            <field name="code">om</field>
+            <field name="payment_type">outbound</field>
+        </record>
+        <record id="account_payment_mode12" model="account.payment.method">
+            <field name="name">Wave</field>
+            <field name="code">wave</field>
+            <field name="payment_type">outbound</field>
+        </record>
+        <record id="account_payment_mode13" model="account.payment.method">
+            <field name="name">Livreur</field>
+            <field name="code">liv</field>
+            <field name="payment_type">outbound</field>
+        </record>
     </data>
 </odoo>
