@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="address_inherited" inherit_id="website_sale.address">
+        <xpath expr="//t[2]/div[1]/div/div/div/div/form/div/div[10]" position="after">
+            <div t-attf-class="col-lg-3 mb-2" t-att-style="(not country or country.state_ids or not country.city_ids) and 'display: none'">
+                <label class="col-form-label" for="city_id">Ville</label>
+                <select id="city_id" name="city_id" class="form-select">
+                    <option value="">Ville....</option>
+                    <t t-foreach="cities" t-as="ci">
+                        <option t-att-value="ci.id" t-att-selected="ci.id == city_id">
+                            <t t-esc="ci.name" />
+                        </option> 
+                    </t>
+                </select>
+            </div>
+            <div t-attf-class="col-lg-3 mb-2" t-att-style="(not country or country.state_ids or not country.city_ids or not country.municipality_ids) and 'display: none'">
+                <label class="col-form-label" for="municipality_id">Commune</label>
+                <select id="municipality_id" name="municipality_id" class="form-select">
+                    <option value="">Commune....</option>
+                    <t t-foreach="municipalities" t-as="mu">
+                        <option t-att-value="mu.id" t-att-selected="mu.id == municipality_id">
+                            <t t-esc="mu.name" />
+                        </option> 
+                    </t>
+                </select>
+            </div>
+        </xpath>
+        <xpath expr="//t[2]/div[1]/div/div/div/div/form/div/div[8]" position="replace"></xpath>
+    </template>
+</odoo>

@@ -41,8 +41,15 @@
         'views/account_move_view.xml',
         'views/products.xml',
         'views/sale_order_view.xml',
+        'views/res_partner_view.xml',
+        'views/city_and_municipality_views.xml',
+        'views/delivery_carrier_views.xml',
+        'views/templates.xml',
     ],
     'assets': {
+        'web.assets_frontend': [
+            'canadadici_addons/static/src/js/address.js',
+        ],
         'web.assets_backend': [
             'canadadici_addons/static/src/components/**/*',
         ]
