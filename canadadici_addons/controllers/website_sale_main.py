@@ -163,7 +163,7 @@ class WebsiteSaleInherited(WebsiteSale):
         :return: The set of common mandatory address field names.
         :rtype: set
         """
-        field_names = {'name', 'street', 'city_id', 'country_id', 'phone'}
+        field_names = {'name', 'street', 'country_id', 'phone'}
         if country_sudo.state_required and not country_sudo.city_required:
             field_names.add('state_id')
         if country_sudo.zip_required:
