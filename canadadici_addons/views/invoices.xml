@@ -8,9 +8,6 @@
             <xpath expr="//form/sheet/group/group/div/field[@name='partner_id']" position="after">
                 <field name="phone_sale"></field>
             </xpath>
-            <field name="invoice_date" position="attributes">
-                <attribute name="required">1</attribute>
-            </field>
             <xpath expr="//form/sheet/group/group[2]/field[@name='delivery_date']" position="after">
                 <field name="invoice_time"></field>
             </xpath>

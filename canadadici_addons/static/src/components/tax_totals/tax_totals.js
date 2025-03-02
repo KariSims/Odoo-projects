@@ -87,15 +87,19 @@ class TaxGroupComponent extends Component {
      */
     _onChangeTaxValue() {
         this.setState("disable"); // Disable the input
-        const oldValue = this.props.taxGroup.tax_amount_currency;
+        const oldValue = this.props.taxGroup.tax_amount_currency || 0;
         let newValue;
         try {
             newValue = parseFloat(this.inputTax.el.value); // Get the new value
+            if (isNaN(newValue)) {
+                throw new Error('Invalid number');
+            }
         } catch {
             this.inputTax.el.value = oldValue;
             this.setState("edit");
             return;
         }
+        
         // The newValue can"t be equals to 0
         if (newValue === oldValue || newValue === 0) {
             this.setState("readonly");

@@ -15,7 +15,7 @@
                         
                         <span t-att-name="delivery_amount"
                                 style="white-space: nowrap; font-weight: bold;"
-                                t-out="formatMonetary(totals.delivery_amount)"/> 
+                                t-out="formatMonetary(totals.delivery_amount || 0)"/> 
                     </td>
                 </tr>
                 
@@ -28,7 +28,7 @@
                         <td class="o_list_monetary">
                             <span t-att-name="subtotal.name"
                                     style="white-space: nowrap; font-weight: bold;"
-                                    t-out="formatMonetary(subtotal.base_amount_currency)"/>
+                                    t-out="formatMonetary(subtotal.base_amount_currency || 0)"/>
                         </td>
                     </tr>
 
