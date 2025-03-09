@@ -48,6 +48,9 @@ class TaxGroupComponent extends Component {
     }
 
     formatMonetary(value) {
+        if (value === undefined || value === null) {
+            return ''; //SP
+        }
         return formatMonetary(value, {currencyId: this.props.totals.currency_id});
     }
 
@@ -148,6 +151,9 @@ export class TaxTotalsComponent extends Component {
     }
 
     formatMonetary(value) {
+        if (value === undefined || value === null) {
+            return ''; //SP
+        }
         return formatMonetary(value, {currencyId: this.totals.currency_id});
     }
 
@@ -165,7 +171,7 @@ export class TaxTotalsComponent extends Component {
 
     formatData(props) {
         let totals = JSON.parse(JSON.stringify(toRaw(props.record.data[this.props.name])));
-        if (!totals) {
+        if (!totals || typeof totals !== 'object') {
             return;
         }
         this.totals = totals;
