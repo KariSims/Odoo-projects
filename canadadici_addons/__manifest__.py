@@ -23,14 +23,16 @@
     'depends': [
         'account',
         'base',
-        'delivery',
+        #'delivery',
         'product',
-        'sale'
+        #'sale',
+        'website_sale',
+        #'website'
         ],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         # 'data/delivery_mode.xml',
         'data/payment_mode.xml',
         'views/contacts.xml',
