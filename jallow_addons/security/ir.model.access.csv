@@ -1,4 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_saler_base_user,res.commercial.base_user,model_jallow_commercial,base.group_user,1,1,1,0
-access_soldier_base_user,res.soldier.base_user,model_jallow_soldier,base.group_user,1,1,1,0
-access_ese_base_user,res.society.base_user,model_jallow_society,base.group_user,1,1,1,0
