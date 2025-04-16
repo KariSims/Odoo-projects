@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_invoice_with_delivery" inherit_id="account.report_invoice_document">
+        
+
+        <!-- Supp infos on custom after total -->
+        <xpath expr='//div[@id="right-elements"]' position="after">
+            <div class="text-center" style="font-size: 9px !important;">
+                <div>
+                    <span>Adresse : </span>
+                    <span t-field="o.partner_id.street"/>
+                    <span> </span><span t-field="o.partner_id.city"/>
+                </div>
+                <div>
+                    <span>Heure de livraison : </span><span t-out="o.invoice_time"/>
+                </div>
+                <div>
+                    <span>NB. Conserver cette copie pour votre dossier</span>
+                        <br/>
+                    <span>Merci, à bientôt</span>
+                </div>
+                <div t-if="o.invoice_date" name="invoice_date" style="font-size: 9px !important; margin-top: 0.3cm !important;">
+                    <div t-field="o.invoice_date">2023-09-12</div>
+                </div>
+            </div>
+        </xpath>
+        
+        <!-- <xpath expr='//div[@id="payment_term"]' position="replace">
+        </xpath> -->
+        <!-- <xpath expr='//p[@name="payment_communication"]' position="replace">
+        </xpath> -->
+        <!-- <xpath expr='//div[@name="origin"]' position="replace">
+        </xpath> -->
+
+    </template>
+
+    <template id="extern_invoice_inherit" inherit_id="web.external_layout_standard">
+        <!-- Logo and Header -->
+        <xpath expr='//div[1]' position="replace">
+            <div t-attf-class="header o_company_#{company.id}_layout" t-attf-style="report_header_style">
+                <div class="col" style="font-family: 'Trebuchet MS', sans-serif;">
+                    <div class="row-1 text-center" style="margin-bottom:0px !important;">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height:50px;" alt="logo"/>
+                    </div>
+                    <div class="row-1 text-center" style="margin-bottom: 0px !important;">
+                        <hr style="border-top: 1px solid black; width: 80%; margin: 10px auto;" />
+                    </div>
+                    <div class="row-1 text-center" style="margin-top: -0.5px !important;">
+                        <div t-field="company.partner_id"
+                            t-options='{"widget":"contact", "fields":["address","name"], "no_marker":true}'
+                        />
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        
+        <!-- <xpath expr='//div[1]/div[3]' position="attributes"> 
+            <attribute name="style">font-size:9px;</attribute>
+        </xpath>
+        <xpath expr='//t/div/t[@t-call="web.address_layout"]' position="attributes">
+            <attribute name="style">font-size:9px;</attribute>
+        </xpath>
+        <xpath expr='//div/h2' position="attributes">
+            <attribute name="style">font-size: 16px;</attribute>
+            <attribute name="class">text-epsilon</attribute>
+        </xpath>
+        <xpath expr='//div/h2' position="before">
+            <div style="height: 100px;"></div>
+        </xpath> -->
+        
+        <xpath expr='//div/div[@class="o_footer_content d-flex border-top pt-2"]' position="replace">
+            
+        </xpath>
+    </template>
+</odoo>
