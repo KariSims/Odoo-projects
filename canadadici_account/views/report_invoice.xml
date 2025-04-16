@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_invoice_with_delivery" inherit_id="account.report_invoice_document">
+        <xpath expr="//div" position="attributes">
+            <attribute name="lang">fr_FR</attribute>
+        </xpath>
+        <xpath expr='//div[@class="row mb-4"]' position="attributes">
+            <attribute name="style">font-size: 10px;</attribute>
+        </xpath>
+        <xpath expr='//table[@name="invoice_line_table"]' position="attributes">
+            <attribute name="style">font-size: 9px;</attribute>
+        </xpath>
+        <xpath expr='//div[1]' position="replace">
+        </xpath>
+
+        <!-- Change title Invoice -->
+        <xpath expr='//div[@class="clearfix invoice_main"]/div/t[1]' position="replace">
+            <t t-set="layout_document_title">
+                <div class="row">
+                    <div class="col-8">
+                        <span>N°  Membre</span>
+                    </div>
+                    <div class="col-4 text-end">
+                        <span t-field="o.partner_id.id"/><br/>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+
+        <xpath expr='//t[@t-set="layout_document_title"]' position="after">
+            <div class="row" style="font-size: 13px !important;">
+                <div class="col-7">
+                    <span t-field="o.title_shortcut" /><span>  </span><span t-field="o.partner_id.name" />
+                </div>
+                <div class="col-5 text-end">
+                    <span t-field="o.partner_id.phone"/><br/>
+                </div>
+            </div>
+        </xpath>
+        <xpath expr='//div[@name="invoice_date"]' position="replace">
+        </xpath>
+        <xpath expr='//div[@name="due_date"]' position="replace">
+        </xpath>
+        <xpath expr="//tbody" position="before">
+            <div style="margin-top: -0.5cm !important;"></div>
+        </xpath>
+        <!-- Renommage des colonnes -->
+        <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_description"]' position="replace">
+            <th name="th_description" class="text-start"><strong><span>Produit</span></strong></th>
+        </xpath>
+        <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_quantity"]' position="replace">
+            <th name="th_quantity" class="text-center"><strong><span>Qte</span></strong></th>
+        </xpath>
+        <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_priceunit"]' position="replace">
+            <th name="th_priceunit" t-attf-class="text-center text-nowrap {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                <strong><span>P.U</span></strong>
+            </th>
+        </xpath>
+        <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_taxes"]' position="replace">
+            <th name="th_taxes" class="text-end">
+                <span></span>
+            </th>
+        </xpath>
+        <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_subtotal"]' position="replace">
+            <th name="th_subtotal" class="text-end">
+                <strong><span>Montant</span></strong>
+            </th>
+        </xpath>
+
+
+
+        <xpath expr="//div[@id='total']/div/table/t" position="replace">
+
+            <!-- <div style="margin-top: 1cm !important;"> -->
+            <tr class="o_subtotal">
+                <td>Commande :</td>
+
+                <td class="text-end">
+                    <strong t-out="o.amount_total - o.delivery_amount" t-options='{"widget": "monetary", "display_currency": o.currency_id, "digits": [12, 0]}'>31.05</strong>
+                </td>
+            </tr>
+            <t t-if="o.delivery_amount > -1">
+                <tr class="o_subtotal">
+                    <td>Livraison   :</td>
+
+                    <td class="text-end">
+                        <span t-att-class="oe_subtotal_footer_separator">
+                            <t t-out="o.delivery_amount_to_print"/>
+                        </span>
+                    </td>
+                </tr>
+            </t>
+            <tr class="o_subtotal">
+                <td><strong>Total Facture :</strong></td>
+
+                <td class="text-end">
+                    <strong t-out="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id, "digits": [12, 0]}'>31.05</strong>
+                </td>
+            </tr>
+            <tr class="o_total">
+                <td></td>
+                <td class="text-end"></td>
+            </tr>
+            <!-- </div> -->
+        </xpath>
+        <xpath expr="//tbody[@class='invoice_tbody']" position="replace">
+
+            <tbody class="invoice_tbody">
+                <t t-set="current_subtotal" t-value="0"/>
+                <t t-set="current_total" t-value="0"/>
+                <t t-set="lines" t-value="o.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
+
+                <t t-foreach="lines" t-as="line">
+                    <t t-if="not line.is_delivery_line">
+                        <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"/>
+                        <t t-set="current_total" t-value="current_total + line.price_total"/>
+
+                        <tr t-att-class="'fw-bold o_line_section' if line.display_type == 'line_section' else 'fst-italic o_line_note' if line.display_type == 'line_note' else ''">
+                            <t t-if="line.display_type == 'product'" name="account_invoice_line_accountable">
+                                <td name="account_invoice_line_name">
+                                    <span t-if="line.name" t-field="line.name" t-options="{'widget': 'text'}">Bacon Burger</span>
+                                </td>
+                                <td name="td_quantity" class="text-end text-nowrap">
+                                    <span t-field="line.quantity">3.00</span>
+                                    <span t-field="line.product_uom_id"  groups="uom.group_uom">units</span>
+                                </td>
+                                <td name="td_price_unit" t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                    <span class="text-nowrap" t-field="line.price_unit">9.00</span>
+                                </td>
+                                <td name="td_discount" t-if="display_discount" t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }}">
+                                    <span class="text-nowrap" t-field="line.discount">0</span>
+                                </td>
+                                <t t-set="taxes" t-value="', '.join([(tax.invoice_label or tax.name) for tax in line.tax_ids])"/>
+                                <td name="td_taxes" t-attf-class="text-end {{ 'd-none d-md-table-cell' if report_type == 'html' else '' }} {{ 'text-nowrap' if len(taxes) &lt; 10 else '' }}">
+                                    <span t-out="taxes" id="line_tax_ids">Tax 15%</span>
+                                </td>
+                                <td name="td_subtotal" class="text-end o_price_total">
+                                    <span class="text-nowrap" t-field="line.price_subtotal">27.00</span>
+                                </td>
+                            </t>
+                            <t t-elif="line.display_type == 'line_section'">
+                                <td colspan="99">
+                                    <span t-field="line.name" t-options="{'widget': 'text'}">A section title</span>
+                                </td>
+                                <t t-set="current_section" t-value="line"/>
+                                <t t-set="current_subtotal" t-value="0"/>
+                            </t>
+                            <t t-elif="line.display_type == 'line_note'">
+                                <td colspan="99">
+                                    <span t-field="line.name" t-options="{'widget': 'text'}">A note, whose content usually applies to the section or product above.</span>
+                                </td>
+                            </t>
+                        </tr>
+
+                        <t t-if="current_section and (line_last or lines[line_index+1].display_type == 'line_section')">
+                            <tr class="is-subtotal text-end">
+                                <td colspan="99">
+                                    <strong class="mr16">Subtotal</strong>
+                                    <span
+                                        t-out="current_subtotal"
+                                        t-options='{"widget": "monetary", "display_currency": o.currency_id}'
+                                    >31.05</span>
+                                </td>
+                            </tr>
+                        </t>
+                    </t>
+                </t>
+            </tbody>
+
+        </xpath>
+
+    <!-- right-element in bottom-->
+        <xpath expr='//div[@id="right-elements"]' position="replace">
+            <div id="right-elements" style="font-size: 10px !important;" t-attf-class="#{'col-12' if report_type != 'html' else 'col-12 col-md-5'} ms-5 d-inline-block float-end">
+                <div id="total" class="clearfix row mt-n3">
+                    <div class="ms-auto">
+                        <table class="o_total_table table table-borderless avoid-page-break-inside">
+
+                            <!-- Tax totals summary (invoice currency) -->
+                            <t t-if="o.tax_totals" t-call="account.document_tax_totals">
+                                <t t-set="tax_totals" t-value="o.tax_totals"/>
+                                <t t-set="currency" t-value="o.currency_id"/>
+                            </t>
+
+                            <!--Payments-->
+                            <t t-if="print_with_payments">
+                                <t style="font-size: 10px !important; margin-top: -1cm !important;" t-if="o.payment_state != 'invoicing_legacy'">
+                                    <t t-set="payments_vals" t-value="o.sudo().invoice_payments_widget and o.sudo().invoice_payments_widget['content'] or []"/>
+                                    <t t-foreach="payments_vals" t-as="payment_vals">
+                                        <tr t-if="payment_vals['is_exchange'] == 0">
+                                            <td>
+                                                <i class="oe_form_field text-end oe_payment_label">Payé le <t t-out="payment_vals['date']" t-options='{"widget": "date"}'>2021-09-19</t></i>
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-out="payment_vals['amount']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'>20.00</span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="len(payments_vals) > 0">
+                                        <tr class="fw-bold">
+                                            <td>Montant Dû</td>
+                                            <td class="text-end">
+                                                <span t-field="o.amount_residual">11.05</span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </t>
+                        </table>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <p class="text-end lh-sm" t-if="o.company_id.display_invoice_amount_total_words">
+                        Montant en lettre : <br/>
+                        <small class="text-muted lh-sm"><span t-field="o.amount_total_words">Thirty one dollar and Five cents</span></small>
+                    </p>
+                </div>
+
+                <!-- Tax totals summary (company currency) -->
+                <t t-if="o.tax_totals.get('display_in_company_currency')">
+                    <t t-set="tax_totals" t-value="o.tax_totals"/>
+                    <t t-call="account.document_tax_totals_company_currency_template"/>
+                </t>
+                <t t-else="">
+                    <div class="oe_structure"/>
+                </t>
+            </div>
+        </xpath>
+        <xpath expr='//div[@id="right-elements"]' position="attributes">
+            <attribute name="style">font-size: 10px;</attribute>
+        </xpath>
+
+        <!-- Supp infos on custom after total -->
+        <xpath expr='//div[@id="right-elements"]' position="after">
+            <div class="text-center" style="font-size: 9px !important;">
+                <div>
+                    <span>Adresse : </span>
+                    <span t-field="o.partner_id.street"/>
+                    <span> </span><span t-field="o.partner_id.city"/>
+                </div>
+                <div>
+                    <span>Heure de livraison : </span><span t-out="o.invoice_time"/>
+                </div>
+                <div>
+                    <span>NB. Conserver cette copie pour votre dossier</span>
+                        <br/>
+                    <span>Merci, à bientôt</span>
+                </div>
+                <div t-if="o.invoice_date" name="invoice_date" style="font-size: 9px !important; margin-top: 0.3cm !important;">
+                    <div t-field="o.invoice_date">2023-09-12</div>
+                </div>
+            </div>
+        </xpath>
+        
+        <xpath expr='//div[@id="payment_term"]' position="replace">
+        </xpath>
+        <!-- <xpath expr='//p[@name="payment_communication"]' position="replace">
+        </xpath> -->
+        <xpath expr='//div[@name="origin"]' position="replace">
+        </xpath>
+
+    </template>
+
+    <template id="extern_invoice_inherit" inherit_id="web.external_layout_standard">
+        <!-- Logo and Header -->
+        <xpath expr='//div[1]' position="replace">
+            <div t-attf-class="header o_company_#{company.id}_layout" t-attf-style="report_header_style">
+                <div class="col" style="font-family: 'Trebuchet MS', sans-serif;">
+                    <div class="row-1 text-center" style="margin-bottom:0px !important;">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height:50px;" alt="logo"/>
+                    </div>
+                    <div class="row-1 text-center" style="margin-bottom: 0px !important;">
+                        <hr style="border-top: 1px solid black; width: 80%; margin: 10px auto;" />
+                    </div>
+                    <div class="row-1 text-center" style="margin-top: -0.5px !important;">
+                        <div t-field="company.partner_id"
+                            t-options='{"widget":"contact", "fields":["address","name"], "no_marker":true}'
+                        />
+                    </div>
+                </div>
+            </div>
+        </xpath>
+        
+        <xpath expr='//div[1]/div[3]' position="attributes"> 
+            <attribute name="style">font-size:9px;</attribute>
+        </xpath>
+        <xpath expr='//t/div/t[@t-call="web.address_layout"]' position="attributes">
+            <attribute name="style">font-size:9px;</attribute>
+        </xpath>
+        <xpath expr='//div/h2' position="attributes">
+            <attribute name="style">font-size: 16px;</attribute>
+            <!-- <attribute name="style">font-size: 16px; color:rgba(133, 3, 166, 0.79);</attribute> -->
+            <attribute name="class">text-epsilon</attribute>
+        </xpath>
+        <xpath expr='//div/h2' position="before">
+            <div style="height: 100px;"></div>
+        </xpath>
+        
+        <xpath expr='//div/div[@class="o_footer_content d-flex border-top pt-2"]' position="replace">
+            
+        </xpath>
+    </template>
+</odoo>

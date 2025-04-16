@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_product_template_form_inherit" model="ir.ui.view">
+        <field name="name">product.template.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page[@name='general_information']/group[1]/group[1]/field[@name='type']" position="after">
+                <field name="is_delivery_service"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="list_product_with_img" model="ir.ui.view">
+        <field name="name">product.list.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='name']" position="after">
+                <field name="image_1920" widget="image" options="{&quot;size&quot;: [50, 50]}"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="list_prod_stock_with_img" model="ir.ui.view">
+        <field name="name">product.stock.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list/field[@name='name']" position="after">
+                <field name="image_1920" widget="image" options="{&quot;size&quot;: [40, 40]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

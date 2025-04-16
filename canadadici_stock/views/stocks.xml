@@ -1,0 +1,20 @@
+<odoo>
+    <record id="view_stock_user_id" model="ir.ui.view">
+        <field name="name">stock.quant.list.view</field>
+        <field name="model">stock.quant</field>
+        <field name="arch" type="xml">
+            <form>
+                <tree editable="bottom">
+                    <!-- Autres colonnes que tu veux afficher -->
+                    <field name="user_id" string="User" default="user_id" readonly="1" required="1"/>
+                    <field name="product_id"/>
+                    <field name="location_id"/>
+                    <field name="in_date"/>
+                        
+                    <!-- Affichage du champ create_uid -->
+                    <field name="create_uid" string="Créé par"/>
+                </tree>
+            </form>
+        </field>
+    </record>
+</odoo>
