@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='city']" position="replace">
+                <field name="city_id" placeholder="Ville" class="o_address_city" readonly="type == 'contact' and parent_id"/>
+                <field name="municipality_id" placeholder="Commune" class="o_address_city" readonly="type == 'contact' and parent_id"/>
+            </xpath> 
+        </field>
+    </record>
+</odoo>
