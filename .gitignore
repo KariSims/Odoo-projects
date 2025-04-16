@@ -3,6 +3,11 @@
 /odoo_install.sh
 /odoo_v18.code-workspace
 /canadadici_addons/__pycache__
+/base_account_budget
+/base_accounting_kit
+/bi_pos_restrict_zero_qty
+/sale_stock_restrict
+
 
 # odoo files
 /README_Odoo.md
