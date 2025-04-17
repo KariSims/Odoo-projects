@@ -399,6 +399,36 @@
                     </group>
                 </page>
             </xpath>
+            <xpath expr="//form/header/t[1]/button[@name='action_lock']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+            <xpath expr="//form/header/button[@name='action_unlock']" position="attributes">
+                <attribute name="groups">sales_team.group_sale_manager</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="unlock_sale_order_action_server" model="ir.actions.server">
+        <field name="name">Déverouiller</field>
+        <field name="model_id" ref="model_sale_order"/>
+        <field name="groups_id" eval="[(4,ref('sales_team.group_sale_manager'))]"/>
+        <field name="binding_model_id" ref="model_sale_order"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                records.action_unlock()
+        </field>
+    </record>
+    <record id="lock_sale_order_action_server" model="ir.actions.server">
+        <field name="name">Verouiller</field>
+        <field name="model_id" ref="model_sale_order"/>
+        <field name="groups_id" eval="[(4,ref('sales_team.group_sale_manager'))]"/>
+        <field name="binding_model_id" ref="model_sale_order"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                records.action_lock()
         </field>
     </record>
 </odoo>
