@@ -13,3 +13,4 @@ from . import res_city
 from . import res_municipality
 from . import delivery_carrier
 from . import website_form_model
+from . import product_template
