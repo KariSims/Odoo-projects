@@ -50,7 +50,7 @@
         'views/city_and_municipality_views.xml',
         'views/delivery_carrier_views.xml',
         'views/templates.xml',
-        'views.product_template_view.xml',
+        'views/product_template_view.xml',
     ],
     'assets': {
         'web.assets_frontend': [
