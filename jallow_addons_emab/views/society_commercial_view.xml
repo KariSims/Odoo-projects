@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saler_form" model="ir.ui.view">
+        <field name="name">jallow.commercial.form</field>
+        <field name="model">jallow.commercial</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="tel"/>
+                        </group>
+                        <group>
+                            <field name="sexe"/>
+                            <field name="ese"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_saler_tree" model="ir.ui.view">
+        <field name="name">jallow.commercial.tree</field>
+        <field name="model">jallow.commercial</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="sexe"/>
+                <field name="tel"/>
+                <field name="ese"/>
+            </list>
+        </field>
+    </record>
+    
+    <record id="view_supervisor_form" model="ir.ui.view">
+        <field name="name">jallow.supervisor.form</field>
+        <field name="model">jallow.supervisor</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="tel"/>
+                        </group>
+                        <group>
+                            <field name="sexe"/>
+                            <field name="ese"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="Merchandisers" string="Merchandiser">
+                            <field name="soldier_ids2" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="sexe"/>
+                                    <field name="tel"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_supervisor_tree" model="ir.ui.view">
+        <field name="name">jallow.supervisor.tree</field>
+        <field name="model">jallow.supervisor</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="sexe"/>
+                <field name="tel"/>
+                <field name="ese"/>
+            </list>
+        </field>
+    </record>
+    
+    <record id="view_soldier_form" model="ir.ui.view">
+        <field name="name">jallow.soldier.form</field>
+        <field name="model">jallow.soldier</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="tel"/>
+                            <field name="supervisor"/>
+                        </group>
+                        <group>
+                            <field name="sexe"/>
+                            <field name="ese"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_soldier_tree" model="ir.ui.view">
+        <field name="name">jallow.soldier.tree</field>
+        <field name="model">jallow.soldier</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="sexe"/>
+                <field name="tel"/>
+                <field name="supervisor"/>
+                <field name="ese"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ese_form" model="ir.ui.view">
+        <field name="name">jallow.society.form</field>
+        <field name="model">jallow.society</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="id_ese"/>
+                        <field name="name"/>
+                    </group>
+                    <notebook>
+                        <page name="commerciaux" string="Commercial">
+                            <field name="commercial_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="sexe"/>
+                                    <field name="tel"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="Superviseurs" string="Superviseurs">
+                            <field name="supervisor_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="sexe"/>
+                                    <field name="tel"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="Merchandisers" string="Merchandisers">
+                            <field name="soldier_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="sexe"/>
+                                    <field name="tel"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ese_tree" model="ir.ui.view">
+        <field name="name">jallow.society.tree</field>
+        <field name="model">jallow.society</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="id_ese"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_saler" model="ir.actions.act_window">
+        <field name="name">Commercial</field>
+        <field name="res_model">jallow.commercial</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    
+    <record id="action_supervisor" model="ir.actions.act_window">
+        <field name="name">Superviseur</field>
+        <field name="res_model">jallow.supervisor</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    
+    <record id="action_soldier" model="ir.actions.act_window">
+        <field name="name">Foot Soldier</field>
+        <field name="res_model">jallow.soldier</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_ese" model="ir.actions.act_window">
+        <field name="name">Société</field>
+        <field name="res_model">jallow.society</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="thepartners_config" name="Configuration des Partenaires" sequence="70" parent="sale.menu_sale_config">
+        <menuitem id="ese_in_config"
+            name="Société"
+            action="action_ese"/>
+        <menuitem id="saler_in_config"
+            name="Commercial"
+            action="action_saler"/>
+        <menuitem id="supervisor_in_config"
+            name="Superviseur"
+            action="action_supervisor"/>
+        <menuitem id="soldier_in_config"
+            name="Foot Soldier"
+            action="action_soldier"/>
+    </menuitem>
+</odoo>

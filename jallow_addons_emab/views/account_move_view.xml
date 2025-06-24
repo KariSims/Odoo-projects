@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="invoice_phone_view_form" model="ir.ui.view">
+        <field name="name">invoice.form.phone.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <!--<xpath expr="//form/sheet/group/group/div/field[@name='partner_id']" position="after">
+                <field name="phone_sale"></field>
+            </xpath>-->
+            <xpath expr="//form/sheet/group/group/div/field[@name='partner_id']" position="after">
+                <field name="commercial_id"></field>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/div/field[@name='commercial_id']" position="after">
+                <field name="supervisor_id"></field>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/div/field[@name='supervisor_id']" position="after">
+                <field name="soldier_id"></field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

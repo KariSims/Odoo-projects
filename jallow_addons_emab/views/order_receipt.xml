@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="order_receipt_inherit" inherit_id="point_of_sale.template">
+
+        <xpath expr='//t/div/div[@class="pos-receipt-order-data"]' position="replace">
+        </xpath>
+    </template>
+</odoo>
