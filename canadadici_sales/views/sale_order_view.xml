@@ -405,9 +405,6 @@
             <xpath expr="//form/header/button[@name='action_unlock']" position="attributes">
                 <attribute name="groups">sales_team.group_sale_manager</attribute>
             </xpath>
-            <xpath expr="//form/header/button[@name='action_cancel']" position="attributes">
-                <attribute name="groups">sales_team.group_sale_manager</attribute>
-            </xpath>
         </field>
     </record>
     <record id="unlock_sale_order_action_server" model="ir.actions.server">
