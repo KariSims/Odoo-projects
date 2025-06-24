@@ -5,6 +5,14 @@ logger =  logging.getLogger("__name__")
 
 class SaleOrder(models.Model):
     _inherit = "sale.order"
+
+
+    phone_sale = fields.Char(
+        related='partner_id.phone',
+        string=' ',
+        readonly=True,
+        # help='Custom address field from the partner'
+    )
     
     new_order_line = fields.One2many(
         comodel_name='sale.order.line',

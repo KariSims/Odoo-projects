@@ -5,44 +5,49 @@
             <attribute name="lang">fr_FR</attribute>
         </xpath>
         <xpath expr='//div[@class="row mb-4"]' position="attributes">
-            <attribute name="style">font-size: 12px;</attribute>
+            <attribute name="style">font-size: 10px;</attribute>
         </xpath>
         <xpath expr='//table[@name="invoice_line_table"]' position="attributes">
-            <attribute name="style">font-size: 11px;</attribute>
+            <attribute name="style">font-size: 9px;</attribute>
         </xpath>
 
         <xpath expr='//div[1]' position="replace">
         </xpath>
 
-        <!-- <xpath expr='//div[@id="informations"]' position="before"> -->
-        <xpath expr='//t[@t-set="layout_document_title"]' position="after">
-            <div class="row">
-                <div class="col-6">
-                    <strong>Client :</strong>
-                    <span t-field="o.partner_id.name" />
+        <!-- Change title Invoice -->
+        <xpath expr='//div[@class="clearfix invoice_main"]/div/t[1]' position="replace">
+            <t t-set="layout_document_title">
+                <div class="row">
+                    <div class="col-8">
+                        <span>N°  Membre</span>
+                    </div>
+                    <div class="col-4 text-end">
+                        <span t-field="o.partner_id.id"/><br/>
+                    </div>
                 </div>
-                <div class="col-6">
-                    <strong><span t-field="o.partner_id.phone"/></strong>
+            </t>
+        </xpath>
+
+        <xpath expr='//t[@t-set="layout_document_title"]' position="after">
+            <div class="row" style="font-size: 13px !important;">
+                <div class="col-7">
+                    <span t-field="o.title_shortcut" /><span>  </span><span t-field="o.partner_id.name" />
+                </div>
+                <div class="col-5 text-end">
+                    <span t-field="o.partner_id.phone"/><br/>
                 </div>
             </div>
         </xpath>
-        <xpath expr='//div[@id="informations"]' position="inside">
-            <div id="informations" class="row mb-4">
-                <div class="col" t-if="o.invoice_date" name="invoice_date">
-                    <t t-if="o.move_type == 'out_invoice'">
-                        <strong>Date de facture</strong>
-                    </t>
-                </div>
-            </div>
+        <xpath expr='//div[@name="invoice_date"]' position="replace">
         </xpath>
         <xpath expr='//div[@name="due_date"]' position="replace">
         </xpath>
         <xpath expr="//tbody" position="before">
-            <div style="margin-top: -0.6cm !important;"></div>
+            <div style="margin-top: -0.5cm !important;"></div>
         </xpath>
         <!-- Renommage des colonnes -->
         <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_description"]' position="replace">
-            <th name="th_description" class="text-center"><strong><span>Produit</span></strong></th>
+            <th name="th_description" class="text-start"><strong><span>Produit</span></strong></th>
         </xpath>
         <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_quantity"]' position="replace">
             <th name="th_quantity" class="text-center"><strong><span>Qte</span></strong></th>
@@ -53,19 +58,102 @@
             </th>
         </xpath>
         <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_taxes"]' position="replace">
-            <th name="th_taxes" t-attf-class="text-center {{ 'd-none d-md-table-cell' if report_type == 'pdf' else '' }}">
-                <span>Taxe</span>
+            <th name="th_taxes" class="text-end">
+                <span></span>
             </th>
         </xpath>
-        <xpath expr="//td[@name='td_taxes']" position="replace">
+        <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_subtotal"]' position="replace">
+            <th name="th_subtotal" class="text-end">
+                <strong><span>Montant</span></strong>
+            </th>
         </xpath>
 
+        <xpath expr='//div[@id="right-elements"]' position="replace">
+            <div id="right-elements" style="font-size: 10px !important;" t-attf-class="#{'col-12' if report_type != 'html' else 'col-12 col-md-5'} ms-5 d-inline-block float-end">
+                <div id="total" class="clearfix row mt-n3">
+                    <div class="ms-auto">
+                        <table class="o_total_table table table-borderless avoid-page-break-inside">
+
+                            <!-- Tax totals summary (invoice currency) -->
+                            <t t-if="o.tax_totals" t-call="account.document_tax_totals">
+                                <t t-set="tax_totals" t-value="o.tax_totals"/>
+                                <t t-set="currency" t-value="o.currency_id"/>
+                            </t>
+
+                            <!--Payments-->
+                            <t t-if="print_with_payments">
+                                <t style="font-size: 10px !important; margin-top: -1cm !important;" t-if="o.payment_state != 'invoicing_legacy'">
+                                    <t t-set="payments_vals" t-value="o.sudo().invoice_payments_widget and o.sudo().invoice_payments_widget['content'] or []"/>
+                                    <t t-foreach="payments_vals" t-as="payment_vals">
+                                        <tr t-if="payment_vals['is_exchange'] == 0">
+                                            <td>
+                                                <i class="oe_form_field text-end oe_payment_label">Payé le <t t-out="payment_vals['date']" t-options='{"widget": "date"}'>2021-09-19</t></i>
+                                            </td>
+                                            <td class="text-end">
+                                                <span t-out="payment_vals['amount']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'>20.00</span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="len(payments_vals) > 0">
+                                        <tr class="fw-bold">
+                                            <td>Montant Dû</td>
+                                            <td class="text-end">
+                                                <span t-field="o.amount_residual">11.05</span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </t>
+                        </table>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <p class="text-end lh-sm" t-if="o.company_id.display_invoice_amount_total_words">
+                        Montant en lettre : <br/>
+                        <small class="text-muted lh-sm"><span t-field="o.amount_total_words">Thirty one dollar and Five cents</span></small>
+                    </p>
+                </div>
+
+                <!-- Tax totals summary (company currency) -->
+                <t t-if="o.tax_totals.get('display_in_company_currency')">
+                    <t t-set="tax_totals" t-value="o.tax_totals"/>
+                    <t t-call="account.document_tax_totals_company_currency_template"/>
+                </t>
+                <t t-else="">
+                    <div class="oe_structure"/>
+                </t>
+            </div>
+        </xpath>
         <xpath expr='//div[@id="right-elements"]' position="attributes">
-            <attribute name="style">font-size: 13px;</attribute>
+            <attribute name="style">font-size: 10px;</attribute>
+        </xpath>
+
+        <!-- Supp infos on custom after total -->
+        <xpath expr='//div[@id="right-elements"]' position="after">
+            <div class="text-center" style="font-size: 9px !important;">
+                <div>
+                    <span>Adresse : </span>
+                    <span t-field="o.partner_id.street"/>
+                    <span> </span><span t-field="o.partner_id.city"/>
+                </div>
+                <div>
+                    <span>Heure de livraison : </span><span t-out="o.invoice_time"/>
+                </div>
+                <div>
+                    <span>NB. Conserver cette copie pour votre dossier</span>
+                        <br/>
+                    <span>Merci, à bientôt</span>
+                </div>
+                <div t-if="o.invoice_date" name="invoice_date" style="font-size: 9px !important; margin-top: 0.3cm !important;">
+                    <div t-field="o.invoice_date">2023-09-12</div>
+                </div>
+            </div>
         </xpath>
         
-        <xpath expr='//p[@name="payment_communication"]' position="replace">
+        <xpath expr='//div[@id="payment_term"]' position="replace">
         </xpath>
+        <!-- <xpath expr='//p[@name="payment_communication"]' position="replace">
+        </xpath> -->
         <xpath expr='//div[@name="origin"]' position="replace">
         </xpath>
     </template>
@@ -73,50 +161,48 @@
     <template id="extern_invoice_inherit" inherit_id="web.external_layout_standard">
         <!-- Logo and Header -->
         <xpath expr='//div[1]' position="replace">
-            <div t-attf-class="header o_company_#{company.id}_layout" t-attf-style="report_header_style">
+            <!-- <div t-attf-class="header o_company_#{company.id}_layout" t-attf-style="report_header_style"> -->
+            
+            <div t-attf-class="header o_company_#{company.id}_layout">
                 <div class="col" style="font-family: 'Trebuchet MS', sans-serif;">
-                    <div class="row-1 text-center" style="margin-bottom:0px !important;">
-                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height:70px;" alt="logo"/>
-                    </div>
-                    <div class="row-1 text-center" style="margin-bottom: 0 !important;">
+                    <div class="first-page">
+                        <!-- t-if="page_number == 1" class="first-page-logo" -->
+                        <div class="row-1 text-center" style="margin-bottom:0px !important;">
+                            <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height:50px;" alt="logo"/>
+                        </div>
+                    
+                    
+                    <div class="row-1 text-center" style="margin-bottom: 0px !important;">
                         <hr style="border-top: 1px solid black; width: 80%; margin: 10px auto;" />
                     </div>
-                    <div class="row-1 text-center" style="margin-top: 0 !important;">
+                    
+                    <div class="row-1 text-center" style="margin-top: -0.5px !important;">
                         <div t-field="company.partner_id"
                             t-options='{"widget":"contact", "fields":["address","name"], "no_marker":true}'
                         />
                     </div>
+                    </div>
                 </div>
             </div>
-            <div style="margin-top:3px;"></div>
-        </xpath> 
-        <xpath expr='//div[1]' position="before">
-            <div style="margin-top: -1cm !important;"></div>
-        </xpath>       
+        </xpath>
         
         <xpath expr='//div[1]/div[3]' position="attributes"> 
-            <attribute name="style">font-size:12px;</attribute>
+            <attribute name="style">font-size:9px;</attribute>
         </xpath>
         <xpath expr='//t/div/t[@t-call="web.address_layout"]' position="attributes">
-            <attribute name="style">font-size:10px;</attribute>
+            <attribute name="style">font-size:9px;</attribute>
         </xpath>
         <xpath expr='//div/h2' position="attributes">
-            <attribute name="style">font-size: 20px;</attribute>
+            <attribute name="style">font-size: 16px;</attribute>
             <!-- <attribute name="style">font-size: 16px; color:rgba(133, 3, 166, 0.79);</attribute> -->
             <attribute name="class">text-epsilon</attribute>
         </xpath>
         <xpath expr='//div/h2' position="before">
-            <div style="height: 118px;"></div>
+            <div style="height: 100px;"></div>
         </xpath>
         
         <xpath expr='//div/div[@class="o_footer_content d-flex border-top pt-2"]' position="replace">
-            <div class="text-center" style="font-size: 12px !important;">
-                <!-- <i><span style="font-size:12px;">NB. Veuillez bien conservez cette copie</span></i> -->
-                <i><span>NB. Veuillez bien conserver cette copie</span></i>
-                    <br/>
-                <i><span>Merci, à bientôt</span></i>
-            </div>
-            <div class="text-center"><span style="font-size: 9px !important;" t-field="o.user_id.name"/></div>
+            
         </xpath>
     </template>
 

@@ -45,7 +45,9 @@
         'views/sale_order_view.xml',
         'views/res_partner_view.xml',
         'views/city_and_municipality_views.xml',
-        'views/delivery_carrier_views.xml',
+        'views/invoices.xml',
+	'views/delivery_carrier_views.xml',
+	'views/stocks.xml',
         'views/templates.xml',
     ],
     'assets': {

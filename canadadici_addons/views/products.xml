@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
             <xpath expr="//list/field[@name='name']" position="after">
-                <field name="image_1920" widget="image" options="{&quot;size&quot;: [40, 40]}"/>
+                <field name="image_1920" widget="image" options="{&quot;size&quot;: [50, 50]}"/>
             </xpath>
         </field>
     </record>
@@ -16,7 +16,7 @@
         <field name="inherit_id" ref="account.product_template_view_tree"/>
         <field name="arch" type="xml">
             <xpath expr="//list/field[@name='name']" position="after">
-                <field name="image_1920" widget="image" options="{&quot;size&quot;: [40, 40]}"/>
+                <field name="image_1920" widget="image" options="{&quot;size&quot;: [50, 50]}"/>
             </xpath>
         </field>
     </record>

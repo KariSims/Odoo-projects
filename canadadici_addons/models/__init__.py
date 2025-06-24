@@ -12,4 +12,5 @@ from . import res_country
 from . import res_city
 from . import res_municipality
 from . import delivery_carrier
+from . import stocks
 from . import website_form_model

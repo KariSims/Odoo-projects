@@ -7,6 +7,8 @@ _logger = logging.getLogger(__name__)
 class AccountPartner(models.Model):
     _inherit = "res.partner"
     
+    # city = fields.Char(default='Dakar')
+    # zip = fields.Char(default='Boîte postale 123')
     city_id = fields.Many2one("res.city", string="Ville")
     municipality_id = fields.Many2one("res.municipality", string="Commune")    
 

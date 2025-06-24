@@ -39,8 +39,19 @@
             </div>
         </xpath>
         <xpath expr='//div[@name="invoice_date"]' position="replace">
+            <div class="col" t-if="o.invoice_date" name="invoice_date">
+                <t t-if="o.move_type == 'out_invoice'"><strong>Date de facturation</strong></t>
+                <t t-elif="o.move_type == 'out_refund'"><strong>Credit Note Date</strong></t>
+                <t t-elif="o.move_type == 'out_receipt'"><strong>Receipt Date</strong></t>
+                <t t-else=""><strong>Date</strong></t>
+                <div t-field="o.invoice_date">2023-09-12</div>
+            </div>
         </xpath>
         <xpath expr='//div[@name="due_date"]' position="replace">
+            <div class="col" t-if="o.invoice_date_due and o.move_type == 'out_invoice' and o.state == 'posted'" name="due_date">
+                <strong>Date d'échéance</strong>
+                <div t-field="o.invoice_date_due">2023-10-31</div>
+            </div>
         </xpath>
         <xpath expr="//tbody" position="before">
             <div style="margin-top: -0.5cm !important;"></div>

@@ -5,7 +5,8 @@ class PaymentMethod(models.Model):
 
     def _get_payment_method_information(self):
         return {
-            'om'  : {'mode': 'multi', 'type': ('bank', 'cash')},
-            'wave': {'mode': 'multi', 'type': ('bank', 'cash')},
+            'vbk'  : {'mode': 'multi', 'type': ('bank', 'credit')},
+            'om'  : {'mode': 'multi', 'type': ('bank', 'credit')},
+            'wave': {'mode': 'multi', 'type': ('bank', 'credit')},
             'liv': {'mode': 'multi', 'type': ('cash', 'credit')},
         }
