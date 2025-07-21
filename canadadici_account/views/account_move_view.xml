@@ -21,9 +21,9 @@
                 <field name="invoice_time"/>
             </xpath>
 
-            <xpath expr="//button[@name='action_register_payment' and @id='account_invoice_payment_btn']" position="attributes">
+            <!-- <xpath expr="//button[@name='action_register_payment' and @id='account_invoice_payment_btn']" position="attributes">
                 <attribute name="string">Mode de paiement</attribute>
-            </xpath>
+            </xpath> -->
             <!-- Modification du texte du bouton secondaire "Payer" -->
             <xpath expr="//button[@name='action_register_payment' and @id='account_invoice_payment_secondary_btn']" position="attributes">
                 <attribute name="string">Mode de paiement</attribute>
