@@ -8,9 +8,15 @@
             <xpath expr="//form/sheet/notebook/page[@name='general_information']/group[1]/group[1]/field[@name='type']" position="after">
                 <field name="is_delivery_service"/>
             </xpath>
+            <xpath expr="//form/sheet/notebook/page[@name='general_information']/group[1]/group[1]/field[@name='product_tooltip']" position="after">
+                <field name="optional_product_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                <field name="accessory_product_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                <field name="alternative_product_ids" widget="many2many_tags" options="{'no_create': True}"/>
+            </xpath>
             <!-- <xpath expr="//form/sheet/notebook/page[@name='general_information']/group[1]/group[1]/field[@name='type']" position="before"> -->
             <xpath expr="//field[@name='categ_id']" position="after">
-                <field name="public_categ_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                <!-- <field name="public_categ_ids" widget="many2many_tags" options="{'no_create': True}"/> -->
+                <field name="public_categ_ids" widget="many2many_tags"/>
             </xpath>
             <field name="categ_id" position="attributes">
                 <attribute name="required">1</attribute>
