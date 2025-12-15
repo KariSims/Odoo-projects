@@ -1,0 +1,27 @@
+<odoo>
+  <record id="view_commune_migration_wizard_form" model="ir.ui.view">
+    <field name="name">jallow.commune.migration.wizard.form</field>
+    <field name="model">jallow.commune.migration.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Migration des Communes">
+        <footer>
+          <button name="migrate_communes" type="object" class="btn-primary" string="Migrer les communes"/>
+          <button string="Fermer" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+
+  <record id="action_commune_migration_wizard" model="ir.actions.act_window">
+    <field name="name">Migration des Communes</field>
+    <field name="res_model">jallow.commune.migration.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+  </record>
+
+  <menuitem id="menu_commune_migration_root" name="Outils Techniques" sequence="100" groups="base.group_system"/>
+  <menuitem id="menu_commune_migration_wizard" name="Migrer les Communes"
+            parent="menu_commune_migration_root"
+            action="action_commune_migration_wizard"
+            sequence="10" groups="base.group_system"/>
+</odoo>

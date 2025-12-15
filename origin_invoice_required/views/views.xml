@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="origin_invoice_required.list">
+      <field name="name">origin_invoice_required list</field>
+      <field name="model">origin_invoice_required.origin_invoice_required</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </list>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="origin_invoice_required.action_window">
+      <field name="name">origin_invoice_required window</field>
+      <field name="res_model">origin_invoice_required.origin_invoice_required</field>
+      <field name="view_mode">list,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="origin_invoice_required.action_server">
+      <field name="name">origin_invoice_required server</field>
+      <field name="model_id" ref="model_origin_invoice_required_origin_invoice_required"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "list,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="origin_invoice_required" id="origin_invoice_required.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="origin_invoice_required.menu_1" parent="origin_invoice_required.menu_root"/>
+    <menuitem name="Menu 2" id="origin_invoice_required.menu_2" parent="origin_invoice_required.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="origin_invoice_required.menu_1_list" parent="origin_invoice_required.menu_1"
+              action="origin_invoice_required.action_window"/>
+    <menuitem name="Server to list" id="origin_invoice_required" parent="origin_invoice_required.menu_2"
+              action="origin_invoice_required.action_server"/>
+-->
+  </data>
+</odoo>

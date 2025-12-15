@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="jallow_vars.list">
+      <field name="name">jallow_vars list</field>
+      <field name="model">jallow_vars.jallow_vars</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </list>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="jallow_vars.action_window">
+      <field name="name">jallow_vars window</field>
+      <field name="res_model">jallow_vars.jallow_vars</field>
+      <field name="view_mode">list,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="jallow_vars.action_server">
+      <field name="name">jallow_vars server</field>
+      <field name="model_id" ref="model_jallow_vars_jallow_vars"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "list,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="jallow_vars" id="jallow_vars.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="jallow_vars.menu_1" parent="jallow_vars.menu_root"/>
+    <menuitem name="Menu 2" id="jallow_vars.menu_2" parent="jallow_vars.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="jallow_vars.menu_1_list" parent="jallow_vars.menu_1"
+              action="jallow_vars.action_window"/>
+    <menuitem name="Server to list" id="jallow_vars" parent="jallow_vars.menu_2"
+              action="jallow_vars.action_server"/>
+-->
+  </data>
+</odoo>

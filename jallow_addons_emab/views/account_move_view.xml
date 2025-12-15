@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="invoice_phone_view_form" model="ir.ui.view">
+        <field name="name">invoice.form.phone.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_register_payment' and @id='account_invoice_payment_btn']" position="attributes">
+                <attribute name="groups">account.group_account_manager</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_register_payment' and @id='account_invoice_payment_secondary_btn']" position="attributes">
+                <attribute name="groups">account.group_account_manager</attribute>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/div/field[@name='partner_id']" position="after">
+                <field name="commercial_id"></field>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/div/field[@name='commercial_id']" position="after">
+                <field name="supervisor_id"></field>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/div/field[@name='supervisor_id']" position="after">
+                <field name="soldier_id"></field>
+            </xpath>
+            <xpath expr="//form/sheet/group/group[@id='header_right_group']/div[@name='journal_div']" position="after">
+                <field name="on_enlevement" class="text-danger"/>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- = -->
+    <!-- <record id="view_account_move_tree_no_create" model="ir.ui.view">
+        <field name="name">account.move.tree.no.create</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_tree"/>
+        <field name="arch" type="xml">
+            <tree position="attributes">
+                <attribute name="create">false</attribute>
+            </tree>
+        </field>
+    </record> -->
+    <!-- = -->
+</odoo>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_order_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!--<xpath expr="//form/sheet/group/group/field[@name='partner_id']" position="after">
+                <field name="phone_sale"></field>
+            </xpath>-->
+            <xpath expr="//form/sheet/group/group/field[@name='partner_id']" position="after">
+                <field name="user_id" class="text-danger"></field>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='partner_id']" position="after">
+                <field name="commercial_id"></field>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='commercial_id']" position="after">
+                <field name="supervisor_id"></field>
+            </xpath>
+            <xpath expr="//form/sheet/group/group/field[@name='supervisor_id']" position="after">
+                <field name="soldier_id"></field>
+            </xpath>
+            <field name="commercial_id" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            
+            <xpath expr="//form/sheet/group/group[@name='order_details']/field[@name='payment_term_id']" position="after">
+                <field name="warehouse_id" class="text-danger" widget="many2one_tags" options="{'no_create': True}"></field>
+            </xpath>
+        </field>
+    </record>
+</odoo>

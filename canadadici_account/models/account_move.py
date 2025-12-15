@@ -141,9 +141,9 @@ class AccountMove(models.Model):
                 # Non-invoice moves don't support that field (because of multicurrency: all lines of the invoice share the same currency)
                 move.tax_totals = None
 
-    @api.constrains("state", "invoice_time")
-    def checking_invoice_time(self):
-        for record in self:
-            if record.state=="posted" and not record.invoice_time:
-                raise ValidationError(
-                _('Heure de livraison obligatoire.'))
+    # @api.constrains("state", "invoice_time")
+    # def checking_invoice_time(self):
+    #     for record in self:
+    #         if record.state=="posted" and not record.invoice_time:
+    #             raise ValidationError(
+    #             _('Heure de livraison obligatoire.'))
