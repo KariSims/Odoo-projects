@@ -25,11 +25,13 @@
 /muk_web_dialog
 /muk_web_theme
 /odoo_twilio_sms
+/om_account_accountant
+/om_account_asset
 /om_account_budget
 /om_account_daily_reports
 /om_account_followup
 /om_fiscal_year
-/om_recurring_payment
+/om_recurring_payments
 /pos_cash_restriction
 /pos_receipt_extend
 /report_qweb_element_page_visibility
