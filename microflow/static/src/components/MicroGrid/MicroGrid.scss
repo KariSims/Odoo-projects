@@ -1,0 +1,175 @@
+.mf-microgrid {
+    width: 100%;
+    padding: 6px 0;
+
+    &.mf-saving {
+        opacity: 0.55;
+        pointer-events: none;
+        transition: opacity 0.15s;
+    }
+}
+
+// ── Current case banner ───────────────────────────────────────────────────────
+.mf-current-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #1976D2;
+    color: #fff;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(25, 118, 210, 0.35);
+    transition: transform 0.12s, box-shadow 0.12s;
+    min-height: 64px;
+
+    &:active {
+        transform: scale(0.98);
+        box-shadow: 0 1px 6px rgba(25, 118, 210, 0.25);
+    }
+
+    .mf-banner-left {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        min-width: 48px;
+    }
+    .mf-banner-label {
+        font-size: 10px;
+        text-transform: uppercase;
+        opacity: 0.75;
+        letter-spacing: 0.5px;
+    }
+    .mf-banner-seq {
+        font-size: 26px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    .mf-banner-center {
+        display: flex;
+        align-items: baseline;
+        gap: 6px;
+        flex: 1;
+        justify-content: center;
+    }
+    .mf-banner-amount {
+        font-size: 30px;
+        font-weight: 700;
+    }
+    .mf-banner-currency {
+        font-size: 15px;
+        opacity: 0.8;
+    }
+
+    .mf-banner-right .mf-banner-cta {
+        font-size: 13px;
+        opacity: 0.85;
+        white-space: nowrap;
+    }
+}
+
+// ── Progress row ──────────────────────────────────────────────────────────────
+.mf-progress-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 8px;
+
+    .mf-progress-text {
+        font-size: 13px;
+        color: #546E7A;
+        font-variant-numeric: tabular-nums;
+    }
+}
+
+// ── Grid ──────────────────────────────────────────────────────────────────────
+.mf-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+
+    @media (min-width: 576px)  { grid-template-columns: repeat(7, 1fr); }
+    @media (min-width: 992px)  { grid-template-columns: repeat(10, 1fr); }
+    @media (min-width: 1200px) { grid-template-columns: repeat(12, 1fr); }
+}
+
+// ── Cell ──────────────────────────────────────────────────────────────────────
+.mf-cell {
+    aspect-ratio: 1 / 1;
+    min-height: 65px;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 1px solid #CFD8DC;
+    overflow: hidden;
+    gap: 1px;
+    transition: transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+
+    &:active { transform: scale(0.91); }
+
+    .mf-cell-seq {
+        font-size: 9px;
+        line-height: 1;
+        opacity: 0.55;
+    }
+    .mf-cell-amt {
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 1;
+    }
+    .mf-cell-check {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+    }
+
+    // ── States ──────────────────────────────────────────────────────────────
+    &.mf-cell-empty {
+        background: #F5F7FA;
+        color: #546E7A;
+    }
+
+    &.mf-cell-current {
+        background: #E3F2FD;
+        border: 2px solid #1976D2;
+        color: #1976D2;
+        animation: mf-pulse 2s ease-in-out infinite;
+    }
+
+    &.mf-cell-paid {
+        background: #E8F5E9;
+        border-color: #388E3C;
+        color: #388E3C;
+        cursor: pointer;
+    }
+
+    &.mf-cell-pending-uncheck {
+        background: #FFF3E0;
+        border: 2px solid #F57C00;
+        color: #E65100;
+        animation: mf-pulse-orange 0.8s ease-in-out infinite;
+        cursor: pointer;
+
+        .mf-cell-uncheck-hint {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1;
+        }
+    }
+}
+
+@keyframes mf-pulse {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.22); }
+    50%       { box-shadow: 0 0 0 6px rgba(25, 118, 210, 0.08); }
+}
+
+@keyframes mf-pulse-orange {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(245, 124, 0, 0.30); }
+    50%       { box-shadow: 0 0 0 7px rgba(245, 124, 0, 0.10); }
+}

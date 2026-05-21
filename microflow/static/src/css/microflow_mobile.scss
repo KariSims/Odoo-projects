@@ -1,0 +1,134 @@
+/**
+ * Micro Flow — Mobile-first styles
+ * Wizard versement plein écran sur mobile (DESIGN_SPEC §2)
+ */
+
+// ── Wizard Versement — plein écran sur mobile ─────────────────────────────────
+@media (max-width: 767px) {
+    // Target dialogs that contain the payment wizard form
+    .o_dialog:has(.mf-payment-wizard) {
+        .modal-dialog {
+            width: 100vw !important;
+            max-width: 100vw !important;
+            height: 100vh !important;
+            max-height: 100vh !important;
+            margin: 0 !important;
+        }
+        .modal-content {
+            height: 100vh;
+            border-radius: 0 !important;
+            border: none;
+        }
+        .modal-body {
+            padding: 0;
+        }
+        .o_form_view {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .o_form_sheet_bg {
+            flex: 1;
+            overflow-y: auto;
+        }
+    }
+
+    // Amount field: 48px font as per DESIGN_SPEC §2
+    .mf-payment-wizard {
+        .o_field_monetary .o_input,
+        .o_field_float .o_input {
+            font-size: 48px !important;
+            font-weight: 700;
+            text-align: center;
+            height: 80px;
+            color: #1976D2;
+            border-radius: 8px;
+        }
+
+        // Validate button: full width, 56px height
+        footer.modal-footer,
+        .o_form_buttons_view {
+            padding: 16px;
+
+            .btn-primary {
+                width: 100%;
+                min-height: 56px;
+                font-size: 18px;
+                font-weight: 600;
+                border-radius: 10px;
+            }
+
+            // Cancel as text link (DESIGN_SPEC: "Annuler (text link)")
+            .btn-secondary,
+            [special="cancel"] {
+                width: 100%;
+                background: transparent !important;
+                border: none !important;
+                color: #546E7A !important;
+                font-size: 15px;
+                box-shadow: none !important;
+                min-height: 44px;
+                margin-top: 4px;
+            }
+        }
+    }
+}
+
+// ── Manager Dashboard Kanban ───────────────────────────────────────────────────
+.mf-manager-kanban {
+    .o_kanban_group {
+        background: #F5F7FA;
+        border-radius: 10px;
+        min-width: 280px;
+    }
+
+    .o_kanban_group_title {
+        font-weight: 700;
+        font-size: 15px;
+        color: #1976D2;
+    }
+}
+
+.mf-tx-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 120px;
+
+    .mf-tx-amount {
+        color: #1976D2;
+    }
+}
+
+// ── Nav tabs MICRO FLOW — Épargne (vert forêt) + Crédits (bleu acier) ────────
+// Couleurs désaturées et chaudes, harmonisées avec le marron natif Odoo (#875A7B)
+$mf-epargne-nav: #4e7a55;
+$mf-credit-nav:  #2e6da4;
+
+.o_menu_sections {
+    [data-menu-xmlid="microflow.menu_micro_cycle"].o_active {
+        background-color: $mf-epargne-nav !important;
+        color: #fff !important;
+        border-radius: 4px;
+    }
+
+    [data-menu-xmlid="microflow.menu_micro_credit"].o_active {
+        background-color: $mf-credit-nav !important;
+        color: #fff !important;
+        border-radius: 4px;
+    }
+}
+
+// ── Global: Odoo font sizes for terrain use ────────────────────────────────────
+@media (max-width: 767px) {
+    body {
+        font-size: 16px; // DESIGN_SPEC: minimum 16px body terrain
+    }
+
+    // Montant chiffres: minimum 20px
+    .o_field_monetary .o_field_number,
+    .o_field_monetary span {
+        font-size: 20px;
+        font-weight: 600;
+    }
+}

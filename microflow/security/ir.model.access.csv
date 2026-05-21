@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_micro_zone_agent,micro.zone.agent,model_micro_zone,microflow.group_micro_flow_agent,1,0,0,0
+access_micro_zone_manager,micro.zone.manager,model_micro_zone,microflow.group_micro_flow_manager,1,1,1,1
+access_micro_credit_line_agent,micro.credit.line.agent,model_micro_credit_line,microflow.group_micro_flow_agent,1,1,1,0
+access_micro_credit_line_manager,micro.credit.line.manager,model_micro_credit_line,microflow.group_micro_flow_manager,1,1,1,1
+access_micro_credit_agent,micro.credit.agent,model_micro_credit,microflow.group_micro_flow_agent,1,1,1,0
+access_micro_credit_manager,micro.credit.manager,model_micro_credit,microflow.group_micro_flow_manager,1,1,1,1
+access_micro_cycle_line_agent,micro.cycle.line.agent,model_micro_cycle_line,microflow.group_micro_flow_agent,1,1,1,0
+access_micro_cycle_line_manager,micro.cycle.line.manager,model_micro_cycle_line,microflow.group_micro_flow_manager,1,1,1,1
+access_micro_cycle_agent,micro.cycle.agent,model_micro_cycle,microflow.group_micro_flow_agent,1,1,1,0
+access_micro_cycle_manager,micro.cycle.manager,model_micro_cycle,microflow.group_micro_flow_manager,1,1,1,1
+access_micro_transaction_agent,micro.transaction.agent,model_micro_transaction,microflow.group_micro_flow_agent,1,0,1,0
+access_micro_transaction_manager,micro.transaction.manager,model_micro_transaction,microflow.group_micro_flow_manager,1,1,1,1

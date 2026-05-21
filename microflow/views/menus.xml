@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root -->
+    <menuitem id="menu_micro_flow_root" name="MICRO FLOW" sequence="10"/>
+
+    <!-- Tableau de Bord -->
+    <menuitem id="menu_micro_dashboard"
+              name="Tableau de Bord"
+              parent="menu_micro_flow_root"
+              action="action_micro_dashboard"
+              sequence="5"
+              groups="microflow.group_micro_flow_manager"/>
+
+    <!-- Épargne et Crédits — accès direct niveau 1 -->
+    <menuitem id="menu_micro_cycle" name="Épargne"
+              parent="menu_micro_flow_root"
+              action="action_micro_cycle"
+              sequence="7"/>
+    <menuitem id="menu_micro_credit" name="Crédits"
+              parent="menu_micro_flow_root"
+              action="action_micro_credit"
+              sequence="8"/>
+
+    <!-- Opérations — récapitulatifs uniquement -->
+    <menuitem id="menu_micro_ops" name="Opérations" parent="menu_micro_flow_root" sequence="10"/>
+    <menuitem id="menu_micro_recap" name="Mon Récapitulatif"
+              parent="menu_micro_ops"
+              action="action_micro_transaction_recap"
+              sequence="10"
+              groups="microflow.group_micro_flow_agent"/>
+    <menuitem id="menu_micro_transactions" name="Toutes les Transactions"
+              parent="menu_micro_ops"
+              action="action_micro_transaction_all"
+              sequence="20"
+              groups="microflow.group_micro_flow_manager"/>
+
+    <!-- Configuration -->
+    <menuitem id="menu_micro_config" name="Configuration" parent="menu_micro_flow_root" sequence="90"/>
+    <menuitem id="menu_micro_zones" name="Zones"
+              parent="menu_micro_config"
+              action="action_micro_zone"
+              sequence="10"
+              groups="microflow.group_micro_flow_manager"/>
+</odoo>

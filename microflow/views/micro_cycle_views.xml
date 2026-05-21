@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_micro_cycle_form" model="ir.ui.view">
+        <field name="name">micro.cycle.form</field>
+        <field name="model">micro.cycle</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_activate" string="Activer le Cycle" type="object"
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,closed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="agent_id"/>
+                            <field name="amount_per_case"/>
+                        </group>
+                        <group>
+                            <field name="case_count" readonly="state != 'draft'"/>
+                            <field name="duration_months"/>
+                            <field name="opening_fee"/>
+                            <field name="commission_rate"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <!-- ── Correction du nombre de cases (cycle actif) ── -->
+                    <group string="Correction du nombre de cases"
+                           invisible="state != 'active'">
+                        <!-- Aucune demande en cours : agent saisit la correction -->
+                        <div invisible="case_count_requested != 0">
+                            <group>
+                                <field name="case_count_requested"
+                                       string="Nouveau nombre de cases"/>
+                                <div class="text-muted">
+                                    Saisir le nombre corrigé puis soumettre pour approbation Manager.
+                                </div>
+                            </group>
+                            <button name="action_request_correction" type="object"
+                                    string="Soumettre au Manager"
+                                    class="btn btn-warning mt8"/>
+                        </div>
+                        <!-- Demande en attente : infos + boutons Manager -->
+                        <div invisible="case_count_requested == 0">
+                            <group>
+                                <field name="case_count" string="Cases actuelles" readonly="1"/>
+                                <field name="case_count_requested" string="Correction demandée" readonly="1"/>
+                            </group>
+                            <div class="text-warning fw-bold mb8">
+                                ⏳ Correction en attente d'approbation Manager
+                            </div>
+                            <button name="action_approve_correction" type="object"
+                                    string="Approuver"
+                                    class="btn btn-success"
+                                    groups="microflow.group_micro_flow_manager"/>
+                            <button name="action_reject_correction" type="object"
+                                    string="Rejeter"
+                                    class="btn btn-danger ms-2"
+                                    groups="microflow.group_micro_flow_manager"/>
+                        </div>
+                    </group>
+
+                    <notebook>
+                        <page string="Grille de Collecte">
+                            <!-- MicroGrid: composant OWL custom (TODO-2) -->
+                            <field name="line_ids" widget="MicroGrid" nolabel="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_micro_cycle_tree" model="ir.ui.view">
+        <field name="name">micro.cycle.list</field>
+        <field name="model">micro.cycle</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="partner_id"/>
+                <field name="agent_id"/>
+                <field name="case_count"/>
+                <field name="amount_per_case"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'draft'"
+                       decoration-success="state == 'active'"
+                       decoration-muted="state == 'closed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_micro_cycle" model="ir.actions.act_window">
+        <field name="name">Cycles d'Épargne</field>
+        <field name="res_model">micro.cycle</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_micro_cycle_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_micro_cycle_form')})
+        ]"/>
+    </record>
+</odoo>

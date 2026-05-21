@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_credit_payment_wizard_form" model="ir.ui.view">
+        <field name="name">credit.payment.wizard.form</field>
+        <field name="model">credit.payment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Enregistrer un versement" class="mf-payment-wizard">
+                <sheet>
+                    <group string="Échéance">
+                        <field name="sequence" readonly="1"/>
+                        <field name="date_due" readonly="1"/>
+                        <field name="amount_due" readonly="1"/>
+                        <field name="amount_paid" readonly="1"/>
+                        <field name="amount_residual" readonly="1"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                    <group string="Montant versé">
+                        <field name="amount_to_pay" nolabel="1"
+                               options="{'type': 'number'}"
+                               placeholder="0"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_validate_payment"
+                            string="Valider le versement"
+                            type="object"
+                            class="btn-primary"/>
+                    <button string="Annuler"
+                            class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_credit_payment_wizard" model="ir.actions.act_window">
+        <field name="name">Versement</field>
+        <field name="res_model">credit.payment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

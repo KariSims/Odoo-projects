@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_partner_form_microflow" model="ir.ui.view">
+            <field name="name">res.partner.form.microflow</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <group string="Informations MICRO FLOW">
+                        <field name="member_id" readonly="1"/>
+                        <field name="entity_type"/>
+                        <field name="member_type"/>
+                        <field name="birthdate"/>
+                        <field name="zone_id"/>
+                        <field name="gps_coordinates" readonly="1"/>
+                    </group>
+                    <div class="mb-3">
+                        <button name="action_capture_gps"
+                                string="Capturer la localisation GPS"
+                                type="object"
+                                class="btn btn-secondary"
+                                icon="fa-map-marker"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

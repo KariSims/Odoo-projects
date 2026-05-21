@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         LIST VIEW
+    ═══════════════════════════════════════════════════════════════════════════ -->
+    <record id="view_micro_credit_tree" model="ir.ui.view">
+        <field name="name">micro.credit.list</field>
+        <field name="model">micro.credit</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'pending'"
+                  decoration-success="state == 'active'"
+                  decoration-muted="state == 'closed'">
+                <field name="partner_id"/>
+                <field name="agent_id"/>
+                <field name="capital" sum="Total Capital"/>
+                <field name="interest_rate" widget="percentage" avg="Taux Moyen"/>
+                <field name="installment_count" string="Échéances"/>
+                <field name="amount_total" sum="Total à Rembourser"/>
+                <field name="amount_residual_total" sum="Reste Dû Total"/>
+                <field name="date_granted" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'pending'"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'active'"
+                       decoration-muted="state == 'closed'"/>
+                <field name="currency_id" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         FORM VIEW
+    ═══════════════════════════════════════════════════════════════════════════ -->
+    <record id="view_micro_credit_form" model="ir.ui.view">
+        <field name="name">micro.credit.form</field>
+        <field name="model">micro.credit</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <!-- Agent : soumettre pour approbation -->
+                    <button name="action_submit"
+                            string="Soumettre au Manager"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <!-- Manager : accorder ou rejeter -->
+                    <button name="action_approve"
+                            string="Accorder le Crédit"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'pending'"
+                            groups="microflow.group_micro_flow_manager"/>
+                    <button name="action_reject"
+                            string="Rejeter"
+                            type="object"
+                            invisible="state != 'pending'"
+                            groups="microflow.group_micro_flow_manager"/>
+                    <!-- Manager : solder manuellement -->
+                    <button name="action_close"
+                            string="Solder le Crédit"
+                            type="object"
+                            invisible="state != 'active'"
+                            groups="microflow.group_micro_flow_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,pending,active,closed"/>
+                </header>
+
+                <sheet>
+                    <!-- ── Bandeau pending ── -->
+                    <div class="alert alert-warning mb-0"
+                         invisible="state != 'pending'"
+                         role="alert">
+                        ⏳ Ce crédit est en attente d'approbation Manager.
+                        Les champs financiers restent modifiables jusqu'à l'accord.
+                    </div>
+
+                    <group>
+                        <group string="Identification">
+                            <field name="partner_id"
+                                   readonly="state in ['active', 'closed']"/>
+                            <field name="agent_id"
+                                   readonly="state == 'closed'"/>
+                            <field name="date_granted"
+                                   invisible="not date_granted"/>
+                        </group>
+                        <group string="Résumé financier">
+                            <field name="amount_total" readonly="1"/>
+                            <field name="amount_residual_total"
+                                   readonly="1"
+                                   invisible="state not in ['active', 'closed']"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Paramètres du crédit">
+                            <field name="capital"
+                                   readonly="state in ['active', 'closed']"/>
+                            <field name="interest_rate"
+                                   readonly="state in ['active', 'closed']"/>
+                            <field name="max_partial_payments"
+                                   readonly="state in ['active', 'closed']"/>
+                        </group>
+                        <group string="Échéancier">
+                            <field name="installment_count"
+                                   readonly="state in ['active', 'closed']"/>
+                            <label for="installment_interval" string="Intervalle"/>
+                            <div class="o_row">
+                                <field name="installment_interval"
+                                       readonly="state in ['active', 'closed']"
+                                       class="o_field_small"/>
+                                <field name="installment_period"
+                                       readonly="state in ['active', 'closed']"
+                                       nolabel="1"/>
+                            </div>
+                        </group>
+                    </group>
+
+                    <!-- ── Tableau des échéances ── -->
+                    <notebook invisible="state == 'draft'">
+                        <page string="Échéancier de Remboursement">
+                            <field name="line_ids" readonly="state == 'closed'">
+                                <list decoration-danger="is_overdue"
+                                      decoration-success="amount_residual == 0"
+                                      decoration-warning="not is_overdue and amount_residual > 0"
+                                      create="false" delete="false">
+                                    <field name="sequence" string="N°"/>
+                                    <field name="date_due"/>
+                                    <field name="amount_due" readonly="1"/>
+                                    <field name="amount_paid" readonly="1"/>
+                                    <field name="amount_residual"
+                                           sum="Total Restant" readonly="1"/>
+                                    <field name="payment_count" readonly="1"
+                                           string="Versements"/>
+                                    <field name="is_overdue" invisible="1"/>
+                                    <button name="%(microflow.action_credit_payment_wizard)d"
+                                            string="Payer"
+                                            type="action"
+                                            icon="fa-money"
+                                            context="{'default_line_id': id,
+                                                      'default_amount_to_pay': amount_residual}"
+                                            invisible="amount_residual == 0"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         ACTION
+    ═══════════════════════════════════════════════════════════════════════════ -->
+    <record id="action_micro_credit" model="ir.actions.act_window">
+        <field name="name">Crédits</field>
+        <field name="res_model">micro.credit</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('view_micro_credit_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_micro_credit_form')})
+        ]"/>
+    </record>
+</odoo>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="microflow.MicroGrid">
+        <div class="mf-microgrid" t-att-class="state.saving ? 'mf-saving' : ''">
+
+            <!-- Empty state -->
+            <t t-if="lines.length === 0">
+                <div class="mf-grid-empty text-muted text-center py-5">
+                    Aucune case — activez le cycle
+                </div>
+            </t>
+
+            <t t-else="">
+                <!-- Current case banner -->
+                <t t-if="currentLine">
+                    <div class="mf-current-banner"
+                         t-on-click="() => this.onCellTap(currentLine)">
+                        <div class="mf-banner-left">
+                            <span class="mf-banner-label">Case</span>
+                            <span class="mf-banner-seq" t-esc="currentLine.sequence"/>
+                        </div>
+                        <div class="mf-banner-center">
+                            <span class="mf-banner-amount"
+                                  t-esc="formatAmount(currentLine.amount_expected)"/>
+                            <span class="mf-banner-currency">CDF</span>
+                        </div>
+                        <div class="mf-banner-right">
+                            <span class="mf-banner-cta">Collecter →</span>
+                        </div>
+                    </div>
+                </t>
+                <t t-else="">
+                    <div class="mf-all-done alert alert-success py-2 text-center mb-3">
+                        ✓ Toutes les cases collectées !
+                    </div>
+                </t>
+
+                <!-- Progress counter -->
+                <div class="mf-progress-row">
+                    <span class="mf-progress-text">
+                        <t t-esc="paidCount"/> / <t t-esc="lines.length"/> payées
+                    </span>
+                </div>
+
+                <!-- Grid -->
+                <div class="mf-grid">
+                    <t t-foreach="lines" t-as="line" t-key="line.id">
+                        <div
+                            t-att-class="
+                                'mf-cell'
+                                + (line.is_paid ? ' mf-cell-paid' : (isCurrent(line) ? ' mf-cell-current' : ' mf-cell-empty'))
+                                + (state.pendingUncheckId === line.id ? ' mf-cell-pending-uncheck' : '')
+                            "
+                            t-on-click="() => this.onCellTap(line)"
+                            t-att-title="'Case ' + line.sequence + ' — ' + formatAmount(line.amount_expected) + ' CDF'"
+                        >
+                            <span class="mf-cell-seq" t-esc="line.sequence"/>
+                            <t t-if="state.pendingUncheckId === line.id">
+                                <span class="mf-cell-check mf-cell-uncheck-hint">↩</span>
+                            </t>
+                            <t t-elif="line.is_paid">
+                                <span class="mf-cell-check">✓</span>
+                            </t>
+                            <t t-else="">
+                                <span class="mf-cell-amt"
+                                      t-esc="formatAmount(line.amount_expected)"/>
+                            </t>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,17 @@
+<odoo>
+    <record id="module_category_micro_flow" model="ir.module.category">
+        <field name="name">Micro Flow</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="group_micro_flow_agent" model="res.groups">
+        <field name="name">Agent de Terrain</field>
+        <field name="category_id" ref="module_category_micro_flow"/>
+    </record>
+
+    <record id="group_micro_flow_manager" model="res.groups">
+        <field name="name">Manager / Contrôleur</field>
+        <field name="category_id" ref="module_category_micro_flow"/>
+        <field name="implied_ids" eval="[(4, ref('group_micro_flow_agent'))]"/>
+    </record>
+</odoo>

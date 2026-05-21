@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="microflow_config_settings_view" model="ir.ui.view">
+        <field name="name">microflow.config.settings</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <div class="app_settings_block" data-string="Micro Flow" data-key="microflow"
+                     groups="microflow.group_micro_flow_manager">
+                    <h2>MICRO FLOW</h2>
+                    <div class="row mt16 o_settings_container">
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="micro_flow_journal_id" string="Journal de collecte"/>
+                                <div class="text-muted">
+                                    Journal de caisse pour toutes les transactions terrain (épargne, frais, remboursements).
+                                </div>
+                                <field name="micro_flow_journal_id"/>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="max_active_cycles" string="Cycles actifs max par membre"/>
+                                <div class="text-muted">
+                                    Nombre maximum de cycles d'épargne simultanés par membre (défaut : 1).
+                                </div>
+                                <field name="max_active_cycles"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         micro.cycle
+         Agent → voit uniquement ses propres cycles (agent_id = user)
+         Manager → voit tout (OR avec la règle agent grâce à implied_ids)
+    ═══════════════════════════════════════════════════════════════════════════ -->
+    <record id="rule_micro_cycle_agent_own" model="ir.rule">
+        <field name="name">Cycle: agent voit ses propres cycles</field>
+        <field name="model_id" ref="model_micro_cycle"/>
+        <field name="domain_force">[('agent_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('microflow.group_micro_flow_agent'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_micro_cycle_manager_all" model="ir.rule">
+        <field name="name">Cycle: manager voit tout</field>
+        <field name="model_id" ref="model_micro_cycle"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('microflow.group_micro_flow_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         micro.credit
+         Agent → voit uniquement ses propres crédits (agent_id = user)
+         Manager → voit tout
+    ═══════════════════════════════════════════════════════════════════════════ -->
+    <record id="rule_micro_credit_agent_own" model="ir.rule">
+        <field name="name">Crédit: agent voit ses propres crédits</field>
+        <field name="model_id" ref="model_micro_credit"/>
+        <field name="domain_force">[('agent_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('microflow.group_micro_flow_agent'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_micro_credit_manager_all" model="ir.rule">
+        <field name="name">Crédit: manager voit tout</field>
+        <field name="model_id" ref="model_micro_credit"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('microflow.group_micro_flow_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         micro.transaction
+         Agent → voit uniquement ses propres transactions (agent_id = user)
+         Manager → voit tout
+    ═══════════════════════════════════════════════════════════════════════════ -->
+    <record id="rule_micro_transaction_agent_own" model="ir.rule">
+        <field name="name">Transaction: agent voit ses propres transactions</field>
+        <field name="model_id" ref="model_micro_transaction"/>
+        <field name="domain_force">[('agent_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('microflow.group_micro_flow_agent'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <record id="rule_micro_transaction_manager_all" model="ir.rule">
+        <field name="name">Transaction: manager voit tout</field>
+        <field name="model_id" ref="model_micro_transaction"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('microflow.group_micro_flow_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+</odoo>
