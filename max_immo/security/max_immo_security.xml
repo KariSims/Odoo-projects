@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Catégorie de module -->
+        <record id="module_category_max_immo" model="ir.module.category">
+            <field name="name">MaxImmo</field>
+            <field name="description">Gestion Immobilière</field>
+            <field name="sequence">100</field>
+        </record>
+
+        <!-- Groupe Utilisateur -->
+        <record id="group_max_immo_user" model="res.groups">
+            <field name="name">Utilisateur</field>
+            <field name="category_id" ref="module_category_max_immo"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Peut consulter les propriétés et chambres, créer des occupations.</field>
+        </record>
+
+        <!-- Groupe Gestionnaire -->
+        <record id="group_max_immo_manager" model="res.groups">
+            <field name="name">Gestionnaire</field>
+            <field name="category_id" ref="module_category_max_immo"/>
+            <field name="implied_ids" eval="[(4, ref('group_max_immo_user'))]"/>
+            <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+            <field name="comment">Accès complet : créer/modifier/supprimer propriétés et configuration.</field>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ── Vue formulaire du wizard ──────────────────────────────────────── -->
+    <record id="view_savings_repayment_wizard_form" model="ir.ui.view">
+        <field name="name">savings.repayment.wizard.form</field>
+        <field name="model">savings.repayment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Transfert Épargne → Crédit">
+                <sheet>
+                    <!-- Contexte lecture seule -->
+                    <group string="Détails de l'échéance">
+                        <field name="partner_id" readonly="1"/>
+                        <field name="installment_sequence" readonly="1"/>
+                        <field name="installment_residual" readonly="1"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+
+                    <!-- Sélection du cycle épargne source -->
+                    <group string="Source Épargne">
+                        <field name="cycle_id"
+                               options="{'no_create': True, 'no_open': True}"/>
+                        <field name="savings_balance" readonly="1"
+                               invisible="not cycle_id"/>
+                    </group>
+
+                    <!-- Alerte si solde insuffisant -->
+                    <div class="alert alert-warning mb-2 py-2"
+                         invisible="not cycle_id or savings_balance > 0">
+                        ⚠️ Ce cycle n'a plus de solde épargne disponible.
+                    </div>
+
+                    <!-- Saisie agent : montant à prélever -->
+                    <group string="Montant à prélever">
+                        <field name="amount_to_transfer"
+                               widget="monetary"
+                               options="{'currency_field': 'currency_id'}"
+                               help="Montant à récupérer du solde épargne du membre pour régler l'échéance."/>
+                    </group>
+
+                    <!-- Alerte si montant > solde -->
+                    <div class="alert alert-danger mb-2 py-2"
+                         invisible="not amount_to_transfer or not savings_balance or amount_to_transfer &lt;= savings_balance">
+                        ❌ Le montant dépasse le solde épargne disponible.
+                    </div>
+                    <div class="alert alert-danger mb-2 py-2"
+                         invisible="not amount_to_transfer or not installment_residual or amount_to_transfer &lt;= installment_residual">
+                        ❌ Le montant dépasse le reste à payer sur l'échéance.
+                    </div>
+                </sheet>
+                <footer>
+                    <button name="action_validate"
+                            string="Confirmer le Transfert"
+                            type="object"
+                            class="btn-primary"
+                            data-hotkey="v"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ── Action wizard ─────────────────────────────────────────────────── -->
+    <record id="action_savings_repayment_wizard" model="ir.actions.act_window">
+        <field name="name">Transfert Épargne → Crédit</field>
+        <field name="res_model">savings.repayment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_savings_repayment_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

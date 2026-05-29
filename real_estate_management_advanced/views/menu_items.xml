@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_real_estate_root" name="Real Estate" web_icon="real_estate_management_advanced,static/description/icon.png" sequence="10"/>
+
+    <menuitem id="menu_real_estate_dashboard" name="Dashboard" parent="menu_real_estate_root" sequence="1" action="action_real_estate_dashboard"/>
+
+    <menuitem id="menu_real_estate_property" name="Properties" parent="menu_real_estate_root" sequence="2" action="action_property"/>
+
+    <menuitem id="menu_real_estate_contract" name="Contracts" parent="menu_real_estate_root" sequence="3" action="action_contract"/>
+
+    <menuitem id="menu_real_estate_maintenance" name="Maintenance" parent="menu_real_estate_root" sequence="4" action="action_maintenance"/>
+</odoo>

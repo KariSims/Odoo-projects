@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sale_invoice_inherit" inherit_id="account.report_invoice_document">
+        <xpath expr="//div" position="attributes">
+            <attribute name="lang">fr_FR</attribute>
+        </xpath>
+        <xpath expr='//div[@name="origin"]' position="replace">
+        </xpath>
+        <xpath expr='//div[@id="informations"]' position="before">
+        </xpath>
+        <!-- sims -->
+        <xpath expr='//table[@name="invoice_line_table"]/thead/tr/th[@name="th_taxes"]' position="replace">
+            <th name="th_taxes" class="text-end">
+                <span></span>
+            </th>
+        </xpath>
+        <xpath expr='//table[@name="invoice_line_table"]/tbody/t/tr/t/td[@name="td_quantity"]' position="replace">
+            <td name="td_quantity" class="text-end text-nowrap">
+                <!-- <span t-esc="int(line.quantity)">3.00</span> -->
+                <!-- <span t-esc="'%s %s' % (int(line.quantity), line.product_uom_id.display_name)"/> -->
+                <span t-esc="'%s %s' % (int(line.quantity), 'carton(s)' if line.product_uom_id.id == 1 else 'douzaine(s)')"/>
+
+            </td>
+        </xpath>
+
+        <xpath expr='//p[@name="payment_communication"]' position="replace">
+        </xpath>
+
+    </template>
+
+    <template id="subtotal_invoice_inherit" inherit_id="account.document_tax_totals_template">
+        
+        <xpath expr='//t/tr[@class="o_subtotal"]' position="replace">
+        </xpath>
+
+    </template>
+</odoo>

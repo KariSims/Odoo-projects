@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="stock_picking_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <!-- Bouton manager -->
+            <xpath expr="//header/button[@name='button_validate' and contains(@class, 'oe_highlight')]" position="replace">
+                <button name="button_validate" invisible="state in ('draft', 'confirmed', 'done', 'cancel')" string="Validate" type="object" class="oe_highlight" groups="stock.group_stock_manager" data-hotkey="v"/>
+            </xpath>
+
+            <!-- Bouton user -->
+            <xpath expr="//header/button[@name='button_validate' and contains(@class, 'o_btn_validate')]" position="replace">
+                <button name="button_validate" invisible="state in ('waiting', 'assigned', 'done', 'cancel')" string="Validate" type="object" groups="stock.group_stock_user" class="o_btn_validate" data-hotkey="v"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

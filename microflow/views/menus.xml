@@ -7,7 +7,7 @@
     <menuitem id="menu_micro_dashboard"
               name="Tableau de Bord"
               parent="menu_micro_flow_root"
-              action="action_micro_dashboard"
+              action="action_manager_dashboard"
               sequence="5"
               groups="microflow.group_micro_flow_manager"/>
 

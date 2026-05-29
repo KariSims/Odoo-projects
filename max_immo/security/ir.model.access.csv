@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_max_immo_property_user,max.immo.property.user,model_max_immo_property,group_max_immo_user,1,0,0,0
+access_max_immo_property_manager,max.immo.property.manager,model_max_immo_property,group_max_immo_manager,1,1,1,1
+access_max_immo_room_type_user,max.immo.room.type.user,model_max_immo_room_type,group_max_immo_user,1,0,0,0
+access_max_immo_room_type_manager,max.immo.room.type.manager,model_max_immo_room_type,group_max_immo_manager,1,1,1,1
+access_max_immo_room_user,max.immo.room.user,model_max_immo_room,group_max_immo_user,1,1,1,0
+access_max_immo_room_manager,max.immo.room.manager,model_max_immo_room,group_max_immo_manager,1,1,1,1
+access_max_immo_occupation_user,max.immo.occupation.user,model_max_immo_occupation,group_max_immo_user,1,1,1,0
+access_max_immo_occupation_manager,max.immo.occupation.manager,model_max_immo_occupation,group_max_immo_manager,1,1,1,1
+access_max_immo_bill_type_user,max.immo.bill.type.user,model_max_immo_bill_type,group_max_immo_user,1,0,0,0
+access_max_immo_bill_type_manager,max.immo.bill.type.manager,model_max_immo_bill_type,group_max_immo_manager,1,1,1,1
+access_max_immo_bill_user,max.immo.bill.user,model_max_immo_bill,group_max_immo_user,1,1,1,0
+access_max_immo_bill_manager,max.immo.bill.manager,model_max_immo_bill,group_max_immo_manager,1,1,1,1
+access_max_immo_payment_user,max.immo.payment.user,model_max_immo_payment,group_max_immo_user,1,1,1,0
+access_max_immo_payment_manager,max.immo.payment.manager,model_max_immo_payment,group_max_immo_manager,1,1,1,1

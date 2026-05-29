@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_msg91_gtw_model,sms_msg91.sms_msg91,model_msg91_sms_service,,1,1,1,0
+
+access_msg91_gtw_user_model,sms.user,model_msg91_sms_service,group_sms_user,1,1,1,0
+
+access_msg91_gtw_user_config,sms.user,model_msg91_sms_config,group_sms_user,1,1,0,0
+access_msg91_gtw_user_config_manager,sms.user,model_msg91_sms_config,group_sms_manager,1,1,1,1
+
+acces_msg91_gtw_manager_model,sms.manager,model_msg91_sms_service,group_sms_manager,1,1,1,0

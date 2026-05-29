@@ -4,7 +4,7 @@
  * Registered by sw_register.js on page load.
  */
 
-const CACHE_NAME = 'microflow-v1';
+const CACHE_NAME = 'microflow-v2';
 const OFFLINE_STORE = 'microflow-offline-payments';
 
 // Assets to cache for offline access

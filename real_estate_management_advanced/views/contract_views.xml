@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_contract_tree" model="ir.ui.view">
+        <field name="name">real.estate.contract.tree</field>
+        <field name="model">real.estate.contract</field>
+        <field name="arch" type="xml">
+            <list string="Contracts">
+                <field name="contract_number"/>
+                <field name="property_id"/>
+                <field name="partner_id"/>
+                <field name="contract_type"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'confirmed'" decoration-muted="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_contract_form" model="ir.ui.view">
+        <field name="name">real.estate.contract.form</field>
+        <field name="model">real.estate.contract</field>
+        <field name="arch" type="xml">
+            <form string="Contract">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state == 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="contract_number" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="property_id"/>
+                            <field name="partner_id"/>
+                            <field name="contract_type"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                            <field name="payment_method"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="monthly_rent" invisible="contract_type != 'rent'"/>
+                            <field name="selling_price" invisible="contract_type != 'sell'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_contract_search" model="ir.ui.view">
+        <field name="name">real.estate.contract.search</field>
+        <field name="model">real.estate.contract</field>
+        <field name="arch" type="xml">
+            <search string="Search Contracts">
+                <field name="contract_number"/>
+                <field name="property_id"/>
+                <field name="partner_id"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirmed')]"/>
+                <group expand="1" string="Group By">
+                    <filter string="Type" name="group_by_type" context="{'group_by': 'contract_type'}"/>
+                    <filter string="State" name="group_by_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_contract" model="ir.actions.act_window">
+        <field name="name">Contracts</field>
+        <field name="res_model">real.estate.contract</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

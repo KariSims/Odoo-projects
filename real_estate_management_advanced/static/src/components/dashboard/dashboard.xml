@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="real_estate_management_advanced.Dashboard" owl="1">
+        <div class="o_real_estate_dashboard p-4">
+            <h1 class="mb-4">Real Estate Dashboard</h1>
+            
+            <div class="row">
+                <!-- Total Properties -->
+                <div class="col-md-4 mb-3" t-on-click="() => this.viewProperties([])">
+                    <div class="card text-white bg-primary h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Properties</h5>
+                            <h2 class="card-text"><t t-esc="state.stats.total_properties"/></h2>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Available Properties -->
+                <div class="col-md-4 mb-3" t-on-click="() => this.viewProperties([['status', '=', 'available']])">
+                    <div class="card text-white bg-success h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Available</h5>
+                            <h2 class="card-text"><t t-esc="state.stats.available_properties"/></h2>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rented Properties -->
+                <div class="col-md-4 mb-3" t-on-click="() => this.viewProperties([['status', '=', 'rented']])">
+                    <div class="card text-white bg-info h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Rented</h5>
+                            <h2 class="card-text"><t t-esc="state.stats.rented_properties"/></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <!-- Total Rental Income -->
+                <div class="col-md-6 mb-3">
+                    <div class="card border-primary h-100">
+                        <div class="card-header bg-transparent border-primary">Monthly Rental Income</div>
+                        <div class="card-body text-primary">
+                            <h2 class="card-title"><t t-esc="state.stats.total_rent_income" t-options='{"widget": "monetary", "display_currency": env.currency}'/></h2>
+                            <p class="card-text">Total monthly rent from all rented properties.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total Maintenance Cost -->
+                <div class="col-md-6 mb-3">
+                    <div class="card border-danger h-100">
+                        <div class="card-header bg-transparent border-danger">Maintenance Costs</div>
+                        <div class="card-body text-danger">
+                            <h2 class="card-title"><t t-esc="state.stats.total_maintenance_cost" t-options='{"widget": "monetary", "display_currency": env.currency}'/></h2>
+                            <p class="card-text">Total accumulated maintenance costs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

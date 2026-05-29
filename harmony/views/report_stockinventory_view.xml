@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="stock_inventory_inherit" inherit_id="stock.report_inventory">
+        <xpath expr='//table[@class="table table-borderless"]/tbody/t/tr[@t-as="line"]' position="replace">
+            <tr t-foreach="docs.filtered(lambda quant: quant.location_id.id == location.id)" t-as="line">
+                <td groups="stock.group_stock_multi_locations"></td>
+                <td><span t-field="line.product_id">Laptop</span></td>
+                <td groups="stock.group_production_lot"><span t-field="line.lot_id"/></td>
+                <td groups="stock.group_tracking_lot"><span t-field="line.package_id"/></td>
+                <td class="o_td_quantity text-end"><span t-esc="'%.2f %s' % (line.available_quantity, 'carton(s)' if line.product_uom_id.id == 1 else 'dz(s)')"/></td>
+                <td class="o_td_quantity text-end"><span t-esc="'%.2f %s' % (line.quantity, 'carton(s)' if line.product_uom_id.id == 1 else 'dz(s)')"/></td>
+                <td class="o_td_quantity text-end">
+                    <!-- If 0, then leave blank so users have space to write a number -->
+                    <t t-if="line.inventory_quantity == 0"><span></span></t>
+                    <!-- <t t-else=""><span t-field="line.inventory_quantity" class="text-nowrap">7</span></t>
+                    <span t-field="line.product_uom_id" groups="uom.group_uom">Units</span> -->
+                    <t t-else=""><span t-esc="'%.2f %s' % (line.inventory_quantity, 'carton(s)' if line.product_uom_id.id == 1 else 'dz(s)')"></span></t>
+                    
+                </td>
+            </tr>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    MaxImmo — Vues Planning : Calendrier + Gantt
+    ─────────────────────────────────────────────
+    • Vue Calendrier  : disponible en Odoo 18 Community et Enterprise.
+    • Vue Gantt       : nécessite le module "web_gantt" (Odoo 18 Enterprise).
+                        En édition Community, retirez "web_gantt" des dépendances
+                        et les entrées Gantt du menu seront inaccessibles (sans erreur).
+
+    CODE COULEUR DES BARRES / ÉVÉNEMENTS
+    ─────────────────────────────────────
+    🟢  Vert   (10) → Occupation en cours, fin non imminente
+    🟠  Orange  (2) → Fin dans ≤ 30 jours
+    🔴  Rouge   (1) → Date de sortie prévue dépassée (en retard)
+    ⚫  Gris    (5) → Occupation terminée
+    ○   Clair   (9) → Occupation annulée
+-->
+<odoo>
+
+    <!-- ================================================================
+         CALENDRIER — Occupations colorées par Propriété
+         Chaque propriété a sa propre teinte → vue multi-immeubles
+    ================================================================= -->
+    <record id="view_max_immo_planning_calendar_property" model="ir.ui.view">
+        <field name="name">max.immo.occupation.calendar.property</field>
+        <field name="model">max.immo.occupation</field>
+        <field name="arch" type="xml">
+            <calendar
+                string="Planning — par Propriété"
+                date_start="start_date"
+                date_stop="display_end_date"
+                color="property_id"
+                event_open_popup="True"
+                quick_create="False"
+                mode="month">
+                <!--
+                    Champs affichés dans la popup au clic sur un événement.
+                    Le titre de l'événement = name (computed: "Locataire — Chambre").
+                -->
+                <field name="tenant_id"        filters="1" color="1"/>
+                <field name="room_id"          filters="1"/>
+                <field name="property_id"      filters="1"/>
+                <field name="state"            filters="1"/>
+                <field name="rent_amount"/>
+                <field name="start_date"/>
+                <field name="display_end_date"/>
+                <field name="color_code"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         CALENDRIER — Occupations colorées par État
+         Vert = actif / Orange = fin proche / Rouge = retard / Gris = terminé
+    ================================================================= -->
+    <record id="view_max_immo_planning_calendar_state" model="ir.ui.view">
+        <field name="name">max.immo.occupation.calendar.state</field>
+        <field name="model">max.immo.occupation</field>
+        <field name="arch" type="xml">
+            <calendar
+                string="Planning — par État"
+                date_start="start_date"
+                date_stop="display_end_date"
+                color="color_code"
+                event_open_popup="True"
+                quick_create="False"
+                mode="month">
+                <field name="tenant_id"    filters="1" color="1"/>
+                <field name="room_id"      filters="1"/>
+                <field name="property_id"  filters="1"/>
+                <field name="state"        filters="1"/>
+                <field name="rent_amount"/>
+                <field name="color_code"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         GANTT — Occupation des pièces dans le temps
+         ⚠️  Requiert le module "web_gantt" (Odoo 18 Enterprise)
+
+         Groupement : Propriété → Chambre
+         Chaque ligne = une chambre ; chaque barre = une occupation.
+         Barres colorées par état (vert / orange / rouge / gris).
+    ================================================================= -->
+    <record id="view_max_immo_planning_gantt" model="ir.ui.view">
+        <field name="name">max.immo.occupation.gantt</field>
+        <field name="model">max.immo.occupation</field>
+        <field name="arch" type="xml">
+            <gantt
+                string="Gantt — Occupation des Pièces"
+                date_start="start_date"
+                date_stop="display_end_date"
+                default_group_by="room_id"
+                color="color_code"
+                pill_label="True"
+                default_scale="month"
+                consolidation_max="1">
+                <!--
+                    Champs chargés pour le rendu des barres et tooltips.
+                    "color_code" doit être listé pour que la colorisation fonctionne.
+                -->
+                <field name="name"/>
+                <field name="tenant_id"/>
+                <field name="room_id"/>
+                <field name="property_id"/>
+                <field name="state"/>
+                <field name="rent_amount"/>
+                <field name="color_code"/>
+                <field name="start_date"/>
+                <field name="display_end_date"/>
+            </gantt>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         SEARCH VIEW partagée Planning
+    ================================================================= -->
+    <record id="view_max_immo_planning_search" model="ir.ui.view">
+        <field name="name">max.immo.occupation.planning.search</field>
+        <field name="model">max.immo.occupation</field>
+        <field name="arch" type="xml">
+            <search string="Filtrer le planning">
+                <field name="tenant_id"   string="Locataire"/>
+                <field name="room_id"     string="Chambre"/>
+                <field name="property_id" string="Propriété"/>
+                <separator/>
+                <!-- Filtres état -->
+                <filter string="En cours"    name="active"
+                        domain="[('state', '=', 'active')]"/>
+                <filter string="Terminées"   name="ended"
+                        domain="[('state', '=', 'ended')]"/>
+                <filter string="En retard"   name="overdue"
+                        domain="[('is_overdue', '=', True)]"/>
+                <filter string="Fin ≤ 30 j"  name="ending_soon"
+                        domain="[
+                            ('state', '=', 'active'),
+                            ('expected_end_date', '!=', False),
+                            ('expected_end_date', '&lt;=',
+                             (context_today() + relativedelta(days=30)).strftime('%Y-%m-%d'))
+                        ]"/>
+                <separator/>
+                <!-- Regroupements -->
+                <group expand="1" string="Regrouper par">
+                    <filter string="Propriété"    name="group_property"
+                            context="{'group_by': 'property_id'}"/>
+                    <filter string="Chambre"      name="group_room"
+                            context="{'group_by': 'room_id'}"/>
+                    <filter string="Locataire"    name="group_tenant"
+                            context="{'group_by': 'tenant_id'}"/>
+                    <filter string="État"         name="group_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Mois d'entrée" name="group_month"
+                            context="{'group_by': 'start_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================
+         ACTIONS
+    ================================================================= -->
+
+    <!--
+        Action Calendrier — par Propriété (vue principale calendrier)
+        Mode par défaut : mois
+        Couleur : une teinte par immeuble/villa
+    -->
+    <record id="action_max_immo_planning_calendar" model="ir.actions.act_window">
+        <field name="name">Calendrier — par Propriété</field>
+        <field name="res_model">max.immo.occupation</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="search_view_id" ref="view_max_immo_planning_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="views" eval="[
+            (ref('view_max_immo_planning_calendar_property'), 'calendar'),
+            (False, 'list'),
+            (False, 'form'),
+        ]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune occupation à afficher
+            </p>
+            <p>
+                Chaque immeuble ou villa a sa propre couleur.
+                Naviguez par mois, semaine ou jour.
+            </p>
+        </field>
+    </record>
+
+    <!--
+        Action Calendrier — par État
+        Couleur : vert=actif / orange=fin proche / rouge=retard / gris=terminé
+    -->
+    <record id="action_max_immo_planning_calendar_state" model="ir.actions.act_window">
+        <field name="name">Calendrier — par État</field>
+        <field name="res_model">max.immo.occupation</field>
+        <field name="view_mode">calendar,list,form</field>
+        <field name="search_view_id" ref="view_max_immo_planning_search"/>
+        <field name="views" eval="[
+            (ref('view_max_immo_planning_calendar_state'), 'calendar'),
+            (False, 'list'),
+            (False, 'form'),
+        ]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune occupation à afficher</p>
+        </field>
+    </record>
+
+    <!--
+        Action Gantt — Propriété puis Chambre
+        ⚠️  Nécessite web_gantt (Enterprise)
+        Groupement : property_id → room_id
+        Couleur : code état (vert/orange/rouge/gris)
+    -->
+    <record id="action_max_immo_planning_gantt" model="ir.actions.act_window">
+        <field name="name">Gantt — Occupation des Pièces</field>
+        <field name="res_model">max.immo.occupation</field>
+        <field name="view_mode">gantt,list,form</field>
+        <field name="search_view_id" ref="view_max_immo_planning_search"/>
+        <field name="context">{
+            'search_default_active': 1,
+            'group_by': ['property_id', 'room_id']
+        }</field>
+        <field name="views" eval="[
+            (ref('view_max_immo_planning_gantt'), 'gantt'),
+            (False, 'list'),
+            (False, 'form'),
+        ]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune occupation à afficher
+            </p>
+            <p>
+                Chaque ligne = une chambre. Chaque barre = une occupation.<br/>
+                🟢 Vert : en cours · 🟠 Orange : fin proche · 🔴 Rouge : en retard · ⚫ Gris : terminée
+            </p>
+        </field>
+    </record>
+
+    <!--
+        Action combinée — Gantt + Calendrier (vue Planning globale)
+        Ouvre en Gantt si Enterprise, sinon bascule sur Calendrier.
+    -->
+    <record id="action_max_immo_planning_full" model="ir.actions.act_window">
+        <field name="name">Planning Global</field>
+        <field name="res_model">max.immo.occupation</field>
+        <field name="view_mode">gantt,calendar,list,form</field>
+        <field name="search_view_id" ref="view_max_immo_planning_search"/>
+        <field name="context">{
+            'search_default_active': 1,
+            'group_by': ['property_id', 'room_id']
+        }</field>
+        <field name="views" eval="[
+            (ref('view_max_immo_planning_gantt'),             'gantt'),
+            (ref('view_max_immo_planning_calendar_property'), 'calendar'),
+            (False, 'list'),
+            (False, 'form'),
+        ]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune occupation à afficher
+            </p>
+        </field>
+    </record>
+
+</odoo>

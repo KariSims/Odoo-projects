@@ -5,32 +5,61 @@
         <field name="model">res.config.settings</field>
         <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
         <field name="arch" type="xml">
+
             <xpath expr="//form" position="inside">
-                <div class="app_settings_block" data-string="Micro Flow" data-key="microflow"
-                     groups="microflow.group_micro_flow_manager">
-                    <h2>MICRO FLOW</h2>
-                    <div class="row mt16 o_settings_container">
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_right_pane">
-                                <label for="micro_flow_journal_id" string="Journal de collecte"/>
-                                <div class="text-muted">
-                                    Journal de caisse pour toutes les transactions terrain (épargne, frais, remboursements).
-                                </div>
-                                <field name="micro_flow_journal_id"/>
+
+                <app string="Micro Flow" name="microflow"
+                    groups="microflow.group_micro_flow_manager">
+
+                    <block title="Configuration Micro Flow">
+
+                        <setting string="Journal de collecte">
+                            <div class="text-muted">
+                                Journal de caisse pour toutes les transactions terrain.
                             </div>
-                        </div>
-                        <div class="col-12 col-lg-6 o_setting_box">
-                            <div class="o_setting_right_pane">
-                                <label for="max_active_cycles" string="Cycles actifs max par membre"/>
-                                <div class="text-muted">
-                                    Nombre maximum de cycles d'épargne simultanés par membre (défaut : 1).
-                                </div>
-                                <field name="max_active_cycles"/>
+                            <field name="micro_flow_journal_id"/>
+                        </setting>
+
+                        <setting string="Cycles actifs max par membre">
+                            <div class="text-muted">
+                                Nombre maximum de cycles simultanés par membre.
                             </div>
-                        </div>
-                    </div>
-                </div>
+                            <field name="max_active_cycles"/>
+                        </setting>
+
+                        <setting string="Cases visibles avant activation">
+                            <div class="text-muted">
+                                Nombre de cases prévisualisées avant activation manager.
+                            </div>
+                            <field name="draft_case_count"/>
+                        </setting>
+
+                        <setting string="Compte Dépôts Membres">
+                            <div class="text-muted">
+                                Compte de passif crédité à chaque collecte.
+                            </div>
+                            <field name="micro_savings_account_id"/>
+                        </setting>
+
+                        <setting string="Page d'accueil des utilisateurs">
+
+                            <div class="text-muted">
+                                Réapplique les pages d'accueil Microflow.
+                            </div>
+
+                            <button string="Réappliquer les pages d'accueil"
+                                    class="btn btn-secondary mt8"
+                                    name="action_apply_home_actions"
+                                    type="object"/>
+
+                        </setting>
+
+                    </block>
+
+                </app>
+
             </xpath>
+
         </field>
     </record>
 </odoo>

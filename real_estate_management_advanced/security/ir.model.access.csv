@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_real_estate_property_user,real.estate.property.user,model_real_estate_property,group_real_estate_user,1,1,1,0
+access_real_estate_property_manager,real.estate.property.manager,model_real_estate_property,group_real_estate_manager,1,1,1,1
+access_real_estate_property_accountant,real.estate.property.accountant,model_real_estate_property,group_real_estate_accountant,1,0,0,0
+access_real_estate_contract_user,real.estate.contract.user,model_real_estate_contract,group_real_estate_user,1,1,1,0
+access_real_estate_contract_manager,real.estate.contract.manager,model_real_estate_contract,group_real_estate_manager,1,1,1,1
+access_real_estate_contract_accountant,real.estate.contract.accountant,model_real_estate_contract,group_real_estate_accountant,1,0,0,0
+access_real_estate_maintenance_user,real.estate.maintenance.user,model_real_estate_maintenance,group_real_estate_user,1,1,1,0
+access_real_estate_maintenance_manager,real.estate.maintenance.manager,model_real_estate_maintenance,group_real_estate_manager,1,1,1,1

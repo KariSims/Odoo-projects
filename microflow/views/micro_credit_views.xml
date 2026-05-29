@@ -66,6 +66,71 @@
                 </header>
 
                 <sheet>
+                    <!-- ── Bouton intelligent : solde épargne du membre ── -->
+                    <field name="partner_savings_total" invisible="1"/>
+                    <field name="partner_savings_cycle_count" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_savings"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-piggy-bank"
+                                invisible="partner_savings_total == 0">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="partner_savings_total"
+                                           widget="monetary"
+                                           options="{'currency_field': 'currency_id'}"/>
+                                </span>
+                                <span class="o_stat_text">Épargne</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- ══════════════════════════════════════════════════
+                         CTAs MOBILE (d-md-none — visibles uniquement < 768px)
+                         Remplacent les petits boutons de la barre de contrôle
+                         ══════════════════════════════════════════════════ -->
+
+                    <!-- Enregistrer -->
+                    <div class="d-md-none mb-2" invisible="state == 'closed'">
+                        <button name="action_save_mobile"
+                                type="object"
+                                string="💾 Enregistrer"
+                                class="btn btn-outline-secondary w-100 mf-cta-btn"/>
+                    </div>
+
+                    <!-- Accéder à l'épargne du membre -->
+                    <div class="d-md-none mb-2" invisible="partner_savings_cycle_count == 0">
+                        <button name="action_view_savings"
+                                type="object"
+                                string="🐷 Épargne du membre"
+                                class="btn btn-outline-primary w-100 mf-cta-btn"/>
+                    </div>
+
+                    <!-- Soumettre au Manager (Agent — état Brouillon) -->
+                    <div class="d-md-none mb-2" invisible="state != 'draft'">
+                        <button name="action_submit"
+                                type="object"
+                                string="📤 Soumettre au Manager"
+                                class="btn btn-primary w-100 mf-cta-btn"/>
+                    </div>
+
+                    <!-- Accorder le Crédit (Manager — état En attente) -->
+                    <div class="d-md-none mb-3"
+                         invisible="state != 'pending'"
+                         groups="microflow.group_micro_flow_manager">
+                        <button name="action_approve"
+                                type="object"
+                                string="✅ Accorder le Crédit"
+                                class="btn btn-success w-100 mf-cta-btn"/>
+                    </div>
+
+                    <!-- ── Devise (1er champ — verrouillé à l'activation) ── -->
+                    <group>
+                        <field name="currency_id"
+                               readonly="state in ['active', 'closed']"/>
+                    </group>
+
                     <!-- ── Bandeau pending ── -->
                     <div class="alert alert-warning mb-0"
                          invisible="state != 'pending'"
@@ -88,7 +153,6 @@
                             <field name="amount_residual_total"
                                    readonly="1"
                                    invisible="state not in ['active', 'closed']"/>
-                            <field name="currency_id" invisible="1"/>
                         </group>
                     </group>
 
@@ -140,6 +204,13 @@
                                             context="{'default_line_id': id,
                                                       'default_amount_to_pay': amount_residual}"
                                             invisible="amount_residual == 0"/>
+                                    <button name="%(microflow.action_savings_repayment_wizard)d"
+                                            string="Payer depuis l'épargne"
+                                            type="action"
+                                            icon="fa-piggy-bank"
+                                            context="{'default_credit_line_id': id}"
+                                            invisible="amount_residual == 0"
+                                            groups="microflow.group_micro_flow_manager"/>
                                 </list>
                             </field>
                         </page>

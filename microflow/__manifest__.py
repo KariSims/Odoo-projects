@@ -20,7 +20,8 @@
     'website': "https://karisims.github.io/",
 
     'category': 'Finance/Microfinance',
-    'version': '0.3',
+    'version': '0.5',
+    'post_init_hook': 'post_init_hook',
 
     'depends': [
         'base',
@@ -40,6 +41,7 @@
 
         # Wizards
         'wizard/credit_payment_wizard_views.xml',
+        'wizard/savings_repayment_wizard.xml',
 
         # Views
         'views/res_partner_views.xml',
@@ -62,6 +64,10 @@
             'microflow/static/src/components/MicroGrid/MicroGrid.js',
             'microflow/static/src/components/MicroGrid/MicroGrid.xml',
             'microflow/static/src/components/MicroGrid/MicroGrid.scss',
+            # OWL ManagerDashboard — transactions terrain + crédits actifs/pending
+            'microflow/static/src/components/ManagerDashboard/ManagerDashboard.js',
+            'microflow/static/src/components/ManagerDashboard/ManagerDashboard.xml',
+            'microflow/static/src/components/ManagerDashboard/ManagerDashboard.scss',
             # Mobile styles — wizard plein écran + terrain typography
             'microflow/static/src/css/microflow_mobile.scss',
         ],

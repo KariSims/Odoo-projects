@@ -84,6 +84,30 @@
     }
 }
 
+// ── Amount row ────────────────────────────────────────────────────────────────
+.mf-amount-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 12px;
+    font-size: 0.85rem;
+
+    .mf-amount-label {
+        color: #546E7A;
+    }
+    .mf-amount-value {
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+        color: #388E3C;
+    }
+    .mf-amount-sep,
+    .mf-amount-currency {
+        color: #78909C;
+        font-weight: 400;
+    }
+}
+
 // ── Grid ──────────────────────────────────────────────────────────────────────
 .mf-grid {
     display: grid;
@@ -110,8 +134,26 @@
     gap: 1px;
     transition: transform 0.1s;
     -webkit-tap-highlight-color: transparent;
+    position: relative; // nécessaire pour l'exposant .mf-cell-order
 
     &:active { transform: scale(0.91); }
+
+    .mf-cell-order {
+        position: absolute;
+        top: 2px;
+        left: 4px;
+        font-size: 7px;
+        font-weight: 700;
+        color: #388E3C;
+        opacity: 0.75;
+        line-height: 1;
+    }
+
+    .mf-cell-checkbox {
+        font-size: 16px;
+        line-height: 1;
+        opacity: 0.35;
+    }
 
     .mf-cell-seq {
         font-size: 9px;
@@ -125,6 +167,11 @@
     }
     .mf-cell-check {
         font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+    }
+    .mf-cell-check-hint {
+        font-size: 22px;
         font-weight: 700;
         line-height: 1;
     }
@@ -149,6 +196,32 @@
         cursor: pointer;
     }
 
+    &.mf-cell-approval-pending {
+        background: #FFEBEE;
+        border: 2px solid #B71C1C;
+        color: #B71C1C;
+        cursor: pointer;
+
+        .mf-cell-pending-badge {
+            position: absolute;
+            top: 2px;
+            left: 4px;
+            font-size: 9px;
+            line-height: 1;
+        }
+        .mf-cell-uncheck-approval {
+            opacity: 0.55;
+        }
+    }
+
+    &.mf-cell-pending-check {
+        background: #E3F2FD;
+        border: 2px solid #1565C0;
+        color: #1565C0;
+        animation: mf-pulse-blue 0.7s ease-in-out infinite;
+        cursor: pointer;
+    }
+
     &.mf-cell-pending-uncheck {
         background: #FFF3E0;
         border: 2px solid #F57C00;
@@ -169,7 +242,70 @@
     50%       { box-shadow: 0 0 0 6px rgba(25, 118, 210, 0.08); }
 }
 
+@keyframes mf-pulse-blue {
+    0%, 100% { box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.25); }
+    50%       { box-shadow: 0 0 0 7px rgba(21, 101, 192, 0.08); }
+}
+
 @keyframes mf-pulse-orange {
     0%, 100% { box-shadow: 0 0 0 2px rgba(245, 124, 0, 0.30); }
     50%       { box-shadow: 0 0 0 7px rgba(245, 124, 0, 0.10); }
+}
+
+// ── Variable cycle badge + cell specifics ────────────────────────────────────
+.mf-variable-badge {
+    display: inline-block;
+    background: #EDE7F6;
+    color: #4527A0;
+    border: 1px solid #B39DDB;
+    border-radius: 12px;
+    padding: 3px 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+// Banner: "Montant libre" label for variable cycles
+.mf-banner-amount-var {
+    font-size: 20px;
+    font-weight: 600;
+    opacity: 0.9;
+    letter-spacing: 0.5px;
+}
+
+// Variable paid cell — amount displayed instead of checkbox
+.mf-cell-variable-paid {
+    background: #F3E5F5 !important;
+    border-color: #9C27B0 !important;
+    color: #6A1B9A !important;
+}
+
+// Amount label inside a variable paid cell
+.mf-cell-var-amt {
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+// Small check mark beside amount for variable cells
+.mf-cell-check-sm {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    opacity: 0.7;
+}
+
+// animation de confirmation après chaque case cochée
+@keyframes mf-cell-confirm {
+    0%   { transform: scale(1);    box-shadow: none; }
+    40%  { transform: scale(1.18); box-shadow: 0 0 0 6px rgba(56, 142, 60, 0.35); }
+    100% { transform: scale(1);    box-shadow: none; }
+}
+
+.mf-cell-just-paid {
+    animation: mf-cell-confirm 0.45s ease-out forwards;
 }

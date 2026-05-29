@@ -1,0 +1,129 @@
+<odoo>
+    <!--Customer Report -->
+    <record id="view_hotel_customer_report_tree" model="ir.ui.view">
+        <field name="name">hotel.customer.report.tree</field>
+        <field name="model">hotel.customer</field>
+        <field name="arch" type="xml">
+            <list string="Customer Report">
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_customer_report_pivot" model="ir.ui.view">
+        <field name="name">hotel.customer.report.pivot</field>
+        <field name="model">hotel.customer</field>
+        <field name="arch" type="xml">
+            <pivot string="Customer Pivot">
+                <field name="name" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hotel_customer_report" model="ir.actions.act_window">
+        <field name="name">Customer Report</field>
+        <field name="res_model">hotel.customer</field>
+        <field name="view_mode">graph,list,pivot,form</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+    <!--Booking Report -->
+    <record id="view_hotel_booking_report_tree" model="ir.ui.view">
+        <field name="name">hotel.booking.report.tree</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <list string="Booking Report">
+                <field name="name"/>
+                <field name="room_id"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="total_amount"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="view_hotel_booking_report_pivot" model="ir.ui.view">
+        <field name="name">hotel.booking.report.pivot</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <pivot string="Booking Pivot">
+                <field name="room_id" type="row"/>
+                <field name="check_in" type="col"/>
+                <field name="total_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+
+    <record id="view_hotel_booking_report_graph" model="ir.ui.view">
+        <field name="name">hotel.booking.report.graph</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <graph string="Booking Graph" type="bar">
+                <field name="room_id" type="row"/>
+                <field name="total_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hotel_booking_report" model="ir.actions.act_window">
+        <field name="name">Booking Report</field>
+        <field name="res_model">hotel.booking</field>
+        <field name="view_mode">graph,list,pivot,form</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+    <!--Invoice Report-->
+    <record id="view_hotel_invoice_report_tree" model="ir.ui.view">
+        <field name="name">hotel.invoice.report.tree</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <list string="Invoice Report">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="amount_total"/>
+                <field name="invoice_date"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_invoice_report_pivot" model="ir.ui.view">
+        <field name="name">hotel.invoice.report.pivot</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <pivot string="Invoice Pivot">
+                <field name="partner_id" type="row"/>
+                <field name="invoice_date" type="col"/>
+                <field name="amount_total" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_hotel_invoice_report_graph" model="ir.ui.view">
+        <field name="name">hotel.invoice.report.graph</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <graph string="Invoice Graph" type="bar">
+                <field name="invoice_date" type="row"/>
+                <field name="amount_total" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hotel_invoice_report" model="ir.actions.act_window">
+        <field name="name">Invoice Report</field>
+        <field name="res_model">account.move</field>
+        <field name="domain">[('move_type', '=', 'out_invoice')]</field>
+        <field name="view_mode">graph,list,pivot,form</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+</odoo>
+

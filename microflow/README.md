@@ -79,8 +79,9 @@ Le module définit deux groupes dans **Settings > Users & Companies > Users > [u
 | Paramètres (Settings) | ✗ | ✓ | ✗ |
 | Bouton "Tout Valider" | ✗ | ✓ | ✗ |
 | Toggle "Versement Reçu" | ✗ | ✓ | ✗ |
+| Activer le Cycle Complet | ✗ | ✓ | ✗ |
 
-> **Important :** un utilisateur sans groupe verra les menus Épargne et Crédits mais ne pourra pas activer de cycle (le journal n'est pas configuré) et ne verra aucune donnée filtrée par agent.
+> **Important :** un utilisateur sans groupe verra les menus Épargne et Crédits mais ne pourra pas activer de cycle et ne verra aucune donnée.
 
 ---
 
@@ -91,9 +92,11 @@ Avant toute utilisation terrain, un **Manager** doit configurer dans **Settings 
 | Paramètre | Description | Requis |
 |-----------|-------------|--------|
 | **Journal de collecte** | Journal comptable (caisse ou banque) utilisé pour toutes les transactions terrain | Oui |
+| **Compte Dépôts Membres** | Compte passif courant crédité à chaque versement d'épargne | Oui |
 | **Cycles actifs max par membre** | Nombre maximum de cycles d'épargne simultanés par membre (défaut : 1) | Non |
+| **Cases preview (pré-activation)** | Nombre de cases créées à l'étape 1 Agent (défaut : 5) | Non |
 
-Sans le journal configuré, toute tentative d'activation de cycle ou de collecte lèvera une erreur explicite.
+Sans le journal ou le compte dépôts configurés, toute tentative d'activation de cycle ou de confirmation de transaction lèvera une erreur explicite.
 
 ---
 
@@ -107,40 +110,79 @@ Sans le journal configuré, toute tentative d'activation de cycle ou de collecte
 
 ### 2. Zones de collecte
 
-Référentiel des zones géographiques avec code et taux de commission. Menu Configuration > Zones.
+Référentiel hiérarchique des zones géographiques (jusqu'à 3 niveaux : Région / Quartier / Bloc).
+- Champ `parent_id` : zone parente (optionnel)
+- `complete_name` : chemin complet calculé automatiquement (ex. `Dakar / Médina / Bloc A`)
+- Anti-récursion : Odoo bloque les hiérarchies circulaires
+- Le `member_id` utilise le code de la **zone feuille** (zone de l'agent, pas la racine)
+- Menu Configuration > Zones
 
-### 3. Cycles d'épargne (micro.cycle)
+### 3. Cycles d'épargne (micro.cycle) — activation en 2 étapes
 
-- Grille de cases (N cases × montant par case)
-- Activation du cycle : génère les cases + transaction de frais d'adhésion si configurée
-- Collecte terrain via le widget **MicroGrid** (interface mobile-first, cases colorées)
-- Case courante mise en évidence avec bannière sticky et tap pour collecter
-- Règle : un agent ne voit que ses propres cycles
+Le cycle suit la machine à états : **Brouillon → Pré-collecte → Actif → Clôturé**
+
+**Étape 1 — Agent : Pré-collecte**
+- L'agent clique "Activer le Cycle" → N cases de preview sont créées (configurable, défaut 5)
+- Le cycle passe en état `Pré-collecte`
+- L'agent collecte les premiers versements et remet les fonds au Manager
+
+**Étape 2 — Manager : Activation complète**
+- Le Manager vérifie les fonds reçus puis clique "Activer le Cycle Complet"
+- Les cases restantes sont créées (jusqu'à `case_count` total)
+- Le cycle passe en état `Actif`
+
+**Grille de collecte (MicroGrid) :**
+- Interface mobile-first, cases tactiles colorées
+- Double-tap pour cocher (1er tap = mise en évidence bleue, 2ème tap = collecte)
+- Tap sur case cochée = demande d'annulation (dialog de confirmation)
+- Rang chronologique affiché en exposant (1er versement = 1, etc.)
+- Jusqu'à 500 cases affichées (limite configurable)
+
+**Devise :** sélectionnable parmi les devises actives à la création, verrouillée après le premier versement.
+
+**Annulation tardive (> 2 min) :** l'agent soumet une demande au Manager qui approuve ou rejette.
 
 ### 4. Crédits (micro.credit)
 
 - Génération d'échéancier (capital × taux d'intérêt / N échéances)
 - Paiements partiels via wizard plein-écran sur mobile (montant 48px, bouton 56px)
-- Limite de versements partiels par échéance configurable
 - Suivi du résiduel par ligne
+- **Devise :** sélectionnable à la création, verrouillée à l'activation
 
 ### 5. Transactions (micro.transaction)
 
 - Créées automatiquement à chaque collecte de case ou paiement de crédit
 - Référence auto-séquentielle `MF-TX/2026/00001`
 - Statuts : `Collecté (Terrain)` → `Confirmé (Caisse)`
-- Agents : voient uniquement leurs propres transactions du jour dans "Mon Récapitulatif"
+- Agents : voient uniquement leurs propres transactions dans "Mon Récapitulatif"
+
+**Sens comptable épargne :**
+- Débit : compte caisse/journal
+- Crédit : compte Dépôts Membres (passif courant, configurable)
 
 ### 6. Tableau de Bord Manager
 
-Kanban des transactions en attente (`state=draft`) groupées par agent. Le manager coche "Versement Reçu" puis clique **"Tout Valider"** pour générer 1 écriture comptable groupée par agent.
+Composant OWL dédié (`ManagerDashboard`) avec :
+- **5 KPI cards** : épargne, remboursements, frais, crédits en attente, crédits actifs
+- **Transactions terrain** : liste avec toggle "Versement Reçu", sélection individuelle ou masse
+- **Validation groupée** : "Valider la sélection (N)" ou "Tout Valider"
+- **Récapitulatif par agent** : cartes agrégées (total collecté, barre de progression X/Y reçus), section pliable
+- **Empty state "Tout validé !"** : bannière verte quand 0 transaction en attente, avec indication des cycles encore ouverts
+
+Le Kanban des cycles (`Épargne`) est groupé par urgence :
+- Colonne "Corrections — À approuver" : cycles avec `case_count_requested ≠ 0`
+- Colonne "Annulations — À approuver" : cycles avec `pending_uncheck_count > 0`
+- Colonne "À traiter" : cycles `Pré-collecte` (activation Manager requise)
+- Colonne "En cours" : cycles actifs sans action requise
+- Colonne "Brouillon" / "Terminé" : états inactifs
 
 ### 7. Validation comptable groupée
 
-`action_bulk_confirm` crée **1 `account.move` par agent** (au lieu de N écritures séparées) avec :
+`action_bulk_confirm` crée **1 `account.move` par agent et par devise** avec :
 - 1 ligne débit/crédit par transaction
 - 1 ligne de contrepartie caisse consolidée
 - Auto-affectation du compte par défaut si le journal n'en a pas
+- **Multi-devise** : si la devise de la transaction ≠ devise société, `amount_currency` + `currency_id` sont renseignés sur chaque ligne ; `debit`/`credit` contiennent les montants convertis au taux du jour via `res.currency._convert()`
 
 ### 8. PWA offline
 
@@ -156,16 +198,19 @@ Kanban des transactions en attente (`state=draft`) groupées par agent. Le manag
 ```
 microflow/
 ├── models/
-│   ├── micro_zone.py           Zone géographique
-│   ├── micro_cycle.py          Cycle d'épargne
-│   ├── micro_cycle_line.py     Case de collecte
+│   ├── micro_zone.py           Zone géographique (hiérarchique, parent_id + complete_name)
+│   ├── micro_cycle.py          Cycle d'épargne (machine à états 4 niveaux)
+│   ├── micro_cycle_line.py     Case de collecte + annulation 2-min + correction
 │   ├── micro_credit.py         Crédit
 │   ├── micro_credit_line.py    Ligne d'échéancier
-│   ├── micro_transaction.py    Transaction de caisse
+│   ├── micro_transaction.py    Transaction de caisse + validation comptable multi-devise
 │   ├── res_partner.py          Extension membre
+│   ├── res_users.py            Sync home action (agent→Épargne, manager→Dashboard)
 │   └── res_config_settings.py  Paramètres module
 ├── wizard/
-│   └── credit_payment_wizard.py  Assistant versement
+│   ├── credit_payment_wizard.py       Assistant versement crédit
+│   └── savings_repayment_wizard.py    Assistant transfert épargne → crédit
+├── hooks.py                    post_init_hook (home actions agent/manager)
 ├── controllers/
 │   └── controllers.py          Route /microflow/sw.js (service worker)
 ├── security/
@@ -174,7 +219,9 @@ microflow/
 │   └── ir.model.access.csv     Droits CRUD par groupe
 ├── views/                      Vues XML (list, form, kanban)
 ├── static/src/
-│   ├── components/MicroGrid/   Widget OWL grille de cases
+│   ├── components/
+│   │   ├── MicroGrid/          Widget OWL grille de cases
+│   │   └── ManagerDashboard/   Dashboard OWL client action
 │   ├── js/
 │   │   ├── gps_capture.js      Capture GPS (patch FormController)
 │   │   ├── sw_register.js      Enregistrement service worker
@@ -182,12 +229,15 @@ microflow/
 │   └── css/
 │       └── microflow_mobile.scss  Styles mobile-first
 └── tests/
-    ├── test_res_partner.py     3 tests ID membre
-    ├── test_micro_cycle.py     6 tests cycles
-    └── test_micro_credit.py    7 tests crédits
+    ├── test_res_partner.py     3 tests — ID membre, unicité, code zone
+    ├── test_micro_cycle.py     37 tests — cycles, collecte, comptabilité, correction de cases
+    ├── test_micro_credit.py    8 tests — workflow crédit, wizard paiement
+    ├── test_savings_transfer.py 13 tests — transfert épargne→crédit, wizard, écritures
+    ├── test_micro_zone.py      10 tests — hiérarchie, complete_name, anti-récursion
+    └── test_res_users.py       5 tests — sync home action, groupes, batch
 ```
 
-### Lancer les tests
+### Lancer les tests (76 tests)
 
 ```bash
 python odoo-bin -d <nom_base> --test-enable --stop-after-init -i microflow
@@ -201,11 +251,13 @@ python odoo-bin -d <nom_base> --test-enable --stop-after-init -i microflow
 |----------|---------------|----------|
 | Module invisible dans le menu | Installation cassée ou utilisateur sans groupe | `-u microflow` + assigner groupe Manager |
 | "Configurez le journal" à l'activation | Journal non configuré | Settings > MICRO FLOW > Journal de collecte |
+| "Configurez le compte dépôts" à la confirmation | Compte épargne non configuré | Settings > MICRO FLOW > Compte Dépôts Membres |
 | Paramètres invisibles dans Settings | Utilisateur pas dans le groupe Manager | Settings > Users > assigner Manager |
+| Grille bloquée à 40 cases | Ancien sous-formulaire sans limit | Ajouter `limit="500"` au `<list>` subview MicroGrid |
+| "post_init_hook" manquant à l'install | `__init__.py` manque `from .hooks import post_init_hook` | Ajouter cette ligne dans `__init__.py` |
 | Service Worker insecure | (corrigé) — SW servi via contrôleur avec header `Service-Worker-Allowed: /` | N/A |
-| "tracking=True sans mail.thread" | (corrigé) — supprimé | N/A |
 | Cases toutes nommées "Nouveau" | (corrigé) — séquence MF-TX ajoutée | N/A |
 
 ---
 
-*Version 0.3 — Auteur : KariSims*
+*Version 1.4 — Auteur : KariSims*

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_max_immo_bill_type_list" model="ir.ui.view">
+        <field name="name">max.immo.bill.type.list</field>
+        <field name="model">max.immo.bill.type</field>
+        <field name="arch" type="xml">
+            <list string="Types de Factures" editable="top">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="default_frequency"/>
+                <field name="description"/>
+                <field name="bill_count" string="Nb. Factures"/>
+                <field name="color" widget="color_index"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_max_immo_bill_type_form" model="ir.ui.view">
+        <field name="name">max.immo.bill.type.form</field>
+        <field name="model">max.immo.bill.type</field>
+        <field name="arch" type="xml">
+            <form string="Type de Facture">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="default_frequency"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="color" widget="color_index"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Description..."/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_max_immo_bill_type" model="ir.actions.act_window">
+        <field name="name">Types de Factures</field>
+        <field name="res_model">max.immo.bill.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

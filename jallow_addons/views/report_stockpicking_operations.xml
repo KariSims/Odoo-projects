@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_picking_jallow" inherit_id="stock.report_picking">
+
+            <!-- 1. Supprimer le h2 (nom entrepôt), conserver uniquement le h1 (numéro transfert) -->
+            <xpath expr="//div[h1[@t-field='o.name']]" position="replace">
+                <div class="float-start">
+                    <h2 t-if="o.picking_type_id.warehouse_id"><span t-field="o.picking_type_id.warehouse_id.name"/></h2>
+                    <h1 t-field="o.name">WH/OUT/00001</h1>
+                </div>
+            </xpath>
+
+            <!-- <xpath expr="//table[@class='table table-borderless mt16']/thead/tr/th[@name='th_from' and contains(@class, 'text-start')]" position="replace"> -->
+            <xpath expr="//th[@name='th_from' and contains(@class, 'text-start')]" position="replace">
+                <th name="th_from" t-if="o.picking_type_id.code != 'incoming'" align="right" groups="stock.group_stock_multi_locations" class="text-end">
+                    <strong>From</strong>
+                </th>
+            </xpath>
+
+            <!-- 2. Remplacer le td produit (avec extra_desc) par la version simple (nom + description picking) -->
+            <xpath expr="//tr[@t-foreach='o.move_line_ids_without_package.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))']/td[1]" position="replace">
+                <!-- <td>
+                    <span t-field="ml.product_id.display_name">Customizable Desk</span><br/>
+                    <span t-if="ml.product_id.description_picking" t-field="ml.product_id.description_picking"></span>
+                </td> -->
+                <t t-set="extra_desc" t-value="ml.move_id.sale_line_id.name.replace(ml.product_id.display_name, '').strip() if ml.move_id.sale_line_id else ''"/>
+                <td>
+                    <span t-field="ml.product_id.display_name"/>
+                                        
+                    <t t-if="extra_desc">
+                        <br/>
+                        <small><span t-esc="extra_desc"/></small>
+                    </t>
+                </td>
+            </xpath>
+
+        </template>
+    </data>
+</odoo>

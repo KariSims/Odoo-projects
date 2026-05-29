@@ -1,0 +1,251 @@
+<odoo>
+    <template id="report_hotel_booking" t-name="hotel_management.report_hotel_booking">
+        <t t-call="web.external_layout_standard">
+
+            <!-- Conditional Footer -->
+            <t t-if="len(docs) == 1">
+                <t t-set="footer">
+                    <div class="text-center" style="border-top: 1px solid #ccc; padding-top: 8px; font-size: 11px;">
+                        <strong>Terms and Conditions</strong><br/>
+                        Cancellation charges may apply as per hotel policy.<br/>
+                        Any damage to property will be charged accordingly.
+                    </div>
+                </t>
+            </t>
+
+            <main>
+                <t t-set="company" t-value="docs.env.company"/>
+
+                <style>
+                    body, table, p, h2, h4, td, th {
+                    font-family: 'Helvetica', 'Arial', sans-serif;
+                    color: #2c3e50;
+                    }
+
+                    h2 {
+                    font-size: 22px;
+                    font-weight: 600;
+                    border-bottom: 2px solid #ccc;
+                    padding-bottom: 4px;
+                    margin-bottom: 15px;
+                    }
+
+                    h4 {
+                    font-size: 16px;
+                    margin-top: 30px;
+                    color: #34495e;
+                    }
+
+                    .text-center {
+                    text-align: center;
+                    }
+
+                    .mb-4 {
+                    margin-bottom: 20px;
+                    }
+
+                    table.table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 12px;
+                    font-size: 13px;
+                    }
+
+                    table.table th {
+                    background-color: #f7f9fb;
+                    color: #2c3e50;
+                    border: 1px solid #dee2e6;
+                    padding: 8px;
+                    font-weight: 500;
+                    }
+
+                    table.table td {
+                    border: 1px solid #e3e6e8;
+                    padding: 7px;
+                    color: #2d3436;
+                    }
+
+                    .td-label {
+                    text-align: left !important;
+                    font-weight: 500;
+                    background-color: #fdfdfd;
+                    color: #555;
+                    }
+
+                    .created-on {
+                    font-size: 12px;
+                    color: #7f8c8d;
+                    }
+
+                    .footer-terms {
+                    border-top: 1px solid #ccc;
+                    padding-top: 8px;
+                    font-size: 11px;
+                    color: #555;
+                    }
+                </style>
+
+                <t t-if="len(docs) == 1">
+                    <!-- SINGLE BOOKING REPORT  -->
+                    <t t-set="doc" t-value="docs[0]"/>
+                    <div class="page">
+                        <!-- Header: Logo Left + Company Info Right -->
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                            <!-- Logo Left -->
+                            <div>
+                                <img t-if="company.logo"
+                                     t-att-src="'data:image/png;base64,%s' % company.logo.decode('utf-8')"
+                                     style="max-height: 80px;"/>
+                            </div>
+
+                            <!-- Company Info Right -->
+                            <div style="text-align: right; font-size: 12px; color: #333;">
+                                <strong>
+                                    <t t-esc="company.name"/>
+                                </strong>
+                                <br/>
+                                <t t-if="company.street">
+                                    <t t-esc="company.street"/>
+                                    <br/>
+                                </t>
+                                <t t-if="company.city">
+                                    <t t-esc="company.city"/>
+                                </t>
+                                <t t-if="company.zip">-
+                                    <t t-esc="company.zip"/>
+                                </t>
+                                <br/>
+                                <t t-if="company.phone">Phone:
+                                    <t t-esc="company.phone"/>
+                                    <br/>
+                                </t>
+                                <t t-if="company.email">Email:
+                                    <t t-esc="company.email"/>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Centered Title Below Header -->
+                        <div class="text-center mb-4">
+                            <h2>Booking Confirmation</h2>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                            <h4 style="margin: 0;">Booking Details</h4>
+                            <span style="font-size: 12px; color: #555;">
+                                Created On:
+                                <t t-esc="doc.create_date.strftime('%Y-%m-%d %H:%M')"/>
+                            </span>
+                        </div>
+                        <table class="table">
+                            <tr><td class="td-label">Booking ID</td><td><t t-esc="doc.name"/></td></tr>
+                            <tr><td class="td-label">Guest</td><td><t t-esc="doc.guest_id.name"/></td></tr>
+                            <tr><td class="td-label">Phone</td><td><t t-esc="doc.guest_id.phone or ''"/></td></tr>
+                            <tr><td class="td-label">Room</td><td><t t-esc="doc.room_id.name"/></td></tr>
+                            <tr><td class="td-label">Room Type</td><td><t t-esc="dict(doc._fields['room_type'].selection).get(doc.room_type)"/></td></tr>
+                            <tr><td class="td-label">Check-In</td><td><t t-esc="doc.check_in"/></td></tr>
+                            <tr><td class="td-label">Check-Out</td><td><t t-esc="doc.check_out"/></td></tr>
+                            <tr><td class="td-label">Total Nights</td><td><t t-esc="doc.total_nights"/></td></tr>
+                            <tr><td class="td-label">Adults</td><td><t t-esc="doc.adults"/></td></tr>
+                            <tr><td class="td-label">Kids (Above 6)</td><td><t t-esc="doc.kids_above_6"/></td></tr>
+                            <tr><td class="td-label">Total Amount</td><td><t t-esc="doc.total_amount"/> ₹</td></tr>
+                        </table>
+                    </div>
+                </t>
+
+                <t t-else="">
+                    <!-- MULTIPLE BOOKINGS REPORT  -->
+                    <div class="page">
+                        <!-- Header: Logo Left + Company Info Right -->
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+                            <!-- Logo Left -->
+                            <div>
+                                <img t-if="company.logo"
+                                     t-att-src="'data:image/png;base64,%s' % company.logo.decode('utf-8')"
+                                     style="max-height: 80px;"/>
+                            </div>
+
+                            <!-- Company Info Right -->
+                            <div style="text-align: right; font-size: 12px; color: #333;">
+                                <strong>
+                                    <t t-esc="company.name"/>
+                                </strong>
+                                <br/>
+                                <t t-if="company.street">
+                                    <t t-esc="company.street"/>
+                                    <br/>
+                                </t>
+                                <t t-if="company.city">
+                                    <t t-esc="company.city"/>
+                                </t>
+                                <t t-if="company.zip">-
+                                    <t t-esc="company.zip"/>
+                                </t>
+                                <br/>
+                                <t t-if="company.phone">Phone:
+                                    <t t-esc="company.phone"/>
+                                    <br/>
+                                </t>
+                                <t t-if="company.email">Email:
+                                    <t t-esc="company.email"/>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- Centered Title Below Header -->
+                        <div class="text-center mb-4">
+                            <h2>Booking Reports</h2>
+                        </div>
+
+
+                        <t t-set="sample_doc" t-value="docs[0]"/>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                            <h4 style="margin: 0;">Booking List</h4>
+                            <span style="font-size: 12px; color: #555;">
+                                Created On:
+                                <t t-esc="sample_doc.create_date.strftime('%Y-%m-%d %H:%M')"/>
+                            </span>
+                        </div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Guest</th>
+                                    <th>Phone</th>
+                                    <th>Room</th>
+                                    <th>Room Type</th>
+                                    <th>Check-In</th>
+                                    <th>Check-Out</th>
+                                    <th>Total Nights</th>
+                                    <th>Adults</th>
+                                    <th>Kids (Above 6)</th>
+                                    <th>Total Amount (₹)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="docs" t-as="doc">
+                                    <tr>
+                                        <td><t t-esc="doc.name"/></td>
+                                        <td><t t-esc="doc.guest_id.name"/></td>
+                                        <td><t t-esc="doc.guest_id.phone or ''"/></td>
+                                        <td><t t-esc="doc.room_id.name"/></td>
+                                        <td><t t-esc="dict(doc._fields['room_type'].selection).get(doc.room_type)"/></td>
+                                        <td><t t-esc="doc.check_in"/></td>
+                                        <td><t t-esc="doc.check_out"/></td>
+                                        <td><t t-esc="doc.total_nights"/></td>
+                                        <td><t t-esc="doc.adults"/></td>
+                                        <td><t t-esc="doc.kids_above_6"/></td>
+                                        <td><t t-esc="doc.total_amount"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+
+            </main>
+        </t>
+    </template>
+</odoo>
+

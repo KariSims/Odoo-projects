@@ -5,8 +5,8 @@
         <field name="model">micro.zone</field>
         <field name="arch" type="xml">
             <list>
+                <field name="complete_name"/>
                 <field name="code"/>
-                <field name="name"/>
                 <field name="commission_rate" widget="percentage"/>
                 <field name="active" widget="boolean_toggle"/>
             </list>
@@ -20,11 +20,31 @@
             <form>
                 <sheet>
                     <group>
-                        <field name="name"/>
-                        <field name="code"/>
-                        <field name="commission_rate"/>
-                        <field name="active"/>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="parent_id"
+                                   domain="[('id', '!=', id)]"
+                                   options="{'no_create': True}"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="commission_rate"/>
+                            <field name="complete_name" readonly="1"/>
+                        </group>
                     </group>
+
+                    <notebook>
+                        <page string="Sous-zones" invisible="not child_ids">
+                            <field name="child_ids" nolabel="1">
+                                <list create="0">
+                                    <field name="complete_name" string="Zone"/>
+                                    <field name="code"/>
+                                    <field name="active" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

@@ -21,16 +21,24 @@ Long description of module's purpose
     'depends': [
         'base',
         'base_automation',
+        'sale',
+        'point_of_sale',
         'sms'
         ],
 
     # always loaded
     'data': [
+        # 'data/cron.xml',
         'security/sms_security.xml',
         'security/ir.model.access.csv',
         'views/views.xml',
         # 'views/templates.xml',
     ],
+    # "assets": {
+    #     "point_of_sale._assets_pos": [
+    #         'sms_dexchange/static/src/js/pos_sms.js',
+    #     ],
+    # },
     # only loaded in demonstration mode
     # 'demo': [
     #     'demo/demo.xml',

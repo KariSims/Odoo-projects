@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+  <t t-name="synconics_bi_dashboard.GlobalFilterPanel">
+    <div class="o_bi_global_filter">
+
+      <!-- Toggle button -->
+      <button
+        class="btn btn-secondary btn-sm o_bi_filter_toggle"
+        t-on-click="togglePanel"
+        t-att-title="state.visible ? 'Masquer les filtres' : 'Afficher les filtres'"
+      >
+        <i class="fa fa-filter me-1"/>
+        Filtres
+        <t t-if="activeFilterCount > 0">
+          <span class="badge bg-primary ms-1" t-out="activeFilterCount"/>
+        </t>
+        <i t-att-class="state.visible ? 'fa fa-chevron-up ms-1' : 'fa fa-chevron-down ms-1'"/>
+      </button>
+
+      <!-- Filter panel -->
+      <div t-if="state.visible" class="o_bi_filter_panel card shadow-sm p-3 mt-1">
+        <div class="row g-2 align-items-end">
+
+          <!-- Partner direct selector -->
+          <div class="col-md-3 col-sm-6 position-relative">
+            <label class="form-label fw-semibold mb-1">Partenaire</label>
+            <div class="input-group input-group-sm">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Rechercher un partenaire…"
+                t-att-value="state.partnerIdDisplay"
+                t-on-input="onPartnerInput"
+                t-on-blur="hidePartnerDropdown"
+              />
+              <button
+                t-if="state.partnerId"
+                class="btn btn-outline-secondary"
+                type="button"
+                t-on-click="clearPartner"
+              >
+                <i class="fa fa-times"/>
+              </button>
+            </div>
+            <ul
+              t-if="state.showPartnerDropdown"
+              class="dropdown-menu show w-100 position-absolute"
+              style="z-index:1050; top:100%;"
+            >
+              <t t-foreach="state.partnerSuggestions" t-as="p" t-key="p.id">
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="#"
+                    t-on-mousedown.prevent="() => this.onPartnerSelect(p)"
+                    t-out="p.name"
+                  />
+                </li>
+              </t>
+            </ul>
+          </div>
+
+          <!-- Partner field selector (single dropdown listing all res.partner fields) -->
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label fw-semibold mb-1">Champ partenaire</label>
+            <select
+              class="form-select form-select-sm"
+              t-on-change="onPartnerFieldChange"
+              t-att-value="state.partnerField"
+            >
+              <option value="">-- Sélectionner un champ --</option>
+              <t t-foreach="state.partnerFields" t-as="field" t-key="field.name">
+                <option t-att-value="field.name" t-out="field.label"/>
+              </t>
+            </select>
+          </div>
+
+          <!-- Partner field value (dynamic based on field type) -->
+          <div class="col-md-3 col-sm-6 position-relative" t-if="state.partnerField">
+            <label class="form-label fw-semibold mb-1">Valeur</label>
+
+            <!-- Selection field -->
+            <t t-if="state.partnerFieldMeta and state.partnerFieldMeta.type === 'selection'">
+              <select
+                class="form-select form-select-sm"
+                t-on-change="onSelectionValueChange"
+              >
+                <option value="">-- Toutes --</option>
+                <t t-foreach="state.partnerFieldMeta.selection" t-as="sel" t-key="sel[0]">
+                  <option t-att-value="sel[0]" t-out="sel[1]"/>
+                </t>
+              </select>
+            </t>
+
+            <!-- Boolean field -->
+            <t t-elif="state.partnerFieldMeta and state.partnerFieldMeta.type === 'boolean'">
+              <div class="form-check mt-1">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  t-on-change="onBooleanValueChange"
+                />
+                <label class="form-check-label">Oui</label>
+              </div>
+            </t>
+
+            <!-- Integer / float field -->
+            <t t-elif="state.partnerFieldMeta and ['integer','float','monetary'].includes(state.partnerFieldMeta.type)">
+              <input
+                type="number"
+                class="form-control form-control-sm"
+                placeholder="Valeur…"
+                t-on-input="onFieldValueInput"
+              />
+            </t>
+
+            <!-- Many2one / Many2many field with autocomplete -->
+            <t t-elif="state.partnerFieldMeta and ['many2one','many2many'].includes(state.partnerFieldMeta.type)">
+              <div class="input-group input-group-sm">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Rechercher…"
+                  t-att-value="state.partnerFieldValueDisplay"
+                  t-on-focus="onFieldValueFocus"
+                  t-on-input="onFieldValueInput"
+                  t-on-blur="hideFieldValueDropdown"
+                />
+                <button
+                  t-if="state.partnerFieldValue"
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  t-on-click="clearFieldValue"
+                >
+                  <i class="fa fa-times"/>
+                </button>
+              </div>
+              <ul
+                t-if="state.showFieldValueDropdown"
+                class="dropdown-menu show w-100 position-absolute"
+                style="z-index:1050; top:100%;"
+              >
+                <t t-foreach="state.fieldValueSuggestions" t-as="item" t-key="item.id">
+                  <li>
+                    <a
+                      class="dropdown-item"
+                      href="#"
+                      t-on-mousedown.prevent="() => this.onFieldValueSelect(item)"
+                      t-out="item.name"
+                    />
+                  </li>
+                </t>
+              </ul>
+            </t>
+
+            <!-- Default: char / text field -->
+            <t t-else="">
+              <input
+                type="text"
+                class="form-control form-control-sm"
+                placeholder="Valeur…"
+                t-on-input="onFieldValueInput"
+              />
+            </t>
+          </div>
+
+          <!-- Period selector -->
+          <div class="col-md-3 col-sm-6">
+            <label class="form-label fw-semibold mb-1">Période</label>
+            <select
+              class="form-select form-select-sm"
+              t-att-value="state.datePeriod"
+              t-on-change="onDatePeriodChange"
+            >
+              <option value="">-- Aucune --</option>
+              <option value="today">Aujourd'hui</option>
+              <option value="week">Cette semaine</option>
+              <option value="month">Ce mois</option>
+              <option value="ytd">Year to date</option>
+              <option value="custom">Date personnalisée</option>
+            </select>
+          </div>
+
+          <!-- Custom date inputs (visible only when 'custom' is selected) -->
+          <t t-if="state.datePeriod === 'custom'">
+            <div class="col-md-2 col-sm-6">
+              <label class="form-label fw-semibold mb-1">Du</label>
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                t-att-value="state.dateFrom"
+                t-on-change="onDateFromChange"
+              />
+            </div>
+            <div class="col-md-2 col-sm-6">
+              <label class="form-label fw-semibold mb-1">Au</label>
+              <input
+                type="date"
+                class="form-control form-control-sm"
+                t-att-value="state.dateTo"
+                t-on-change="onDateToChange"
+              />
+            </div>
+          </t>
+
+          <!-- Read-only date summary for presets -->
+          <t t-elif="state.datePeriod and state.datePeriod !== 'custom'">
+            <div class="col-auto d-flex align-items-end">
+              <span class="badge bg-secondary fs-6 py-2 px-3">
+                <i class="fa fa-calendar me-1"/>
+                <t t-out="state.dateFrom"/> → <t t-out="state.dateTo"/>
+              </span>
+            </div>
+          </t>
+
+          <!-- Invoice state -->
+          <div class="col-md-2 col-sm-6">
+            <label class="form-label fw-semibold mb-1">État facture</label>
+            <select
+              class="form-select form-select-sm"
+              t-att-value="state.invoiceState"
+              t-on-change="onInvoiceStateChange"
+            >
+              <option value="">Tous</option>
+              <option value="draft">Brouillon</option>
+              <option value="posted">Validé</option>
+              <option value="cancel">Annulé</option>
+              <option value="in_payment">En paiement</option>
+            </select>
+          </div>
+
+          <!-- Action buttons -->
+          <div class="col-auto d-flex gap-2 align-items-end">
+            <button
+              class="btn btn-primary btn-sm"
+              t-on-click="applyFilters"
+            >
+              <i class="fa fa-check me-1"/>
+              Appliquer
+            </button>
+            <button
+              class="btn btn-outline-secondary btn-sm"
+              t-on-click="resetFilters"
+            >
+              <i class="fa fa-times me-1"/>
+              Réinitialiser
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </t>
+</templates>

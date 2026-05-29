@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_recouvrement_drc_recouvrement_drc,recouvrement_drc.recouvrement_drc,model_recouvrement_drc_recouvrement_drc,base.group_user,1,1,1,1

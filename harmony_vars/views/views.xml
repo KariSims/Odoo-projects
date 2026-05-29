@@ -1,0 +1,15 @@
+<odoo>
+      <record id="view_prod_form_inherit" model="ir.ui.view">
+        <field name="name">product.template.form.inherit</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet/notebook/page[@name='general_information']/group[1]/group[1]/field[@name='type']" position="before">
+                <field name="description"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="description" class="text-danger"></field>
+            </xpath>
+        </field>
+      </record>
+</odoo>

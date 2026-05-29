@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--Account Move Views-->
+    <record id="view_account_move_form_inherit" model="ir.ui.view">
+        <field name="name">account.move.form.hotel.booking</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='invoice_origin']" position="after">
+                <field name="hotel_booking_id" widget="many2one_avatar"/>
+            </xpath>
+
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button
+                    name="action_view_hotel_booking"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-bed"
+                    invisible="not hotel_booking_id">
+                    <field name="hotel_booking_id" widget="statinfo" string="Booking"/>
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!--Hotel Booking Views-->
+
+    <record id="view_hotel_booking_form" model="ir.ui.view">
+        <field name="name">hotel.booking.form</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <form string="Booking">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_paid" type="object" string="Mark as Paid" class="btn-primary" invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" type="object" string="Cancel" class="btn-secondary" invisible="not state in ['draft', 'confirmed']"/>
+                    <button name="action_draft" type="object" string="Reset to Draft" class="btn-secondary" invisible="not state in ['paid', 'cancelled']"/>
+                    <button name="create_invoice" type="object" string="Create Invoice" class="btn-primary" invisible="state != 'paid'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,paid,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_invoices"
+                                string="View Invoices"
+                                type="object"
+                                class="btn-primary"
+                                icon="fa-file-invoice"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="guest_id"/>
+                            <field name="room_type"/>
+                            <field name="room_id"/>
+                            <field name="is_ac"/>
+                            <field name="room_number" readonly="1"/>
+                            <field name="adults" modifiers='{"readonly": [["guest_id", "!=", false]]}'/>
+                            <field name="kids" modifiers='{"readonly": [["guest_id", "!=", false]]}'/>
+                            <field name="kids_above_6" modifiers='{"readonly": [["guest_id", "!=", false]]}'/>
+                        </group>
+                        <group>
+                            <field name="check_in"/>
+                            <field name="check_out"/>
+                            <field name="total_nights" readonly="1"/>
+                            <field name="total_amount" readonly="1"/>
+                        </group>
+                        <notebook>
+                            <page string="Room Info">
+                                <group>
+                                    <field name="extra_beds"/>
+                                    <field name="extra_bed_charge" readonly="1"/>
+                                    <field name="room_id" domain="[('id','in',available_room_ids)]"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="view_hotel_booking_tree" model="ir.ui.view">
+        <field name="name">hotel.booking.tree</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="guest_id" widget="many2one"/>
+                <field name="room_id"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="total_amount"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="view_hotel_booking_calendar" model="ir.ui.view">
+        <field name="name">hotel.booking.calendar</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <calendar
+                    string="Hotel Bookings Calendar"
+                    date_start="check_in"
+                    date_stop="check_out"
+                    color="guest_id"
+                    create="true"
+                    quick_create="0"
+                    event_open_popup="true">
+
+                <field name="name"/>
+                <field name="room_type"/>
+                <field name="is_ac"/>
+                <field name="room_number"/>
+
+            </calendar>
+
+        </field>
+    </record>
+
+
+    <record id="view_hotel_booking_kanban" model="ir.ui.view">
+        <field name="name">hotel.booking.kanban</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column" create="true" quick_create="false">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_title">
+                                <strong><field name="name"/></strong>
+                            </div>
+                            <div><field name="guest_id"/></div>
+                            <div>Room: <field name="room_id"/></div>
+                            <div>Check-in: <field name="check_in" widget="datetime"/></div>
+                            <div>Check-out: <field name="check_out" widget="datetime"/></div>
+                            <div>Total: <field name="total_amount"/></div>
+                            <div>Status: <field name="state"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--Room Views-->
+    <record id="view_hotel_room_form" model="ir.ui.view">
+        <field name="name">hotel.room.form</field>
+        <field name="model">hotel.room</field>
+        <field name="arch" type="xml">
+            <form string="Hotel Room">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="room_type"/>
+                            <field name="is_ac"/>
+                        </group>
+                        <group>
+                            <field name="image" widget="image" class="oe_avatar" options="{'preview_image': 'image'}"/>
+                        </group>
+                        <group>
+                            <field name="price_per_night"/>
+                            <field name="status"/>
+                        </group>
+                        <notebook>
+                            <page string="Other Details">
+                                <group>
+                                    <field name="extra_beds"/>
+                                    <field name="extra_bed_charge"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hotel_room_tree" model="ir.ui.view">
+        <field name="name">hotel.room.tree</field>
+        <field name="model">hotel.room</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="room_type"/>
+                <field name="price_per_night"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_room_kanban" model="ir.ui.view">
+        <field name="name">hotel.room.kanban</field>
+        <field name="model">hotel.room</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column" create="true">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click o_kanban_record">
+                            <div class="o_kanban_image">
+                                <img t-att-src="kanban_image('hotel.room', 'image', record.id.value)"
+                                     class="oe_kanban_avatar" alt="Image"
+                                     style="max-width: 100px; max-height: 100px;"/>
+                            </div>
+                            <div class="o_kanban_record_title">
+                                <strong>Room <field name="name"/></strong>
+                            </div>
+                            <div>Type: <field name="room_type"/></div>
+                            <div>Price: <field name="price_per_night"/></div>
+                            <div>Status: <field name="status"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--Customer Views-->
+    <record id="view_hotel_customer_form" model="ir.ui.view">
+        <field name="name">hotel.customer.form</field>
+        <field name="model">hotel.customer</field>
+        <field name="arch" type="xml">
+            <form string="Hotel Customers">
+                <header>
+                    <button name="action_view_customer_bookings" type="object" class="oe_stat_button" icon="fa-bed">
+                        <field name="booking_count" string="Bookings" widget="statinfo"/>
+                    </button>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="email"/>
+                            <field name="no_of_persons"/>
+                            <field name="adults"/>
+                            <field name="kids"/>
+                            <field name="kids_above_6"/>
+                        </group>
+                        <group>
+                            <field name="phone"/>
+                            <field name="address"/>
+                            <field name="id_proof"/>
+                        </group>
+                        <notebook>
+                            <page string="Booking History">
+                                <field name="booking_ids" mode="tree,form">
+                                    <list>
+                                        <field name="name" string="Booking ID"/>
+                                        <field name="room_id" string="Room"/>
+                                        <field name="check_in"/>
+                                        <field name="check_out"/>
+                                        <field name="state"/>
+                                        <field name="total_amount"/>
+                                    </list>
+                                    <form>
+                                        <group>
+                                            <group>
+                                                <field name="name"/>
+                                                <field name="room_type"/>
+                                                <field name="room_id"/>
+                                                <field name="check_in"/>
+                                            </group>
+                                            <group>
+                                                <field name="check_out"/>
+                                                <field name="state"/>
+                                                <field name="total_amount"/>
+                                            </group>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hotel_customer_tree" model="ir.ui.view">
+        <field name="name">hotel.customer.tree</field>
+        <field name="model">hotel.customer</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="no_of_persons"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_hotel_customer_kanban" model="ir.ui.view">
+        <field name="name">hotel.customer.kanban</field>
+        <field name="model">hotel.customer</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_small_column" create="true" quick_create="false">
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_title">
+                                <strong><field name="name"/></strong>
+                            </div>
+                            <div><field name="email"/></div>
+                            <div><field name="phone"/></div>
+                            <div><field name="address"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!--Actions-->
+    <record id="action_hotel_room" model="ir.actions.act_window">
+        <field name="name">Rooms</field>
+        <field name="res_model">hotel.room</field>
+        <field name="view_mode">list,form,kanban</field>
+    </record>
+
+    <record id="action_hotel_customer" model="ir.actions.act_window">
+        <field name="name">Customers</field>
+        <field name="res_model">hotel.customer</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{"search_default_my_customers": 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first customer</p>
+        </field>
+    </record>
+
+    <record id="action_hotel_booking" model="ir.actions.act_window">
+        <field name="name">Bookings</field>
+        <field name="res_model">hotel.booking</field>
+        <field name="view_mode">list,calendar,form,kanban</field>
+        <field name="context">{}</field>
+    </record>
+
+    <record id="action_hotel_booking_calendar" model="ir.actions.act_window">
+        <field name="name">Booking Calendar</field>
+        <field name="res_model">hotel.booking</field>
+        <field name="view_mode">calendar</field>
+        <field name="view_id" ref="view_hotel_booking_calendar"/>
+    </record>
+</odoo>

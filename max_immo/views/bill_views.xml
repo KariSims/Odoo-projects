@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===== FORM VIEW ===== -->
+    <record id="view_max_immo_bill_form" model="ir.ui.view">
+        <field name="name">max.immo.bill.form</field>
+        <field name="model">max.immo.bill</field>
+        <field name="arch" type="xml">
+            <form string="Facture / Échéance">
+                <header>
+                    <button name="action_mark_paid" type="object"
+                            string="Marquer Payée"
+                            class="btn-primary"
+                            invisible="state != 'pending'"
+                            confirm="Confirmer le paiement de cette facture ?"/>
+                    <button name="action_reset_to_pending" type="object"
+                            string="Remettre en attente"
+                            invisible="state != 'paid'"
+                            groups="max_immo.group_max_immo_manager"/>
+                    <button name="action_cancel" type="object"
+                            string="Annuler"
+                            invisible="state != 'pending'"
+                            groups="max_immo.group_max_immo_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,paid"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="display_name"/>
+                        <h1>
+                            <field name="display_name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Localisation">
+                            <field name="property_id" readonly="1"/>
+                            <field name="room_id"
+                                   readonly="state != 'pending'"
+                                   required="1"/>
+                        </group>
+                        <group string="Type de Charge">
+                            <field name="bill_type_id"
+                                   readonly="state != 'pending'"
+                                   required="1"/>
+                            <field name="frequency" readonly="1"/>
+                            <field name="reference"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Montant et Période">
+                            <field name="amount"/>
+                            <field name="period_date"/>
+                        </group>
+                        <group string="Échéance et Paiement">
+                            <field name="due_date" readonly="state != 'pending'"/>
+                            <field name="is_overdue" readonly="1"
+                                   invisible="state != 'pending'"
+                                   widget="boolean_toggle"/>
+                            <field name="days_overdue" readonly="1"
+                                   invisible="not is_overdue"
+                                   string="Jours de retard"/>
+                            <field name="days_until_due" readonly="1"
+                                   invisible="is_overdue or state != 'pending'"
+                                   string="Jours avant échéance"/>
+                            <field name="payment_date" readonly="1"
+                                   invisible="state != 'paid'"/>
+                            <field name="payment_ref"
+                                   invisible="state != 'paid'"/>
+                        </group>
+                    </group>
+
+                    <group string="Notes">
+                        <field name="notes" nolabel="1" placeholder="Remarques..."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ===== LIST VIEW ===== -->
+    <record id="view_max_immo_bill_list" model="ir.ui.view">
+        <field name="name">max.immo.bill.list</field>
+        <field name="model">max.immo.bill</field>
+        <field name="arch" type="xml">
+            <list string="Factures / Charges"
+                  decoration-danger="is_overdue == True"
+                  decoration-success="state == 'paid'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="property_id" optional="show"/>
+                <field name="room_id"/>
+                <field name="bill_type_id"/>
+                <field name="period_date" optional="show"/>
+                <field name="reference" optional="show"/>
+                <field name="amount"/>
+                <field name="due_date"/>
+                <field name="days_overdue" string="Retard (j)"
+                       decoration-danger="days_overdue &gt; 0"
+                       optional="show"/>
+                <field name="days_until_due" string="Reste (j)"
+                       decoration-warning="days_until_due &lt;= 7 and days_until_due &gt; 0"
+                       optional="show"/>
+                <field name="payment_date" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'pending' and not is_overdue"
+                       decoration-danger="is_overdue == True"
+                       decoration-success="state == 'paid'"
+                       decoration-muted="state == 'cancelled'"/>
+                <field name="is_overdue" column_invisible="1"/>
+                <button name="action_mark_paid" type="object"
+                        string="Payer" icon="fa-check"
+                        invisible="state != 'pending'"
+                        class="btn-sm btn-success"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ===== KANBAN VIEW (par chambre) ===== -->
+    <record id="view_max_immo_bill_kanban" model="ir.ui.view">
+        <field name="name">max.immo.bill.kanban</field>
+        <field name="model">max.immo.bill</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="bill_type_id" sample="1">
+                <field name="display_name"/>
+                <field name="room_id"/>
+                <field name="property_id"/>
+                <field name="bill_type_id"/>
+                <field name="amount"/>
+                <field name="due_date"/>
+                <field name="state"/>
+                <field name="is_overdue"/>
+                <field name="days_overdue"/>
+                <field name="days_until_due"/>
+                <templates>
+                    <t t-name="card" t-att-class="
+                        record.is_overdue.raw_value ? 'border-start border-danger border-4' :
+                        record.state.raw_value == 'paid' ? 'border-start border-success border-4' :
+                        record.state.raw_value == 'cancelled' ? 'opacity-50' :
+                        'border-start border-warning border-4'
+                    ">
+                        <div class="d-flex justify-content-between">
+                            <strong><field name="bill_type_id"/></strong>
+                            <field name="state" widget="badge"
+                                   decoration-warning="state == 'pending' and not is_overdue"
+                                   decoration-danger="is_overdue == True"
+                                   decoration-success="state == 'paid'"
+                                   decoration-muted="state == 'cancelled'"/>
+                        </div>
+                        <div class="text-muted small">
+                            <i class="fa fa-home me-1"/>
+                            <field name="room_id"/>
+                            <t t-if="record.property_id.value"> · <field name="property_id"/></t>
+                        </div>
+                        <div class="mt-1 d-flex justify-content-between align-items-center">
+                            <span class="fw-bold fs-5">
+                                <field name="amount" widget="monetary"/>
+                            </span>
+                            <span t-att-class="record.is_overdue.raw_value ? 'text-danger small' : 'text-muted small'">
+                                <i class="fa fa-calendar me-1"/>
+                                <field name="due_date"/>
+                            </span>
+                        </div>
+                        <t t-if="record.is_overdue.raw_value">
+                            <div class="text-danger small mt-1">
+                                <i class="fa fa-exclamation-triangle me-1"/>
+                                <field name="days_overdue"/> jours de retard
+                            </div>
+                        </t>
+                        <t t-elif="record.state.raw_value == 'pending'">
+                            <div class="text-muted small mt-1">
+                                <i class="fa fa-clock-o me-1"/>
+                                Dans <field name="days_until_due"/> jours
+                            </div>
+                        </t>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ===== SEARCH VIEW ===== -->
+    <record id="view_max_immo_bill_search" model="ir.ui.view">
+        <field name="name">max.immo.bill.search</field>
+        <field name="model">max.immo.bill</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher des factures">
+                <field name="room_id" string="Chambre"/>
+                <field name="property_id" string="Propriété"/>
+                <field name="bill_type_id" string="Type"/>
+                <field name="reference" string="Référence"/>
+                <separator/>
+                <filter string="En attente" name="pending"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter string="En retard" name="overdue"
+                        domain="[('is_overdue', '=', True)]"/>
+                <filter string="Payées" name="paid"
+                        domain="[('state', '=', 'paid')]"/>
+                <filter string="Annulées" name="cancelled"
+                        domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Échéance ce mois" name="due_this_month"
+                        domain="[
+                            ('due_date', '&gt;=', (context_today()).strftime('%Y-%m-01')),
+                            ('due_date', '&lt;=', (context_today() + relativedelta(months=1, day=1, days=-1)).strftime('%Y-%m-%d'))
+                        ]"/>
+                <filter string="Échéance 7 prochains jours" name="due_soon"
+                        domain="[
+                            ('due_date', '&gt;=', context_today().strftime('%Y-%m-%d')),
+                            ('due_date', '&lt;=', (context_today() + relativedelta(days=7)).strftime('%Y-%m-%d')),
+                            ('state', '=', 'pending')
+                        ]"/>
+                <group expand="1" string="Regrouper par">
+                    <filter string="Propriété" name="group_property"
+                            context="{'group_by': 'property_id'}"/>
+                    <filter string="Chambre" name="group_room"
+                            context="{'group_by': 'room_id'}"/>
+                    <filter string="Type de Facture" name="group_type"
+                            context="{'group_by': 'bill_type_id'}"/>
+                    <filter string="État" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Mois d'échéance" name="group_due_month"
+                            context="{'group_by': 'due_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ===== GRAPH VIEW ===== -->
+    <record id="view_max_immo_bill_graph" model="ir.ui.view">
+        <field name="name">max.immo.bill.graph</field>
+        <field name="model">max.immo.bill</field>
+        <field name="arch" type="xml">
+            <graph string="Charges par Propriété" type="bar">
+                <field name="property_id" type="row"/>
+                <field name="bill_type_id" type="row"/>
+                <field name="amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ===== PIVOT VIEW ===== -->
+    <record id="view_max_immo_bill_pivot" model="ir.ui.view">
+        <field name="name">max.immo.bill.pivot</field>
+        <field name="model">max.immo.bill</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse des Charges">
+                <field name="property_id" type="row"/>
+                <field name="room_id" type="row"/>
+                <field name="bill_type_id" type="col"/>
+                <field name="amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- ===== ACTIONS ===== -->
+    <record id="action_max_immo_bill_overdue" model="ir.actions.act_window">
+        <field name="name">Factures en retard</field>
+        <field name="res_model">max.immo.bill</field>
+        <field name="view_mode">list,kanban,form,graph</field>
+        <field name="domain">[('is_overdue', '=', True)]</field>
+        <field name="search_view_id" ref="view_max_immo_bill_search"/>
+        <field name="context">{'search_default_overdue': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune facture en retard
+            </p>
+        </field>
+    </record>
+
+    <record id="action_max_immo_bill_pending" model="ir.actions.act_window">
+        <field name="name">Factures à venir</field>
+        <field name="res_model">max.immo.bill</field>
+        <field name="view_mode">list,kanban,form,graph</field>
+        <field name="domain">[('state', '=', 'pending'), ('is_overdue', '=', False)]</field>
+        <field name="search_view_id" ref="view_max_immo_bill_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune facture en attente
+            </p>
+        </field>
+    </record>
+
+    <record id="action_max_immo_bill_all" model="ir.actions.act_window">
+        <field name="name">Toutes les Factures</field>
+        <field name="res_model">max.immo.bill</field>
+        <field name="view_mode">list,kanban,form,graph,pivot</field>
+        <field name="search_view_id" ref="view_max_immo_bill_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Aucune facture enregistrée
+            </p>
+        </field>
+    </record>
+
+</odoo>

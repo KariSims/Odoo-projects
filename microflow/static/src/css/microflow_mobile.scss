@@ -132,3 +132,81 @@ $mf-credit-nav:  #2e6da4;
         font-weight: 600;
     }
 }
+
+// ── Kanban Cycles — colonne "À traiter" + badges urgence ─────────────────────
+.mf-kanban-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    width: 100%;
+    text-align: center;
+}
+
+.mf-kanban-badge-activation {
+    background: #E3F2FD;
+    color: #1565C0;
+    border: 1px solid #90CAF9;
+}
+
+.mf-kanban-badge-uncheck {
+    background: #FFEBEE;
+    color: #C62828;
+    border: 1px solid #EF9A9A;
+}
+
+.mf-kanban-badge-correction {
+    background: #F3E5F5;
+    color: #6A1B9A;
+    border: 1px solid #CE93D8;
+}
+
+// ── Partner form : phone, mobile, email — un champ par ligne ────────────────
+// Odoo 18 : o_wrap_field passe en display:contents >= 576px (d-sm-contents),
+// ce qui place label ET valeur directement dans la CSS grid de l'inner group.
+// On force display:flex + grid-column:1/-1 pour que les deux occupent la pleine
+// largeur du groupe et s'empilent verticalement (label au-dessus, valeur en dessous).
+// Appliqué jusqu'à lg (< 992px) pour ne pas altérer la vue desktop full-size.
+@media (max-width: 991.98px) {
+    .o_inner_group .o_wrap_field:has(.o_field_widget[name="phone"]),
+    .o_inner_group .o_wrap_field:has(.o_field_widget[name="mobile"]),
+    .o_inner_group .o_wrap_field:has(.o_field_widget[name="email"]) {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-column: 1 / -1 !important;
+    }
+}
+
+// ── Bouton activation mobile + save button terrain ───────────────────────────
+
+// Bouton CTA activation : visible sur mobile (d-md-none le cache sur desktop)
+.mf-cta-btn {
+    min-height: 56px;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 10px;
+    letter-spacing: 0.3px;
+    box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
+}
+
+@media (max-width: 767px) {
+    // Bouton nuage/sauvegarder — cible les variantes Odoo 18 du bouton save
+    .o_form_button_save,
+    button.o_form_button_save,
+    .o_control_panel .o_form_button_save,
+    [data-hotkey="s"] {
+        min-height: 44px !important;
+        min-width: 80px !important;
+        padding: 8px 20px !important;
+        font-size: 15px !important;
+        border-radius: 8px !important;
+    }
+
+    // Assure que la classe Bootstrap d-md-none masque bien sur ≥768px
+    // (redondant avec Bootstrap mais garantit la priorité)
+    .mf-activate-mobile-block {
+        display: block;
+    }
+}

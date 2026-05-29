@@ -8,3 +8,4 @@ from . import micro_cycle
 from . import micro_credit_line
 from . import micro_credit
 from . import res_config_settings
+from . import res_users

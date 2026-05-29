@@ -1,0 +1,13 @@
+.o_bi_global_filter {
+  position: relative;
+}
+
+.o_bi_filter_panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 9999;
+  min-width: 700px;
+  max-width: 95vw;
+  background: #fff;
+}

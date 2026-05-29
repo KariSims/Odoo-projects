@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- <templates id="template" xml:space="preserve">
+        <t t-extend="point_of_sale.OrderReceipt">
+            <t t-jquery=".pos-receipt .pos-receipt-contact" t-operation='append'>
+                Customer:
+                <t t-if='receipt.client'>
+                    <div style="font-weight:bold;">
+                        Customer:
+                        <t t-esc='receipt.client'/>
+                    </div>
+                </t>
+            </t>
+        </t>
+</templates> -->
+
+<templates id="template" xml:space="preserve">
+    <t t-name="OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[@class='pos-receipt-contact']" position="inside">
+            <p>Customer:</p>
+            <t t-if='receipt.customer'>
+                <div>Customer:
+                    <t t-esc='receipt.customer.name' />
+                </div>
+            </t>
+        </xpath>
+        <xpath expr="//div[@class='pos-receipt-order-data']/p[1]" position="replace">
+        </xpath>
+    </t>
+</templates>

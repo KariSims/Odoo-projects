@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_picking_inherit" inherit_id="stock.report_picking">
+
+            <!-- <xpath expr="//template/t/t/t/div/div[@class='row mb-4]" position="replace"> -->
+            <xpath expr="(//div[@class='row mb-4'])[1]" position="replace">
+                <div class="row mb-4">
+                    <div class="col-10 d-flex justify-content-end" name="div_outgoing_address">
+                        <div t-if="o.should_print_delivery_address()">
+                            <span><strong>Delivery Address:</strong></span>
+                            <div t-out="o.move_ids[0].partner_id or o.partner_id"
+                                t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'>
+                                    <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 opacity-75 text-muted text-center">
+                                        <strong>Delivery address</strong>
+                                        <div>Presence depends on the type of operation.</div>
+                                    </div>
+                            </div>
+                        </div>
+                        <div t-elif="o.picking_type_id.code != 'internal' and o.picking_type_id.warehouse_id.partner_id">
+                            <strong>Warehouse Address</strong>
+                            <div t-field="o.picking_type_id.warehouse_id.partner_id"
+                                t-options='{"widget": "contact", "fields": ["name", "phone"], "no_marker": True, "phone_icons": True}'>
+                                    <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 opacity-75 text-muted text-center">
+                                        <strong>Warehouse address</strong>
+                                        <div>Presence depends on the type of operation.</div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-5 offset-5 text-end" name="div_incoming_address">
+                        <t t-set="show_partner" t-value="False" />
+                        <t t-set="show_full_address" t-value="False" />
+                        <div t-if="o.picking_type_id.code=='incoming' and o.partner_id">
+                            <strong>Vendor Address</strong>
+                            <t t-set="show_partner" t-value="True" />
+                        </div>
+                        <div t-elif="o.picking_type_id.code=='internal' and o.partner_id">
+                            <strong>Warehouse Address</strong>
+                            <t t-set="show_partner" t-value="True" />
+                        </div>
+                        <div t-elif="o.picking_type_id.code=='outgoing' and o.partner_id and o.partner_id != o.partner_id.commercial_partner_id">
+                            <strong>Customer Address</strong>
+                            <t t-set="show_partner" t-value="True" />
+                            <t t-set="show_full_address" t-value="True" />
+                        </div>
+                        <div t-if="show_partner" name="partner_header">
+                            <div t-field="o.partner_id.commercial_partner_id"
+                                    t-options='{"widget": "contact", "fields": ["address", "name", "phone", "vat"] if show_full_address else ["name"], "no_marker": True, "phone_icons": True}'>
+                                    <div class="bg-light border-1 rounded h-100 d-flex flex-column align-items-center justify-content-center p-4 opacity-75 text-muted text-center">
+                                    <strong>Recipient address</strong>
+                                    <div>Presence depends on the type of operation.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+            <xpath expr="//div[@class='row mt16 mb16']" position="replace">
+                <div class="row mt16 mb16 text-center">
+                    <div>
+                        <div class="float-center">
+                            <h1><span><strong>Bon de Livraison</strong></span></h1>
+                            <h1 t-field="o.name">WH/OUT/00001</h1>
+                        </div>
+                        <div class="float-center">
+
+                            <div>
+                                <h2> - </h2>
+                            </div> 
+                            
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+            <xpath expr="//table[@class='table table-borderless mt16']" position="replace">
+                <table class="table table-borderless mt16" t-if="o.move_line_ids and o.move_ids_without_package">
+                    <t t-set="has_barcode" t-value="any(move_line.product_id and move_line.product_id.sudo().barcode or move_line.package_id for move_line in o.move_line_ids)"/>
+                    <t t-set="has_serial_number" t-value="any(move_line.lot_id or move_line.lot_name for move_line in o.move_line_ids)" groups="stock.group_production_lot"/>
+                    <thead>
+                        <tr>
+                            <th name="th_product">
+                                <div align="left"><strong>Product</strong></div>
+                            </th>
+                            <th class="text-end">
+                                <strong>Quantity</strong>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- In case you come across duplicated lines, ask NIM or LAP -->
+                        <tr t-foreach="o.move_line_ids_without_package.sorted(lambda ml: (ml.location_id.complete_name, ml.location_dest_id.complete_name))" t-as="ml">
+                            <td>
+                                <span t-field="ml.product_id.display_name">Customizable Desk</span><br/>
+                                <span t-if="ml.product_id.description_picking" t-field="ml.product_id.description_picking"></span>
+                            </td>
+                            <td class="o_td_quantity text-end">
+                                <t t-set="sol" t-value="ml.move_id.sale_line_id"/>
+
+                                <t t-if="sol">
+                                    <span t-esc="
+                                        '%s %s' % (
+                                            int(sol.product_uom_qty),
+                                            'carton(s)' if 'carton' in sol.product_uom.name.lower() else 'dz(s)'
+                                        )
+                                    "/>
+                                </t>
+                            </td>
+                        </tr>
+                        </tbody>
+                </table>
+            </xpath>
+        </template>
+    </data>
+</odoo>

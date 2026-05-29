@@ -1,5 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <templates xml:space="preserve">
+
+    <!-- ── Dialog saisie montant (cycles variables) ──────────────────────────── -->
+    <t t-name="microflow.AmountInputDialog">
+        <Dialog title="`Case ${props.lineSeq} — Saisir le montant reçu`" close="props.close">
+            <div class="text-center py-2">
+                <p class="text-muted mb-3">Montant reçu du client (<t t-esc="props.currency"/>)</p>
+                <input
+                    type="number"
+                    class="form-control form-control-lg text-center fw-bold fs-3"
+                    style="letter-spacing: 2px;"
+                    t-model="state.amount"
+                    placeholder="0"
+                    min="1"
+                    step="1"
+                    autofocus="1"
+                    t-on-keydown="onKeydown"
+                />
+            </div>
+            <t t-set-slot="footer">
+                <button
+                    class="btn btn-primary btn-lg w-100 mb-2"
+                    t-att-disabled="!isAmountValid"
+                    t-on-click="onConfirm">
+                    Confirmer la collecte
+                </button>
+            </t>
+        </Dialog>
+    </t>
+
+    <!-- ── Grille principale ─────────────────────────────────────────────────── -->
     <t t-name="microflow.MicroGrid">
         <div class="mf-microgrid" t-att-class="state.saving ? 'mf-saving' : ''">
 
@@ -11,6 +41,13 @@
             </t>
 
             <t t-else="">
+                <!-- Badge type variable -->
+                <t t-if="isVariable">
+                    <div class="mf-variable-badge mb-2">
+                        ⚖️ Épargne à montant variable
+                    </div>
+                </t>
+
                 <!-- Current case banner -->
                 <t t-if="currentLine">
                     <div class="mf-current-banner"
@@ -20,9 +57,14 @@
                             <span class="mf-banner-seq" t-esc="currentLine.sequence"/>
                         </div>
                         <div class="mf-banner-center">
-                            <span class="mf-banner-amount"
-                                  t-esc="formatAmount(currentLine.amount_expected)"/>
-                            <span class="mf-banner-currency">CDF</span>
+                            <t t-if="!isVariable">
+                                <span class="mf-banner-amount"
+                                      t-esc="formatAmount(currentLine.amount_expected)"/>
+                                <span class="mf-banner-currency" t-esc="currencySymbol"/>
+                            </t>
+                            <t t-else="">
+                                <span class="mf-banner-amount-var">Montant libre</span>
+                            </t>
                         </div>
                         <div class="mf-banner-right">
                             <span class="mf-banner-cta">Collecter →</span>
@@ -42,28 +84,69 @@
                     </span>
                 </div>
 
+                <!-- Amount stats -->
+                <div class="mf-amount-row">
+                    <span class="mf-amount-label">Collecté :</span>
+                    <span class="mf-amount-value">
+                        <t t-esc="formatAmount(collectedAmount)"/>
+                        <t t-if="!isVariable">
+                            <span class="mf-amount-sep"> / </span>
+                            <t t-esc="formatAmount(totalAmount)"/>
+                        </t>
+                        <span class="mf-amount-currency"> <t t-esc="currencySymbol"/></span>
+                    </span>
+                </div>
+
                 <!-- Grid -->
                 <div class="mf-grid">
                     <t t-foreach="lines" t-as="line" t-key="line.id">
                         <div
                             t-att-class="
                                 'mf-cell'
-                                + (line.is_paid ? ' mf-cell-paid' : (isCurrent(line) ? ' mf-cell-current' : ' mf-cell-empty'))
+                                + (line.uncheck_pending ? ' mf-cell-approval-pending' : (line.is_paid ? ' mf-cell-paid' : (isCurrent(line) ? ' mf-cell-current' : ' mf-cell-empty')))
+                                + (state.pendingCheckId === line.id ? ' mf-cell-pending-check' : '')
                                 + (state.pendingUncheckId === line.id ? ' mf-cell-pending-uncheck' : '')
+                                + (state.justPaidId === line.id ? ' mf-cell-just-paid' : '')
+                                + (isVariable &amp;&amp; line.is_paid ? ' mf-cell-variable-paid' : '')
                             "
                             t-on-click="() => this.onCellTap(line)"
-                            t-att-title="'Case ' + line.sequence + ' — ' + formatAmount(line.amount_expected) + ' CDF'"
+                            t-att-title="
+                                'Case ' + line.sequence +
+                                (isVariable
+                                    ? (line.is_paid ? ' — ' + formatAmount(line.amount_collected) + ' ' + currencySymbol : ' — Montant libre')
+                                    : ' — ' + formatAmount(line.amount_expected) + ' ' + currencySymbol)
+                            "
                         >
                             <span class="mf-cell-seq" t-esc="line.sequence"/>
-                            <t t-if="state.pendingUncheckId === line.id">
+                            <t t-if="line.uncheck_pending">
+                                <span class="mf-cell-order mf-cell-pending-badge">⏳</span>
+                                <span class="mf-cell-check mf-cell-uncheck-approval">✓</span>
+                            </t>
+                            <t t-elif="state.pendingUncheckId === line.id">
                                 <span class="mf-cell-check mf-cell-uncheck-hint">↩</span>
                             </t>
                             <t t-elif="line.is_paid">
-                                <span class="mf-cell-check">✓</span>
+                                <t t-if="line.collection_order > 0">
+                                    <span class="mf-cell-order" t-esc="line.collection_order"/>
+                                </t>
+                                <t t-if="isVariable">
+                                    <span class="mf-cell-var-amt"
+                                          t-esc="formatAmount(line.amount_collected)"/>
+                                    <span class="mf-cell-check-sm">✓</span>
+                                </t>
+                                <t t-else="">
+                                    <span class="mf-cell-check">✓</span>
+                                </t>
+                            </t>
+                            <t t-elif="state.pendingCheckId === line.id">
+                                <span class="mf-cell-check mf-cell-check-hint">☑</span>
                             </t>
                             <t t-else="">
-                                <span class="mf-cell-amt"
-                                      t-esc="formatAmount(line.amount_expected)"/>
+                                <span class="mf-cell-checkbox">☐</span>
+                                <t t-if="!isVariable">
+                                    <span class="mf-cell-amt"
+                                          t-esc="formatAmount(line.amount_expected)"/>
+                                </t>
                             </t>
                         </div>
                     </t>

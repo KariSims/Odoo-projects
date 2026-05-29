@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_inherit" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.recouvrement</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//form" position="inside">
+
+                <app string="Recouvrement" name="recouvrement_drc">
+
+                    <block title="Gestion des Cotisations (TAWU)">
+
+                        <setting string="Facturation automatique">
+                            <field name="auto_create_invoice"/>
+                            <div class="text-muted">
+                                Créer une facture brouillon dès la création d'un client avec régime.
+                            </div>
+                        </setting>
+
+                    </block>
+
+                </app>
+
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

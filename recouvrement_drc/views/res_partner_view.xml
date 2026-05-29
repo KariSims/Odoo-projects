@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='street2']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='zip']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='city']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='state_id']" position="attributes">
+                <attribute name="placeholder">Province</attribute>
+            </xpath>
+            <xpath expr="//field[@id='company']" position="attributes">
+                <attribute name="placeholder">Nom Social de l'Ese (Lumber Inc)</attribute>
+            </xpath>
+            <field name="state_id" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <xpath expr="//field[@name='website']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='lang']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <!-- drc -->
+             <xpath expr="//field[@name='country_id']" position="after">
+                 <label for="secteur"/>
+                 <field name="secteur" widget="many2many_tags" options="{'no_create': False}"/>
+            </xpath>
+            <xpath expr="//sheet/group/group[2]/field[@name='category_id']" position="before">
+
+                <field name="legal_status_code"/>
+                <!-- <field name="legal_status_display"/> -->
+
+                <field name="legal_status_detail"
+                    invisible="legal_status_code not in ['6','7']"
+                    required="legal_status_code in ['6','7']"/>
+            </xpath>
+            <!-- <xpath expr="//sheet/group/group[2]/field[@name='category_id']" position="after"> -->
+            <xpath expr="//sheet/group/group/div[@class='o_address_format']" position="after">
+                <group string="Cotisation">
+                    <field name="regime_cotisation"/>
+                    <field name="categorie_cotisant" readonly="1"/>
+                    <!-- <field name="montant_cotise"/>
+                    <field name="date_cotisation"/> -->
+                </group>
+            </xpath>
+            <field name="city" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <field name="secteur" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <field name="legal_status_code" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <field name="regime_cotisation" position="attributes">
+                <attribute name="required">1</attribute>
+            </field>
+            <xpath expr="//field[@name='regime_cotisation']" position="after">
+                 <field name="identifiant"/>
+            </xpath>
+            <xpath expr="//field[@name='country_id']" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </xpath>
+            <!-- ================================================= -->
+            <!-- Hide les pages notebooks -->
+            <!-- ================================================= -->
+            <!-- ===================================================== -->
+            <!-- 1. Changer le type par défaut dans Contacts & Addresses -->
+            <!-- ===================================================== -->
+
+            <xpath expr="//field[@name='child_ids']" position="attributes">
+                <attribute name="context">
+                    {
+                        'default_parent_id': id,
+                        'default_street': street,
+                        'default_street2': street2,
+                        'default_city': city,
+                        'default_state_id': state_id,
+                        'default_zip': zip,
+                        'default_country_id': country_id,
+                        'default_lang': lang,
+                        'default_user_id': user_id,
+                        'default_type': 'contact'
+                    }
+                </attribute>
+            </xpath>
+
+            <!-- ===================================================== -->
+            <!-- 2. Masquer l'onglet Sales & Purchase -->
+            <!-- ===================================================== -->
+
+            <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                <attribute name="invisible">1</attribute>
+                <!-- <attribute name="groups">base.group_no_one</attribute> -->
+            </xpath>
+
+            <!-- ===================================================== -->
+            <!-- 3. Masquer onglet Facturation -->
+            <!-- ===================================================== -->
+
+            <xpath expr="//page[@name='accounting']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- ===================================================== -->
+            <!-- 4. Masquer onglet Payment Follow-up -->
+            <!-- ===================================================== -->
+
+            <!-- <xpath expr="//page[contains(@string, 'Follow-up')]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath> -->
+
+        </field>
+    </record>
+
+    <record id="view_partner_kanban_inherit" model="ir.ui.view">
+        <field name="name">res.partner.kanban.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//kanban/templates/t/main/field[@name='email']" position="after">
+                <field name="phone"/>
+                <field name="secteur"/>
+                <field name="legal_status_code"/>
+                <!-- <field name="categorie_cotisant"/> -->
+            </xpath>
+        </field>
+    </record>
+
+    <record id="searchID_partner_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/field[@name='name']" position="before">
+                <field name="identifiant" string="ID du Client" filter_domain="[('identifiant', 'ilike', self)]"/>
+            </xpath>
+            <xpath expr="//search/field[@name='name']" position="after">
+                <field name="secteur" string="Statut juridique" filter_domain="[('secteur', 'ilike', self)]"/>
+                <field name="legal_status_code" string="Statut juridique" filter_domain="[('legal_status_code', 'ilike', self)]"/>
+                <field name="categorie_cotisant" string="Statut juridique" filter_domain="[('categorie_cotisant', 'ilike', self)]"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

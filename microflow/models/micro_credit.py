@@ -51,6 +51,45 @@ class MicroCredit(models.Model):
         compute='_compute_amounts', store=True,
         currency_field='currency_id')
 
+    partner_savings_total = fields.Monetary(
+        string="Épargne disponible",
+        currency_field='currency_id',
+        compute='_compute_partner_savings',
+        help="Solde épargne disponible du membre (somme des cycles actifs).",
+    )
+    partner_savings_cycle_count = fields.Integer(
+        compute='_compute_partner_savings',
+    )
+
+    @api.depends('partner_id')
+    def _compute_partner_savings(self):
+        for rec in self:
+            if not rec.partner_id:
+                rec.partner_savings_total = 0.0
+                rec.partner_savings_cycle_count = 0
+                continue
+            cycles = self.env['micro.cycle'].search([
+                ('partner_id', '=', rec.partner_id.id),
+                ('state', '=', 'active'),
+            ])
+            rec.partner_savings_cycle_count = len(cycles)
+            rec.partner_savings_total = sum(c.savings_balance for c in cycles)
+
+    def action_view_savings(self):
+        self.ensure_one()
+        return {
+            'name': f"Épargne — {self.partner_id.name}",
+            'type': 'ir.actions.act_window',
+            'res_model': 'micro.cycle',
+            'view_mode': 'list,form',
+            'domain': [('partner_id', '=', self.partner_id.id)],
+            'context': {'default_partner_id': self.partner_id.id},
+        }
+
+    def action_save_mobile(self):
+        """CTA mobile Enregistrer — le form est auto-sauvegardé avant tout appel type=object."""
+        return True
+
     @api.depends('capital', 'interest_rate', 'line_ids.amount_residual')
     def _compute_amounts(self):
         for rec in self:

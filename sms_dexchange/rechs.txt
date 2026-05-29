@@ -1,0 +1,255 @@
+#======== Controller
+from odoo import http
+from odoo.http import request
+
+
+class SmsController(http.Controller):
+
+    @http.route(
+        '/shop/send_order_sms',
+        type='json',
+        auth='public',
+        website=True,
+        csrf=False
+    )
+    def send_order_sms(self):
+        """
+        Envoi SMS client immédiat
+        + planification SMS admin (+1 min)
+        Sécurisé par la session website
+        """
+        order = request.website.sale_get_order()
+        if not order:
+            return {'error': 'Aucune commande en session'}
+
+        return order.send_order_sms()
+
+
+#============== Model
+from odoo import models, fields, _
+from datetime import timedelta
+import logging
+
+_logger = logging.getLogger(__name__)
+
+
+class SaleOrder(models.Model):
+    _inherit = 'sale.order'
+
+    sms_client_sent = fields.Boolean(
+        string="SMS client envoyé",
+        default=False
+    )
+    sms_admin_sent = fields.Boolean(
+        string="SMS admin envoyé",
+        default=False
+    )
+    sms_admin_scheduled_at = fields.Datetime(
+        string="SMS admin planifié le"
+    )
+
+    # ======================================================
+    # MÉTHODE APPELÉE PAR LE CONTROLLER
+    # ======================================================
+    def send_order_sms(self):
+        self.ensure_one()
+
+        if self.sms_client_sent:
+            return {'error': 'SMS déjà envoyé pour cette commande'}
+
+        if self.state not in ('sale', 'done'):
+            return {'error': 'Commande non confirmée'}
+
+        config = self.env['dexchange.sms.config'].sudo().search(
+            [('active', '=', True)], limit=1
+        )
+        if not config:
+            return {'error': 'Configuration SMS introuvable'}
+
+        sms_service = self.env['dexchange.sms.service'].sudo()
+
+        # =============================
+        # 📩 SMS CLIENT (IMMÉDIAT)
+        # =============================
+        phone = self.partner_id.mobile or self.partner_id.phone
+        if not phone:
+            return {'error': 'Numéro client manquant'}
+
+        message_client = _(
+            "Votre commande %(order)s est confirmée. Merci de votre achat !"
+        ) % {'order': self.name}
+
+        try:
+            res = sms_service.send_sms(
+                recipients=[phone],
+                content=message_client,
+                sender=config.sender,
+                api_key=config.api_key,
+                url=config.url
+            )
+        except Exception as e:
+            _logger.exception("Erreur SMS client")
+            return {'error': str(e)}
+
+        if res.get('error'):
+            return {'error': res.get('error')}
+
+        self.sms_client_sent = True
+
+        # =============================
+        # ⏱ PLANIFIER SMS ADMIN (+1 min)
+        # =============================
+        self.sms_admin_scheduled_at = fields.Datetime.now() + timedelta(minutes=1)
+
+        return {
+            'success': True,
+            'message': 'SMS client envoyé, SMS admin programmé'
+        }
+
+    # ======================================================
+    # MÉTHODE APPELÉE PAR LE CRON
+    # ======================================================
+    def send_admin_sms(self):
+        for order in self:
+            if order.sms_admin_sent:
+                continue
+
+            config = self.env['dexchange.sms.config'].sudo().search(
+                [('active', '=', True)], limit=1
+            )
+            if not config:
+                continue
+
+            sms_service = self.env['dexchange.sms.service'].sudo()
+
+            admin_phone = '221778988372'
+
+            message_admin = _(
+                "La commande %(order)s de %(customer)s est confirmée. "
+                "Veuillez la traiter dans les meilleurs délais."
+            ) % {
+                'order': order.name,
+                'customer': order.partner_id.name
+            }
+
+            try:
+                res = sms_service.send_sms(
+                    recipients=[admin_phone],
+                    content=message_admin,
+                    sender=config.sender,
+                    api_key=config.api_key,
+                    url=config.url
+                )
+            except Exception:
+                _logger.exception("Erreur SMS admin")
+                continue
+
+            if not res.get('error'):
+                order.sms_admin_sent = True
+
+
+#===================== CRON
+<odoo>
+    <record id="ir_cron_send_admin_order_sms" model="ir.cron">
+        <field name="name">Send Admin Order SMS</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="state">code</field>
+        <field name="code">
+            model.search([
+                ('sms_client_sent', '=', True),
+                ('sms_admin_sent', '=', False),
+                ('sms_admin_scheduled_at', '&lt;=', fields.Datetime.now())
+            ]).send_admin_sms()
+        </field>
+        <field name="interval_number">30</field>
+        <field name="interval_type">seconds</field>
+        <field name="numbercall">-1</field>
+        <field name="active">True</field>
+    </record>
+</odoo>
+
+#============ Bouton FrontEnd
+<button id="send_sms_btn">Envoyer SMS</button>
+
+<script>
+document.getElementById('send_sms_btn').addEventListener('click', function () {
+    fetch('/shop/send_order_sms', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'call',
+            params: {}
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        console.log(data.result);
+        alert(data.result.message || data.result.error);
+    });
+});
+</script>
+
+
+## ======== Error a suivre :
+2025-12-18 04:30:27,348 1 INFO harmony werkzeug: 172.18.0.1 - - [18/Dec/2025 04:30:27] "GET /web/bundle/website.assets_all_wysiwyg_inside?lang=fr_FR&debug=1&website_id=1 HTTP/1.1" 200 - 1 0.001 0.006
+2025-12-18 04:30:31,617 1 ERROR harmony odoo.http: Exception during request handling. 
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/odoo/http.py", line 2576, in __call__
+    response = request._serve_db()
+               ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/http.py", line 2103, in _serve_db
+    return self._transactioning(
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/http.py", line 2166, in _transactioning
+    return service_model.retrying(func, env=self.env)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/service/model.py", line 156, in retrying
+    result = func()
+             ^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/http.py", line 2133, in _serve_ir_http
+    response = self.dispatcher.dispatch(rule.endpoint, args)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/http.py", line 2294, in dispatch
+    return self.request.registry['ir.http']._dispatch(endpoint)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/addons/base/models/ir_http.py", line 333, in _dispatch
+    result = endpoint(**request.params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/http.py", line 756, in route_wrapper
+    return Response.load(result)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/tools/facade.py", line 71, in wrap_func
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/odoo/http.py", line 1417, in load
+    raise TypeError(f"{fname} returns an invalid value: {result}")
+TypeError: <function> returns an invalid value: {'success': True, 'message': 'SMS "commande reçue" envoyé avec succès', 'response': {'success': True, 'message': 'SMS de confirmation envoyé avec succès !', 'client_sms_response': {'userID': 'U-862002', 'smsID': '0skar32tp9k', 'signature': 'EMAB SARL', 'number': ['+221771819534'], 'sms_units': 1, 'date_sent': '2025-12-18T04:30:29.955Z'}, 'admin_sms_response': {'userID': 'U-862002', 'smsID': 'zfbok5iyol', 'signature': 'EMAB SARL', 'number': ['221771819534'], 'sms_units': 1, 'date_sent': '2025-12-18T04:30:30.762Z'}}}
+2025-12-18 04:30:31,620 1 INFO harmony werkzeug: 172.18.0.1 - - [18/Dec/2025 04:30:31] "GET /shop/get_order_info HTTP/1.1" 500 - 21 0.025 2.177
+
+
+==========
+import seaborn as sns
+
+# We plot a subset of the data to keep the plot readable and make the plotting
+# faster
+n_samples_to_plot = 5000
+columns = ["age", "education-num", "hours-per-week"]
+_ = sns.pairplot(
+    data=adult_census[:n_samples_to_plot],
+    vars=columns,
+    hue=target_column,
+    plot_kws={"alpha": 0.2},
+    height=3,
+    diag_kind="hist",
+    diag_kws={"bins": 30},
+)
+
+--
+_ = sns.scatterplot(
+    x="age",
+    y="hours-per-week",
+    data=adult_census[:n_samples_to_plot],
+    hue=target_column,
+    alpha=0.5,
+)

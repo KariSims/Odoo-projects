@@ -11,3 +11,6 @@ access_micro_cycle_agent,micro.cycle.agent,model_micro_cycle,microflow.group_mic
 access_micro_cycle_manager,micro.cycle.manager,model_micro_cycle,microflow.group_micro_flow_manager,1,1,1,1
 access_micro_transaction_agent,micro.transaction.agent,model_micro_transaction,microflow.group_micro_flow_agent,1,0,1,0
 access_micro_transaction_manager,micro.transaction.manager,model_micro_transaction,microflow.group_micro_flow_manager,1,1,1,1
+access_credit_payment_wizard_agent,credit.payment.wizard.agent,model_credit_payment_wizard,microflow.group_micro_flow_agent,1,1,1,1
+access_credit_payment_wizard_manager,credit.payment.wizard.manager,model_credit_payment_wizard,microflow.group_micro_flow_manager,1,1,1,1
+access_savings_repayment_wizard_manager,savings.repayment.wizard.manager,model_savings_repayment_wizard,microflow.group_micro_flow_manager,1,1,1,1

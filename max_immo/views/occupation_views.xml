@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===== FORM VIEW ===== -->
+    <record id="view_max_immo_occupation_form" model="ir.ui.view">
+        <field name="name">max.immo.occupation.form</field>
+        <field name="model">max.immo.occupation</field>
+        <field name="arch" type="xml">
+            <form string="Occupation">
+                <header>
+                    <button name="action_add_payment" type="object"
+                            string="Enregistrer un Règlement"
+                            class="btn-primary"
+                            invisible="state != 'active'"/>
+                    <button name="action_end_occupation" type="object"
+                            string="Terminer l'Occupation"
+                            invisible="state != 'active'"
+                            confirm="Confirmer la fin de l'occupation ? La chambre sera remise en disponible."/>
+                    <button name="action_cancel" type="object"
+                            string="Annuler"
+                            invisible="state != 'active'"
+                            groups="max_immo.group_max_immo_manager"/>
+                    <button name="action_reactivate" type="object"
+                            string="Réactiver"
+                            invisible="state != 'cancelled'"
+                            groups="max_immo.group_max_immo_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="active,ended"/>
+                </header>
+                <sheet>
+
+                    <!-- Smart buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_payments" type="object"
+                                class="oe_stat_button" icon="fa-money">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="payment_count"/>
+                                </span>
+                                <span class="o_stat_text">Règlements</span>
+                            </div>
+                        </button>
+                        <button name="action_view_payments" type="object"
+                                class="oe_stat_button" icon="fa-check-circle">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="total_paid" widget="monetary"/>
+                                </span>
+                                <span class="o_stat_text">Encaissé</span>
+                            </div>
+                        </button>
+                        <button name="action_view_payments" type="object"
+                                class="oe_stat_button icon"
+                                icon="fa-exclamation-circle"
+                                invisible="balance_due &lt;= 0">
+                            <div class="o_field_widget o_stat_info text-danger">
+                                <span class="o_stat_value text-danger">
+                                    <field name="balance_due" widget="monetary"/>
+                                </span>
+                                <span class="o_stat_text">Solde dû</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="reference"/>
+                        <h1>
+                            <field name="reference" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <!-- Infos principales -->
+                    <group>
+                        <group string="Localisation">
+                            <field name="property_id" readonly="1"/>
+                            <field name="room_id"
+                                   domain="[('state', 'in', ['available', 'reserved'])]"
+                                   readonly="state != 'active' or id != False"
+                                   required="1"/>
+                            <field name="room_type_id" readonly="1"/>
+                        </group>
+                        <group string="Locataire (res.partner)">
+                            <field name="tenant_id"
+                                   readonly="state != 'active'"
+                                   required="1"
+                                   options="{'no_create': False}"
+                                   placeholder="Rechercher dans vos contacts…"/>
+                            <field name="rent_amount"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Dates">
+                            <field name="start_date"        readonly="state != 'active'"/>
+                            <field name="expected_end_date" readonly="state != 'active'"/>
+                            <field name="actual_end_date"   readonly="1"/>
+                        </group>
+                        <group string="Durée et statut">
+                            <field name="duration_days"  string="Durée (jours)"/>
+                            <field name="months_elapsed" string="Mois écoulés"/>
+                            <field name="days_remaining" invisible="state != 'active'"/>
+                            <field name="is_overdue" widget="boolean_toggle"
+                                   readonly="1"
+                                   invisible="state != 'active'"/>
+                        </group>
+                    </group>
+
+                    <!-- Tableau de bord financier -->
+                    <group string="Suivi Financier">
+                        <group>
+                            <field name="rent_amount"    string="Loyer mensuel"/>
+                            <field name="months_elapsed" string="Mois écoulés"/>
+                            <field name="total_expected" string="Total attendu"/>
+                        </group>
+                        <group>
+                            <field name="total_paid"             string="Total encaissé"/>
+                            <field name="balance_due"            string="Solde restant dû"
+                                   decoration-danger="balance_due &gt; 0"
+                                   decoration-success="balance_due &lt;= 0"/>
+                            <field name="last_payment_datetime"  string="Dernier règlement le"
+                                   readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+
+                        <!-- Onglet Règlements — vue chronologique détaillée -->
+                        <page string="Règlements" name="payments">
+                            <div class="mb-2 d-flex gap-2">
+                                <button string="Enregistrer un règlement"
+                                        name="action_add_payment"
+                                        type="object"
+                                        class="btn btn-primary btn-sm"
+                                        invisible="state != 'active'"/>
+                                <button string="Voir tous les règlements"
+                                        name="action_view_payments"
+                                        type="object"
+                                        class="btn btn-secondary btn-sm"/>
+                            </div>
+                            <field name="payment_ids" readonly="0">
+                                <list string="Règlements"
+                                      default_order="payment_datetime desc"
+                                      decoration-muted="state == 'cancelled'"
+                                      decoration-warning="state == 'draft'">
+                                    <!-- Horodatage précis -->
+                                    <field name="payment_datetime" string="Date et heure"/>
+                                    <field name="payment_day"      string="Jour" optional="show"/>
+                                    <!-- Qui et combien -->
+                                    <field name="partner_id"    string="Locataire"/>
+                                    <field name="payment_type"  widget="badge"
+                                           decoration-info="payment_type == 'rent'"/>
+                                    <field name="amount"        string="Montant (FCFA)"/>
+                                    <field name="period_label"  optional="show"/>
+                                    <!-- Comment -->
+                                    <field name="payment_method" widget="badge" optional="show"/>
+                                    <field name="reference_ext"  optional="show"/>
+                                    <!-- État -->
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'confirmed'"
+                                           decoration-warning="state == 'draft'"
+                                           decoration-muted="state == 'cancelled'"/>
+                                    <!-- Action rapide -->
+                                    <button name="action_confirm" type="object"
+                                            string="" icon="fa-check"
+                                            title="Confirmer"
+                                            invisible="state != 'draft'"
+                                            class="btn-sm btn-success"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Onglet Notes -->
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Remarques sur l'occupation…"/>
+                        </page>
+
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ===== LIST VIEW ===== -->
+    <record id="view_max_immo_occupation_list" model="ir.ui.view">
+        <field name="name">max.immo.occupation.list</field>
+        <field name="model">max.immo.occupation</field>
+        <field name="arch" type="xml">
+            <list string="Occupations"
+                  decoration-success="state == 'active'"
+                  decoration-muted="state == 'cancelled'"
+                  decoration-danger="is_overdue == True">
+                <field name="reference"/>
+                <field name="property_id"/>
+                <field name="room_id"/>
+                <field name="room_type_id"         optional="show"/>
+                <field name="tenant_id"            string="Locataire (res.partner)"/>
+                <field name="start_date"/>
+                <field name="expected_end_date"/>
+                <field name="actual_end_date"      optional="show"/>
+                <field name="duration_days"        string="Durée (j)"/>
+                <field name="months_elapsed"       string="Mois" optional="show"/>
+                <field name="rent_amount"          string="Loyer/mois"/>
+                <field name="total_paid"           string="Encaissé"
+                       optional="show"/>
+                <field name="balance_due"          string="Solde dû"
+                       decoration-danger="balance_due &gt; 0"
+                       decoration-success="balance_due &lt;= 0"
+                       optional="show"/>
+                <field name="last_payment_datetime" string="Dernier paiement"
+                       optional="show"/>
+                <field name="payment_count"        string="Nb règlements"
+                       optional="show"/>
+                <field name="days_remaining"       string="Reste (j)"
+                       optional="show"
+                       decoration-danger="days_remaining &lt; 0"
+                       decoration-warning="days_remaining &lt; 7 and days_remaining &gt;= 0"/>
+                <field name="is_overdue"           optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-secondary="state == 'ended'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ===== SEARCH VIEW ===== -->
+    <record id="view_max_immo_occupation_search" model="ir.ui.view">
+        <field name="name">max.immo.occupation.search</field>
+        <field name="model">max.immo.occupation</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher une occupation">
+                <field name="reference"/>
+                <field name="tenant_id" string="Locataire"/>
+                <field name="room_id"   string="Chambre"/>
+                <field name="property_id" string="Propriété"/>
+                <separator/>
+                <filter string="En cours"  name="state_active"
+                        domain="[('state', '=', 'active')]"/>
+                <filter string="Terminées" name="state_ended"
+                        domain="[('state', '=', 'ended')]"/>
+                <filter string="Annulées"  name="state_cancelled"
+                        domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter string="Délai dépassé" name="overdue"
+                        domain="[('is_overdue', '=', True)]"/>
+                <filter string="Solde impayé" name="balance_due"
+                        domain="[('balance_due', '&gt;', 0)]"/>
+                <group expand="0" string="Regrouper par">
+                    <filter string="Propriété" name="group_property"
+                            context="{'group_by': 'property_id'}"/>
+                    <filter string="Pièce"     name="group_room"
+                            context="{'group_by': 'room_id'}"/>
+                    <filter string="Locataire" name="group_tenant"
+                            context="{'group_by': 'tenant_id'}"/>
+                    <filter string="État"      name="group_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Mois d'entrée" name="group_start"
+                            context="{'group_by': 'start_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ===== GRAPH VIEW ===== -->
+    <record id="view_max_immo_occupation_graph" model="ir.ui.view">
+        <field name="name">max.immo.occupation.graph</field>
+        <field name="model">max.immo.occupation</field>
+        <field name="arch" type="xml">
+            <graph string="Occupations" type="bar">
+                <field name="property_id" type="row"/>
+                <field name="start_date"  type="col" interval="month"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- ===== ACTIONS ===== -->
+    <record id="action_max_immo_occupation_active" model="ir.actions.act_window">
+        <field name="name">Occupations en cours</field>
+        <field name="res_model">max.immo.occupation</field>
+        <field name="view_mode">list,form,graph</field>
+        <field name="domain">[('state', '=', 'active')]</field>
+        <field name="search_view_id" ref="view_max_immo_occupation_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune occupation en cours</p>
+        </field>
+    </record>
+
+    <record id="action_max_immo_occupation_all" model="ir.actions.act_window">
+        <field name="name">Historique des Occupations</field>
+        <field name="res_model">max.immo.occupation</field>
+        <field name="view_mode">list,form,graph</field>
+        <field name="search_view_id" ref="view_max_immo_occupation_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Aucune occupation enregistrée</p>
+        </field>
+    </record>
+
+</odoo>

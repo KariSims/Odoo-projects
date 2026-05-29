@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<templates xml:space="preserve">
+    <t t-name="synconics_bi_dashboard.TileView" owl="1">
+        <!-- Erreur -->
+        <div t-if="this.state.isError" class="w-100 d-flex align-items-center justify-content-center" style="height: 90%;">
+            <h5 t-out="this.state.errorMessage"></h5>
+        </div>
+
+        <!-- Mode grouped : liste compacte de groupes -->
+        <div t-elif="state.tile_mode === 'grouped'"
+             class="w-100 h-100 d-flex flex-column p-2"
+             t-attf-style="background-color: #{state.data.background_color}; overflow: hidden;">
+            <div class="fw-bold mb-1 text-truncate"
+                 t-att-style="'font-size:15px; color:' + state.data.font_color"
+                 t-esc="state.data.name"/>
+            <div class="flex-grow-1 overflow-auto">
+                <table class="table table-sm table-borderless mb-0 w-100">
+                    <t t-foreach="state.data.groups" t-as="g" t-key="g_index">
+                        <tr>
+                            <td class="text-truncate py-0 px-1"
+                                style="max-width: 55%;"
+                                t-att-style="'color:' + state.data.font_color + '; opacity:0.85;'"
+                                t-att-title="g.label"
+                                t-esc="g.label"/>
+                            <td class="text-end fw-bold py-0 px-1"
+                                t-att-style="'color:' + state.data.font_color"
+                                t-esc="g.count"/>
+                        </tr>
+                    </t>
+                </table>
+            </div>
+            <div t-if="state.data.has_more"
+                 class="text-end mt-auto pt-1"
+                 t-att-style="'font-size:0.7em; opacity:0.6; color:' + state.data.font_color">
+                <t t-esc="'+ ' + state.data.hidden_count + ' groupe(s)'"/>
+            </div>
+        </div>
+
+        <!-- Modes single et top : layouts standard -->
+        <div t-else="" class="col-sm-12 col-md-12 oe_inner position-relative"
+             t-att-style="'background-color:' + state.data.background_color +'!important;height: 100%;'">
+            <t t-if="state.layout_type === 'layout1'">
+                <TileLayoutOne data="state.data" />
+            </t>
+            <t t-elif="state.layout_type === 'layout2'">
+                <TileLayoutTwo data="state.data" />
+            </t>
+            <t t-elif="state.layout_type === 'layout3'">
+                <TileLayoutThree data="state.data" />
+            </t>
+            <t t-elif="state.layout_type === 'layout4'">
+                <TileLayoutFour data="state.data" />
+            </t>
+            <!-- Étiquette groupe dominant (mode top uniquement) -->
+            <div t-if="state.tile_mode === 'top' and state.data.top_label"
+                 class="position-absolute bottom-0 w-100 text-center pb-1"
+                 t-att-style="'font-size:0.72em; opacity:0.75; color:' + state.data.font_color">
+                <i class="fa fa-trophy me-1"/>
+                <t t-esc="state.data.top_label"/>
+            </div>
+        </div>
+    </t>
+</templates>

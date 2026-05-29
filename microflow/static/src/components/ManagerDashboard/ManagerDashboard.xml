@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="microflow.ManagerDashboard">
+        <div class="mf-manager-dashboard o_action">
+
+            <t t-if="state.loading">
+                <div class="text-center py-5 text-muted">Chargement…</div>
+            </t>
+
+            <t t-else="">
+
+                <!-- ── KPI Cards ──────────────────────────────────────────── -->
+                <div class="mf-kpi-row mb-4">
+
+                    <!-- 3 cards par type de transaction -->
+                    <t t-foreach="['savings', 'credit_repayment', 'fees']" t-as="txType" t-key="txType">
+                        <div t-att-class="'mf-kpi-card ' + txTypeKpiCls(txType)">
+                            <div class="mf-kpi-label" t-esc="txTypeLabel(txType)"/>
+                            <t t-if="kpis.byType[txType]">
+                                <span class="mf-kpi-count" t-esc="kpis.byType[txType].count"/>
+                                <div class="mf-kpi-amount"
+                                     t-esc="formatAmount(kpis.byType[txType].total, kpis.byType[txType].currency)"/>
+                            </t>
+                            <t t-else="">
+                                <span class="mf-kpi-count">0</span>
+                                <div class="mf-kpi-amount text-muted">—</div>
+                            </t>
+                        </div>
+                    </t>
+
+                    <!-- Cycles épargne en attente d'activation -->
+                    <div class="mf-kpi-card mf-kpi-cy-pending">
+                        <div class="mf-kpi-label">Cycles à activer</div>
+                        <span class="mf-kpi-count" t-esc="state.draftCycleCount"/>
+                        <div class="mf-kpi-amount text-muted">épargne</div>
+                    </div>
+
+                    <!-- Crédits en attente -->
+                    <div class="mf-kpi-card mf-kpi-cr-pending">
+                        <div class="mf-kpi-label">En attente approbation</div>
+                        <span class="mf-kpi-count" t-esc="kpis.pendingCount"/>
+                        <div class="mf-kpi-amount text-muted">crédits</div>
+                    </div>
+
+                    <!-- Crédits actifs -->
+                    <div class="mf-kpi-card mf-kpi-cr-active">
+                        <div class="mf-kpi-label">Crédits actifs</div>
+                        <span class="mf-kpi-count" t-esc="kpis.activeCount"/>
+                        <t t-if="kpis.activeCount">
+                            <div class="mf-kpi-amount"
+                                 t-esc="formatAmount(kpis.totalResidual, kpis.crCurrency)"/>
+                        </t>
+                        <t t-else="">
+                            <div class="mf-kpi-amount text-muted">—</div>
+                        </t>
+                    </div>
+
+                </div>
+
+                <!-- ── All-clear banner ──────────────────────────────────── -->
+                <t t-if="allClear">
+                    <div class="mf-all-clear">
+                        <div class="mf-all-clear-icon">✓</div>
+                        <div class="mf-all-clear-title">Tout validé !</div>
+                        <div class="mf-all-clear-sub">
+                            Aucune transaction en attente · Aucun crédit à traiter
+                            <t t-if="state.draftCycleCount > 0">
+                                <br/>
+                                <span class="mf-all-clear-cycles">
+                                    <t t-esc="state.draftCycleCount"/> cycle(s) en brouillon à activer
+                                </span>
+                            </t>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- ── Section Transactions Terrain ───────────────────────── -->
+                <t t-if="!allClear">
+
+                <!-- ── Récapitulatif par Agent ────────────────────────────── -->
+                <div class="mf-dash-section card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center mf-section-header"
+                         t-on-click="onToggleAgents">
+                        <h6 class="mb-0 mf-section-title">
+                            <span t-att-class="'mf-collapse-arrow' + (state.agentsCollapsed ? ' mf-collapsed' : '')">▼</span>
+                            Récapitulatif par Agent
+                            <span class="badge bg-secondary ms-2" t-esc="agentSummaries.length"/>
+                        </h6>
+                    </div>
+                    <div t-att-class="'card-body' + (state.agentsCollapsed ? ' d-none' : '')">
+                        <div class="mf-agent-summary-row">
+                            <t t-foreach="agentSummaries" t-as="ag" t-key="ag.id">
+                                <div class="mf-agent-card">
+                                    <div class="mf-agent-name" t-esc="ag.name"/>
+                                    <div class="mf-agent-total"
+                                         t-esc="formatAmount(ag.total, ag.currency)"/>
+                                    <div class="mf-agent-prog-label">
+                                        <t t-esc="ag.verifiedCount"/>/<t t-esc="ag.count"/> reçus
+                                    </div>
+                                    <div class="mf-agent-progress-track">
+                                        <div class="mf-agent-progress-bar"
+                                             t-att-style="'width: ' + agentProgressPct(ag) + '%'"
+                                             t-att-class="agentProgressPct(ag) === 100 ? 'mf-prog-done' : 'mf-prog-partial'"/>
+                                    </div>
+                                    <div class="mf-agent-pct text-muted small"
+                                         t-esc="agentProgressPct(ag) + '%'"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="mf-dash-section card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center mf-section-header"
+                         t-on-click="onToggleTx">
+                        <h6 class="mb-0 mf-section-title">
+                            <span t-att-class="'mf-collapse-arrow' + (state.txCollapsed ? ' mf-collapsed' : '')">▼</span>
+                            Transactions Terrain
+                            <span class="badge bg-secondary ms-2" t-esc="state.transactions.length"/>
+                        </h6>
+                        <div class="d-flex gap-2" t-on-click="(ev) => ev.stopPropagation()">
+                            <t t-if="selectedCount > 0">
+                                <button class="btn btn-sm btn-success"
+                                        t-att-disabled="state.saving"
+                                        t-on-click="bulkConfirmSelected">
+                                    Valider la sélection (<t t-esc="selectedCount"/>)
+                                </button>
+                            </t>
+                            <t t-if="state.transactions.length">
+                                <button class="btn btn-sm btn-primary"
+                                        t-att-disabled="state.saving"
+                                        t-on-click="bulkConfirm">
+                                    Tout Valider
+                                </button>
+                            </t>
+                        </div>
+                    </div>
+
+                    <div t-att-class="'card-body p-0' + (state.txCollapsed ? ' d-none' : '')">
+                        <t t-if="!state.transactions.length">
+                            <div class="text-center py-3 text-muted small">
+                                Aucune transaction en attente ✓
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="mf-col-check">
+                                            <input type="checkbox"
+                                                   t-att-checked="allSelected"
+                                                   t-on-change="toggleSelectAll"/>
+                                        </th>
+                                        <th>Membre</th>
+                                        <th>Agent</th>
+                                        <th>Type</th>
+                                        <th class="text-center">Reçu</th>
+                                        <th class="text-end">Montant</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="state.transactions" t-as="tx" t-key="tx.id"
+                                        t-att-class="
+                                            'mf-clickable-row'
+                                            + (state.selectedIds[tx.id] ? ' table-active' : '')
+                                            + (tx.is_verified ? '' : ' mf-row-unverified')
+                                        "
+                                        t-att-data-id="tx.id"
+                                        t-on-click="onTransactionClick">
+                                        <td class="mf-col-check"
+                                            t-on-click="(ev) => ev.stopPropagation()">
+                                            <input type="checkbox"
+                                                   t-att-checked="!!state.selectedIds[tx.id]"
+                                                   t-att-disabled="!tx.is_verified"
+                                                   t-on-change="() => this.toggleSelect(tx.id)"/>
+                                        </td>
+                                        <td t-esc="tx.partner_id[1]"/>
+                                        <td class="text-muted small" t-esc="tx.agent_id[1]"/>
+                                        <td>
+                                            <span t-att-class="'badge ' + txTypeBadge(tx.transaction_type)"
+                                                  t-esc="txTypeLabel(tx.transaction_type)"/>
+                                        </td>
+                                        <td class="text-center mf-col-check"
+                                            t-on-click="(ev) => ev.stopPropagation()">
+                                            <input type="checkbox"
+                                                   t-att-checked="tx.is_verified"
+                                                   title="Cocher quand les fonds sont physiquement reçus"
+                                                   t-on-change="() => this.toggleVerified(tx.id)"/>
+                                        </td>
+                                        <td class="text-end fw-bold"
+                                            t-esc="formatAmount(tx.amount, tx.currency_id)"/>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                    </div>
+                </div>
+
+                <!-- ── Section Crédits ────────────────────────────────────── -->
+                <div class="mf-dash-section card">
+                    <div class="card-header d-flex justify-content-between align-items-center mf-section-header"
+                         t-on-click="onToggleCr">
+                        <h6 class="mb-0 mf-section-title">
+                            <span t-att-class="'mf-collapse-arrow' + (state.crCollapsed ? ' mf-collapsed' : '')">▼</span>
+                            Crédits Actifs &amp; En attente
+                            <span class="badge bg-secondary ms-2" t-esc="state.credits.length"/>
+                        </h6>
+                    </div>
+
+                    <div t-att-class="'card-body p-0' + (state.crCollapsed ? ' d-none' : '')">
+                        <t t-if="!state.credits.length">
+                            <div class="text-center py-3 text-muted small">
+                                Aucun crédit actif
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <table class="table table-sm table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Membre</th>
+                                        <th>Agent</th>
+                                        <th class="text-end">Capital</th>
+                                        <th class="text-end">Reste Dû</th>
+                                        <th>État</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="state.credits" t-as="cr" t-key="cr.id"
+                                        t-att-class="'mf-clickable-row' + (cr.state === 'pending' ? ' table-warning' : '')"
+                                        t-att-data-id="cr.id"
+                                        t-on-click="onCreditClick">
+                                        <td t-esc="cr.partner_id[1]"/>
+                                        <td class="text-muted small" t-esc="cr.agent_id[1]"/>
+                                        <td class="text-end"
+                                            t-esc="formatAmount(cr.capital, cr.currency_id)"/>
+                                        <td class="text-end fw-bold"
+                                            t-esc="formatAmount(cr.amount_residual_total, cr.currency_id)"/>
+                                        <td>
+                                            <span t-att-class="'badge ' + crStateBadge(cr.state)"
+                                                  t-esc="crStateLabel(cr.state)"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </t>
+                    </div>
+                </div>
+
+                </t> <!-- /t-if="!allClear" -->
+
+            </t>
+        </div>
+    </t>
+</templates>

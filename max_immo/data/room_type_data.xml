@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="room_type_studio" model="max.immo.room.type">
+            <field name="name">Studio</field>
+            <field name="sequence">1</field>
+            <field name="color">10</field>
+        </record>
+
+        <record id="room_type_chambre" model="max.immo.room.type">
+            <field name="name">Chambre</field>
+            <field name="sequence">2</field>
+            <field name="color">4</field>
+        </record>
+
+        <record id="room_type_appartement" model="max.immo.room.type">
+            <field name="name">Appartement</field>
+            <field name="sequence">3</field>
+            <field name="color">1</field>
+        </record>
+
+        <record id="room_type_bureau" model="max.immo.room.type">
+            <field name="name">Bureau</field>
+            <field name="sequence">4</field>
+            <field name="color">2</field>
+        </record>
+
+        <record id="room_type_magasin" model="max.immo.room.type">
+            <field name="name">Magasin / Local</field>
+            <field name="sequence">5</field>
+            <field name="color">3</field>
+        </record>
+
+        <record id="room_type_villa" model="max.immo.room.type">
+            <field name="name">Villa</field>
+            <field name="sequence">6</field>
+            <field name="color">6</field>
+        </record>
+
+    </data>
+</odoo>

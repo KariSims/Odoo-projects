@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===== APPLICATION ROOT MENU ===== -->
+    <menuitem id="menu_max_immo_root"
+              name="MaxImmo"
+              web_icon="max_immo,static/description/icon.png"
+              sequence="50"/>
+
+    <!-- ===== PROPRIÉTÉS ===== -->
+    <menuitem id="menu_max_immo_properties_header"
+              name="Propriétés"
+              parent="menu_max_immo_root"
+              sequence="10"/>
+
+    <menuitem id="menu_max_immo_property_list"
+              name="Mes Propriétés"
+              parent="menu_max_immo_properties_header"
+              action="action_max_immo_property"
+              sequence="10"/>
+
+    <menuitem id="menu_max_immo_room_all"
+              name="Toutes les Pièces"
+              parent="menu_max_immo_properties_header"
+              action="action_max_immo_room"
+              sequence="20"/>
+
+    <!-- ===== OCCUPATIONS ===== -->
+    <menuitem id="menu_max_immo_occupations_header"
+              name="Occupations"
+              parent="menu_max_immo_root"
+              sequence="20"/>
+
+    <menuitem id="menu_max_immo_occupation_active"
+              name="En cours"
+              parent="menu_max_immo_occupations_header"
+              action="action_max_immo_occupation_active"
+              sequence="10"/>
+
+    <menuitem id="menu_max_immo_occupation_all"
+              name="Historique"
+              parent="menu_max_immo_occupations_header"
+              action="action_max_immo_occupation_all"
+              sequence="20"/>
+
+    <!-- ===== RÈGLEMENTS ===== -->
+    <menuitem id="menu_max_immo_payments_header"
+              name="Règlements"
+              parent="menu_max_immo_root"
+              sequence="25"/>
+
+    <menuitem id="menu_max_immo_payment_all"
+              name="Tous les Règlements"
+              parent="menu_max_immo_payments_header"
+              action="action_max_immo_payment_all"
+              sequence="10"/>
+
+    <menuitem id="menu_max_immo_payment_by_partner"
+              name="Par Locataire"
+              parent="menu_max_immo_payments_header"
+              action="action_max_immo_payment_by_partner"
+              sequence="20"/>
+
+    <!-- ===== PLANNING ===== -->
+    <menuitem id="menu_max_immo_planning_header"
+              name="Planning"
+              parent="menu_max_immo_root"
+              sequence="28"/>
+
+    <menuitem id="menu_max_immo_planning_full"
+              name="Planning Global"
+              parent="menu_max_immo_planning_header"
+              action="action_max_immo_planning_full"
+              sequence="10"/>
+
+    <menuitem id="menu_max_immo_planning_calendar"
+              name="Calendrier — par Propriété"
+              parent="menu_max_immo_planning_header"
+              action="action_max_immo_planning_calendar"
+              sequence="20"/>
+
+    <menuitem id="menu_max_immo_planning_calendar_state"
+              name="Calendrier — par État"
+              parent="menu_max_immo_planning_header"
+              action="action_max_immo_planning_calendar_state"
+              sequence="30"/>
+
+    <menuitem id="menu_max_immo_planning_gantt"
+              name="Diagramme Gantt"
+              parent="menu_max_immo_planning_header"
+              action="action_max_immo_planning_gantt"
+              sequence="40"/>
+
+    <!-- ===== FACTURES / CHARGES ===== -->
+    <menuitem id="menu_max_immo_bills_header"
+              name="Factures"
+              parent="menu_max_immo_root"
+              sequence="30"/>
+
+    <menuitem id="menu_max_immo_bill_overdue"
+              name="En retard"
+              parent="menu_max_immo_bills_header"
+              action="action_max_immo_bill_overdue"
+              sequence="10"/>
+
+    <menuitem id="menu_max_immo_bill_pending"
+              name="À venir"
+              parent="menu_max_immo_bills_header"
+              action="action_max_immo_bill_pending"
+              sequence="20"/>
+
+    <menuitem id="menu_max_immo_bill_all"
+              name="Toutes les Factures"
+              parent="menu_max_immo_bills_header"
+              action="action_max_immo_bill_all"
+              sequence="30"/>
+
+    <!-- ===== CONFIGURATION ===== -->
+    <menuitem id="menu_max_immo_config_header"
+              name="Configuration"
+              parent="menu_max_immo_root"
+              sequence="100"
+              groups="max_immo.group_max_immo_manager"/>
+
+    <menuitem id="menu_max_immo_room_type"
+              name="Types de Pièces"
+              parent="menu_max_immo_config_header"
+              action="action_max_immo_room_type"
+              sequence="10"
+              groups="max_immo.group_max_immo_manager"/>
+
+    <menuitem id="menu_max_immo_bill_type"
+              name="Types de Factures"
+              parent="menu_max_immo_config_header"
+              action="action_max_immo_bill_type"
+              sequence="20"
+              groups="max_immo.group_max_immo_manager"/>
+
+</odoo>

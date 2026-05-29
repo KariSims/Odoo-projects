@@ -1,0 +1,11 @@
+<odoo>
+    <data noupdate="1">
+        <record id="seq_secteur_activite" model="ir.sequence">
+            <field name="name">Secteur Activité</field>
+            <field name="code">drc.secteur_activite.seq</field>
+            <field name="prefix"></field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+        </record>
+    </data>
+</odoo>

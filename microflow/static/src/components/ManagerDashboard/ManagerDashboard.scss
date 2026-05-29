@@ -1,0 +1,202 @@
+.mf-manager-dashboard {
+    padding: 16px;
+
+    // ── KPI Cards ─────────────────────────────────────────────────────────────
+    .mf-kpi-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .mf-kpi-card {
+        flex: 1 1 150px;
+        background: #fff;
+        border-radius: 8px;
+        border-left: 4px solid #dee2e6;
+        padding: 12px 14px;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+        min-width: 130px;
+
+        .mf-kpi-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #78909C;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .mf-kpi-count {
+            display: block;
+            font-size: 24px;
+            font-weight: 700;
+            line-height: 1.1;
+            color: #263238;
+        }
+        .mf-kpi-amount {
+            font-size: 11px;
+            font-weight: 500;
+            color: #546E7A;
+            margin-top: 2px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        &.mf-kpi-savings    { border-left-color: #1976D2; .mf-kpi-count { color: #1976D2; } }
+        &.mf-kpi-repayment  { border-left-color: #0288D1; .mf-kpi-count { color: #0288D1; } }
+        &.mf-kpi-fees       { border-left-color: #546E7A; .mf-kpi-count { color: #546E7A; } }
+        &.mf-kpi-cy-pending { border-left-color: #00838F; .mf-kpi-count { color: #00838F; } }
+        &.mf-kpi-cr-pending { border-left-color: #F57C00; .mf-kpi-count { color: #F57C00; } }
+        &.mf-kpi-cr-active  { border-left-color: #388E3C; .mf-kpi-count { color: #388E3C; } }
+    }
+
+    // ── All-clear banner ─────────────────────────────────────────────────────
+    .mf-all-clear {
+        text-align: center;
+        padding: 40px 24px;
+        background: #E8F5E9;
+        border-radius: 12px;
+        border: 1px solid #C8E6C9;
+        margin-bottom: 16px;
+
+        .mf-all-clear-icon {
+            font-size: 48px;
+            line-height: 1;
+            color: #388E3C;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .mf-all-clear-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2E7D32;
+            margin-bottom: 6px;
+        }
+
+        .mf-all-clear-sub {
+            font-size: 13px;
+            color: #558B2F;
+            line-height: 1.6;
+        }
+
+        .mf-all-clear-cycles {
+            display: inline-block;
+            margin-top: 6px;
+            background: #FFF9C4;
+            border: 1px solid #F9A825;
+            color: #E65100;
+            font-weight: 600;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 12px;
+        }
+    }
+
+    // ── Agent summary cards ───────────────────────────────────────────────────
+    .mf-agent-summary-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .mf-agent-card {
+        flex: 1 1 180px;
+        min-width: 160px;
+        background: #F8FAFB;
+        border-radius: 8px;
+        border: 1px solid #E0E0E0;
+        padding: 12px 14px;
+
+        .mf-agent-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #263238;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mf-agent-total {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1976D2;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: 8px;
+        }
+
+        .mf-agent-prog-label {
+            font-size: 11px;
+            color: #78909C;
+            margin-bottom: 4px;
+        }
+
+        .mf-agent-progress-track {
+            height: 6px;
+            background: #ECEFF1;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 4px;
+        }
+
+        .mf-agent-progress-bar {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+
+            &.mf-prog-done    { background: #388E3C; }
+            &.mf-prog-partial { background: #F57C00; }
+        }
+
+        .mf-agent-pct {
+            text-align: right;
+        }
+    }
+
+    // ── Section headers ───────────────────────────────────────────────────────
+    .mf-section-header {
+        cursor: pointer;
+        user-select: none;
+
+        &:hover { background-color: rgba(0, 0, 0, 0.03); }
+    }
+
+    .mf-section-title { font-size: 0.875rem; font-weight: 600; }
+
+    .mf-collapse-arrow {
+        display: inline-block;
+        font-size: 9px;
+        margin-right: 6px;
+        color: #90A4AE;
+        transition: transform 0.18s;
+
+        &.mf-collapsed { transform: rotate(-90deg); }
+    }
+
+    // ── Table ─────────────────────────────────────────────────────────────────
+    .mf-col-check {
+        width: 38px;
+        text-align: center;
+        vertical-align: middle !important;
+    }
+
+    .mf-clickable-row {
+        cursor: pointer;
+
+        &:hover td { background-color: rgba(0, 0, 0, 0.04); }
+    }
+
+    .mf-row-unverified {
+        opacity: 0.55;
+    }
+
+    .mf-verified-yes {
+        color: #388E3C;
+        font-weight: 700;
+        font-size: 14px;
+    }
+
+    .mf-verified-no {
+        color: #B0BEC5;
+        font-size: 14px;
+    }
+}

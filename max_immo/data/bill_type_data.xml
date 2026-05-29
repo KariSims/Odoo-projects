@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="bill_type_eau" model="max.immo.bill.type">
+            <field name="name">Eau</field>
+            <field name="sequence">1</field>
+            <field name="color">4</field>
+            <field name="default_frequency">monthly</field>
+            <field name="description">Facture eau / consommation hydraulique</field>
+        </record>
+
+        <record id="bill_type_electricite" model="max.immo.bill.type">
+            <field name="name">Électricité</field>
+            <field name="sequence">2</field>
+            <field name="color">3</field>
+            <field name="default_frequency">monthly</field>
+            <field name="description">Facture électricité / énergie</field>
+        </record>
+
+        <record id="bill_type_internet" model="max.immo.bill.type">
+            <field name="name">Internet</field>
+            <field name="sequence">3</field>
+            <field name="color">1</field>
+            <field name="default_frequency">monthly</field>
+            <field name="description">Abonnement internet / fibre / ADSL</field>
+        </record>
+
+        <record id="bill_type_loyer" model="max.immo.bill.type">
+            <field name="name">Loyer</field>
+            <field name="sequence">4</field>
+            <field name="color">10</field>
+            <field name="default_frequency">monthly</field>
+            <field name="description">Paiement mensuel du loyer</field>
+        </record>
+
+        <record id="bill_type_ordures" model="max.immo.bill.type">
+            <field name="name">Ordures Ménagères</field>
+            <field name="sequence">5</field>
+            <field name="color">2</field>
+            <field name="default_frequency">monthly</field>
+            <field name="description">Taxe / collecte des ordures</field>
+        </record>
+
+        <record id="bill_type_entretien" model="max.immo.bill.type">
+            <field name="name">Entretien / Maintenance</field>
+            <field name="sequence">6</field>
+            <field name="color">6</field>
+            <field name="default_frequency">one_time</field>
+            <field name="description">Frais d'entretien et réparations</field>
+        </record>
+
+        <record id="bill_type_assurance" model="max.immo.bill.type">
+            <field name="name">Assurance</field>
+            <field name="sequence">7</field>
+            <field name="color">7</field>
+            <field name="default_frequency">annual</field>
+            <field name="description">Prime d'assurance habitation / locaux</field>
+        </record>
+
+    </data>
+</odoo>

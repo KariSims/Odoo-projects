@@ -1,0 +1,100 @@
+<odoo>
+
+    <template id="template_certificat_fin_cotisation">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+
+                    <div class="page">
+
+                        <h2 style="text-align:center; margin-bottom: 30px;">
+                            CERTIFICAT DE FIN DE COTISATION
+                        </h2>
+
+                        <p>
+                            Je soussigné(e),
+                            <strong t-esc="o.company_id.name"/>,
+                            certifie que :
+                        </p>
+
+                        <br/>
+
+                        <p>
+                            <strong>Client :</strong>
+                            <span t-esc="o.partner_id.name"/>
+                        </p>
+
+                        <p t-if="o.partner_id.vat">
+                            <strong>NINEA / Identifiant :</strong>
+                            <span t-esc="o.partner_id.vat"/>
+                        </p>
+
+                        <br/>
+
+                        <p>
+                            A réglé intégralement toutes ses cotisations relatives à la facture suivante :
+                        </p>
+
+                        <br/>
+
+                        <table class="table table-sm" style="width:100%; border:1px solid #000; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th>Facture</th>
+                                    <th>Date</th>
+                                    <th class="text-end">Montant Total</th>
+                                    <th class="text-end">Montant Payé</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td t-esc="o.name"/>
+                                    <td><span t-field="o.invoice_date"/></td>
+                                    <td class="text-end">
+                                        <span t-field="o.amount_total"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-esc="'%.2f' % (o.amount_total - o.amount_residual)"/>
+                                        <t t-if="o.currency_id">
+                                            <span t-esc="' ' + o.currency_id.name"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <br/><br/>
+
+                        <p>
+                            En conséquence, <strong>aucun montant ne reste dû à ce jour</strong>.
+                        </p>
+
+                        <br/>
+
+                        <p>
+                            Ce certificat est délivré pour servir et valoir ce que de droit.
+                        </p>
+
+                        <br/><br/>
+
+                        <p>
+                            Fait à
+                            <span t-esc="o.company_id.city or ''"/>,
+                            le
+                            <span t-field="o.invoice_date"/>
+                        </p>
+
+                        <br/><br/><br/>
+
+                        <div style="text-align:right;">
+                            <strong>Signature et Cachet</strong>
+                        </div>
+
+                    </div>
+
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

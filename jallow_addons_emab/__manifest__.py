@@ -36,5 +36,7 @@
         'views/res_partner.xml',
         'views/society_commercial_view.xml',
         'views/stock_view_picking_form.xml',
+        'views/report_stockpicking_operations.xml',
+        # 'views/report_stockinventory_view.xml',
     ],
 }

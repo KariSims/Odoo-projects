@@ -33,7 +33,14 @@ class MicroCreditLine(models.Model):
                 rec.date_due and rec.date_due < today and rec.amount_residual > 0
             )
 
-    def register_payment(self, payment_amount):
+    def register_payment(self, payment_amount, from_savings=False):
+        """Enregistre un versement sur cette échéance.
+
+        from_savings=True : appelé par le wizard de transfert épargne → crédit.
+        Dans ce cas, les champs sont mis à jour mais aucune transaction credit_repayment
+        n'est créée (le wizard gère lui-même l'écriture comptable et la transaction
+        savings_withdrawal).
+        """
         self.ensure_one()
         if self.payment_count >= self.credit_id.max_partial_payments:
             raise exceptions.UserError(
@@ -47,13 +54,15 @@ class MicroCreditLine(models.Model):
             )
         self.amount_paid += payment_amount
         self.payment_count += 1
-        journal_id = self.env['micro.transaction']._get_collection_journal_id()
-        self.env['micro.transaction'].create({
-            'partner_id': self.credit_id.partner_id.id,
-            'agent_id': self.credit_id.agent_id.id,
-            'amount': payment_amount,
-            'journal_id': journal_id,
-            'transaction_type': 'credit_repayment',
-            'state': 'draft',
-        })
+        if not from_savings:
+            journal_id = self.env['micro.transaction']._get_collection_journal_id()
+            self.env['micro.transaction'].create({
+                'partner_id': self.credit_id.partner_id.id,
+                'agent_id': self.credit_id.agent_id.id,
+                'amount': payment_amount,
+                'currency_id': self.credit_id.currency_id.id,
+                'journal_id': journal_id,
+                'transaction_type': 'credit_repayment',
+                'state': 'draft',
+            })
         return True

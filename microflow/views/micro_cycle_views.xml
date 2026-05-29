@@ -6,25 +6,131 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_activate" string="Activer le Cycle" type="object"
-                            class="oe_highlight" invisible="state != 'draft'"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,active,closed"/>
+                    <!-- Étape 1 : bouton visible en Brouillon pour tous les utilisateurs.
+                         L'Agent → pré-collecte (5 cases). Le Manager → activation complète. -->
+                    <button name="action_agent_start_collecting"
+                            string="Activer le Cycle"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <!-- Étape 2 : bouton Manager uniquement en pré-collecte → cycle complet. -->
+                    <button name="action_activate"
+                            string="Activer le Cycle"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'pre_active'"
+                            groups="microflow.group_micro_flow_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,pre_active,active,closed"/>
                 </header>
                 <sheet>
+                    <!-- ── Type d'épargne ── -->
+                    <group>
+                        <field name="cycle_type" widget="radio"
+                               options="{'horizontal': true}"
+                               readonly="state not in ('draft',)"/>
+                    </group>
+
+                    <!-- ── Devise (verrouillée après le 1er versement) ── -->
+                    <group>
+                        <field name="currency_id"
+                               readonly="state not in ('draft', 'pre_active') or amount_collected > 0"/>
+                    </group>
+
+                    <!-- ── Alerte brouillon : inviter à activer ── -->
+                    <div class="alert alert-info mb-3" invisible="state != 'draft'">
+                        Cliquez sur <strong>Activer le Cycle</strong> pour créer les premières cases de pré-collecte.
+                        Le Manager activera l'intégralité du cycle après réception des fonds.
+                    </div>
+
+                    <!-- ── Alerte pré-collecte (agent) ── -->
+                    <div class="alert alert-warning mb-3"
+                         invisible="state != 'pre_active'"
+                         groups="microflow.group_micro_flow_agent">
+                        ⏳ Pré-collecte en cours — collectez les premiers versements, puis amenez les fonds au Manager pour activation complète du cycle.
+                    </div>
+
+                    <!-- ── Bouton activation mobile Étape 1 : Brouillon → tous ── -->
+                    <div class="d-md-none mf-activate-mobile-block mb-3"
+                         invisible="state != 'draft'">
+                        <button name="action_agent_start_collecting"
+                                string="⚡ Activer le Cycle"
+                                type="object"
+                                class="btn btn-primary w-100 mf-cta-btn"/>
+                    </div>
+                    <!-- ── Bouton activation mobile Étape 2 : Pré-collecte → Manager ── -->
+                    <div class="d-md-none mf-activate-mobile-block mb-3"
+                         invisible="state != 'pre_active'"
+                         groups="microflow.group_micro_flow_manager">
+                        <button name="action_activate"
+                                string="⚡ Activer le Cycle Complet"
+                                type="object"
+                                class="btn btn-success w-100 mf-cta-btn"/>
+                    </div>
+
                     <group>
                         <group>
                             <field name="partner_id"/>
                             <field name="agent_id"/>
-                            <field name="amount_per_case"/>
+                            <field name="amount_per_case"
+                                   invisible="cycle_type == 'variable'"
+                                   required="cycle_type == 'fixed'"/>
                         </group>
                         <group>
                             <field name="case_count" readonly="state != 'draft'"/>
                             <field name="duration_months"/>
                             <field name="opening_fee"/>
-                            <field name="commission_rate"/>
-                            <field name="currency_id" invisible="1"/>
                         </group>
                     </group>
+
+                    <!-- ── Engagement prévisionnel (brouillon et pré-collecte, fixe uniquement) ── -->
+                    <div class="mf-draft-projection px-3 py-2 mb-3 rounded bg-light border-start border-primary border-3"
+                         invisible="state not in ('draft', 'pre_active') or cycle_type == 'variable'">
+                        <div class="text-muted small mb-1">Engagement total après activation Manager</div>
+                        <div class="d-flex align-items-baseline gap-2 flex-wrap">
+                            <span class="fw-bold fs-4 text-primary">
+                                <field name="amount_projected" nolabel="1" readonly="1"/>
+                            </span>
+                            <span class="text-muted small">
+                                (<field name="case_count" nolabel="1" readonly="1"/> cases ×
+                                <field name="amount_per_case" nolabel="1" readonly="1"/>)
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- ── Statistiques de collecte — cycles fixes ── -->
+                    <div class="row mt-2 mb-3"
+                         invisible="state == 'draft' or cycle_type == 'variable'">
+                        <div class="col-4 text-center">
+                            <div class="text-muted small">Total attendu</div>
+                            <div class="fw-bold fs-5">
+                                <field name="amount_expected_total" nolabel="1" readonly="1"/>
+                            </div>
+                        </div>
+                        <div class="col-4 text-center">
+                            <div class="text-muted small">Collecté</div>
+                            <div class="fw-bold fs-5 text-success">
+                                <field name="amount_collected" nolabel="1" readonly="1"/>
+                            </div>
+                        </div>
+                        <div class="col-4 text-center">
+                            <div class="text-muted small">Restant</div>
+                            <div class="fw-bold fs-5 text-warning">
+                                <field name="amount_remaining" nolabel="1" readonly="1"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Statistiques de collecte — cycles variables ── -->
+                    <div class="row mt-2 mb-3"
+                         invisible="state == 'draft' or cycle_type == 'fixed'">
+                        <div class="col-12 text-center">
+                            <div class="text-muted small">Total collecté</div>
+                            <div class="fw-bold fs-4 text-success">
+                                <field name="amount_collected" nolabel="1" readonly="1"/>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- ── Correction du nombre de cases (cycle actif) ── -->
                     <group string="Correction du nombre de cases"
@@ -62,10 +168,39 @@
                         </div>
                     </group>
 
+                    <!-- ── Demandes d'annulation en attente (Manager only) ── -->
+                    <field name="pending_uncheck_count" invisible="1"/>
+                    <group string="Demandes d'annulation en attente"
+                           invisible="pending_uncheck_count == 0"
+                           groups="microflow.group_micro_flow_manager">
+                        <div class="alert alert-warning mb-2 py-2">
+                            ⏳ Ces cases ont été cochées il y a plus de 2 minutes et un Agent demande leur annulation.
+                        </div>
+                        <field name="pending_uncheck_line_ids" nolabel="1">
+                            <list create="0" delete="0">
+                                <field name="sequence" string="Case"/>
+                                <field name="uncheck_requested_by" string="Demandé par"/>
+                                <field name="uncheck_requested_at" string="Demandé le"/>
+                                <button name="action_approve_uncheck" type="object"
+                                        string="Approuver" class="btn-success"/>
+                                <button name="action_reject_uncheck" type="object"
+                                        string="Refuser" class="btn-danger"/>
+                            </list>
+                        </field>
+                    </group>
+
                     <notebook>
                         <page string="Grille de Collecte">
-                            <!-- MicroGrid: composant OWL custom (TODO-2) -->
-                            <field name="line_ids" widget="MicroGrid" nolabel="1"/>
+                            <field name="line_ids" widget="MicroGrid" nolabel="1">
+                                <list limit="500">
+                                    <field name="sequence"/>
+                                    <field name="amount_expected"/>
+                                    <field name="amount_collected"/>
+                                    <field name="is_paid"/>
+                                    <field name="collection_order"/>
+                                    <field name="uncheck_pending"/>
+                                </list>
+                            </field>
                         </page>
                     </notebook>
                 </sheet>
@@ -80,9 +215,16 @@
             <list>
                 <field name="partner_id"/>
                 <field name="agent_id"/>
+                <field name="cycle_type" widget="badge"
+                       decoration-info="cycle_type == 'variable'"
+                       decoration-muted="cycle_type == 'fixed'"/>
                 <field name="case_count"/>
-                <field name="amount_per_case"/>
+                <field name="amount_per_case" optional="show"/>
+                <field name="amount_collected" sum="Total collecté"/>
+                <field name="amount_expected_total" sum="Total attendu"/>
+                <field name="currency_id" invisible="1"/>
                 <field name="state" widget="badge"
+                       decoration-info="state == 'pre_active'"
                        decoration-warning="state == 'draft'"
                        decoration-success="state == 'active'"
                        decoration-muted="state == 'closed'"/>
@@ -90,14 +232,103 @@
         </field>
     </record>
 
+    <record id="view_micro_cycle_kanban" model="ir.ui.view">
+        <field name="name">micro.cycle.kanban</field>
+        <field name="model">micro.cycle</field>
+        <field name="arch" type="xml">
+            <!-- Groupé par kanban_urgency_state : colonne "À traiter" en tête
+                 pour que le Manager voit immédiatement les actions requises. -->
+            <kanban default_group_by="kanban_urgency_state" class="o_kanban_small_column">
+                <field name="partner_id"/>
+                <field name="agent_id"/>
+                <field name="state"/>
+                <field name="kanban_urgency_state"/>
+                <field name="cycle_type"/>
+                <field name="case_count"/>
+                <field name="case_count_requested"/>
+                <field name="amount_collected"/>
+                <field name="amount_expected_total"/>
+                <field name="amount_projected"/>
+                <field name="currency_id"/>
+                <field name="pending_uncheck_count"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+
+                            <!-- ── Badge : correction du nombre de cases en attente ── -->
+                            <div t-if="record.case_count_requested.raw_value > 0"
+                                 class="mf-kanban-badge mf-kanban-badge-correction mb-2">
+                                🔢 Correction demandée :
+                                <t t-esc="record.case_count.raw_value"/> →
+                                <t t-esc="record.case_count_requested.raw_value"/> cases
+                            </div>
+                            <!-- ── Badge : annulation(s) de collecte en attente ── -->
+                            <div t-if="record.pending_uncheck_count.raw_value > 0"
+                                 class="mf-kanban-badge mf-kanban-badge-uncheck mb-2">
+                                ⚠️ <t t-esc="record.pending_uncheck_count.raw_value"/> annulation(s) en attente
+                            </div>
+                            <!-- ── Badge : activation Manager requise (pré-collecte) ── -->
+                            <div t-if="record.state.raw_value === 'pre_active'"
+                                 class="mf-kanban-badge mf-kanban-badge-activation mb-2">
+                                ⚡ Activation Manager requise
+                            </div>
+
+                            <!-- ── Nom du membre ── -->
+                            <div class="fw-bold fs-6">
+                                <field name="partner_id"/>
+                            </div>
+                            <div class="text-muted small">
+                                Agent : <field name="agent_id"/>
+                            </div>
+                            <!-- ── Indicateur montant variable ── -->
+                            <div t-if="record.cycle_type.raw_value === 'variable'"
+                                 class="small mt-1" style="color: #6A1B9A;">
+                                ⚖️ Montant variable
+                            </div>
+
+                            <!-- ── Montants ── -->
+                            <div class="mt-2 d-flex justify-content-between align-items-center">
+                                <span class="small text-muted">
+                                    <field name="case_count"/> cases
+                                </span>
+                                <span class="small fw-bold text-success">
+                                    <field name="amount_collected"/>
+                                    <span class="text-muted fw-normal">
+                                        / <field name="amount_expected_total"/>
+                                    </span>
+                                </span>
+                            </div>
+
+                            <!-- ── Engagement prévisionnel (brouillon et pré-collecte) ── -->
+                            <div t-if="record.state.raw_value === 'draft' or record.state.raw_value === 'pre_active'"
+                                 class="small text-muted mt-1">
+                                Prévu : <field name="amount_projected"/>
+                            </div>
+
+                            <!-- ── Badge état réel (utile dans "À traiter" qui mélange états) ── -->
+                            <div class="mt-2">
+                                <field name="state" widget="badge"
+                                       decoration-info="state == 'pre_active'"
+                                       decoration-warning="state == 'draft'"
+                                       decoration-success="state == 'active'"
+                                       decoration-muted="state == 'closed'"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <record id="action_micro_cycle" model="ir.actions.act_window">
         <field name="name">Cycles d'Épargne</field>
         <field name="res_model">micro.cycle</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">kanban,list,form</field>
         <field name="view_ids" eval="[
             (5, 0, 0),
-            (0, 0, {'view_mode': 'list', 'view_id': ref('view_micro_cycle_tree')}),
-            (0, 0, {'view_mode': 'form', 'view_id': ref('view_micro_cycle_form')})
+            (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_micro_cycle_kanban')}),
+            (0, 0, {'view_mode': 'list',   'view_id': ref('view_micro_cycle_tree')}),
+            (0, 0, {'view_mode': 'form',   'view_id': ref('view_micro_cycle_form')})
         ]"/>
     </record>
 </odoo>

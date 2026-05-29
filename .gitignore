@@ -2,6 +2,7 @@
 /odoo.conf
 /odoo_install.sh
 /odoo_v18.code-workspace
+/account_invoice_scan_llm
 /accounting_pdf_reports
 /canadadici_addons/__pycache__
 /canadadici_account/__pycache__
@@ -13,12 +14,22 @@
 /bi_pos_restrict_zero_qty
 /customer_partner_ledger
 /emab_gn
-/harmony_vars
-/jallow_addons
+/hungpb_real_estate
 /jallow_addons_food
 /jallow_addons_emab/__pycache__
 /jallow_vars/__pycache__
 /izi_data
+/max_immo/.claude
+/max_immo/CLAUDE.md
+/max_immo/STATE.md
+/max_immo/TODO.md
+/microflow/.claude
+/microflow/TODOS.md
+/microflow/DESIGN_SPEC.md
+/microflow/ANALYSE_FLUX_COLLECTE.txt
+/microflow/PLAN_3REQUESTS.txt
+/microflow/PLAN_CHANGEMENTS.txt
+/microflow/PLAN_COLLECTE_SIGNAL.txt
 /muk_web_appsbar
 /muk_web_chatter
 /muk_web_colors
@@ -34,13 +45,16 @@
 /om_recurring_payments
 /pos_cash_restriction
 /pos_receipt_extend
+/real_estate_management_advanced
 /report_qweb_element_page_visibility
-/sms_msg91
 /sale_stock_restrict
 /website_sale_address_management
 
 # odoo files
+README_Odoo.md
+odoo.conf
 /README_Odoo.md
+/odoo.conf
 
 # dotfiles
 .*
@@ -53,6 +67,10 @@
 *.orig
 status
 odoo
+
+# CLAUDE files
+/CLAUDE.md
+/SECURITY.md
 
 # odoo filestore
 /filestore

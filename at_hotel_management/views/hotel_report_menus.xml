@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_hotel_root"
+              name="Hotel Management"
+              action="action_hotel_booking_calendar"
+              sequence="10"/>
+
+    <menuitem id="menu_hotel_booking" name="Bookings"
+              parent="menu_hotel_root"
+              action="action_hotel_booking"
+              sequence="10"/>
+
+    <menuitem id="menu_hotel_room"
+              name="Rooms"
+              parent="menu_hotel_root"
+              action="action_hotel_room"
+              sequence="30"/>
+
+    <menuitem id="menu_hotel_customer"
+              name="Customers"
+              parent="menu_hotel_root"
+              action="action_hotel_customer"
+              sequence="20"/>
+              
+              <!-- parent="hotel_management.menu_hotel_root" -->
+    <menuitem id="menu_hotel_configuration"
+              name="Configuration"
+              parent="menu_hotel_root"
+              sequence="40"/>
+              
+              <!-- parent="hotel_management.menu_hotel_configuration" -->
+    <menuitem id="menu_hotel_reports_root"
+              name="Reports"
+              parent="menu_hotel_configuration"
+              sequence="30"/>
+
+              <!-- action="hotel_management.action_hotel_customer_report" -->
+    <menuitem id="menu_customer_report"
+              name="Customer Report"
+              parent="menu_hotel_reports_root"
+              action="action_hotel_customer_report"
+              sequence="10"/>
+
+              <!-- action="hotel_management.action_hotel_booking_report" -->
+    <menuitem id="menu_booking_report"
+              name="Booking Report"
+              parent="menu_hotel_reports_root"
+              action="action_hotel_booking_report"
+              sequence="20"/>
+
+    <menuitem id="menu_invoice_report"
+              name="Invoice Report"
+              parent="menu_hotel_reports_root"
+              action="action_hotel_invoice_report"
+              sequence="30"/>
+
+</odoo>
