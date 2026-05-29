@@ -69,6 +69,8 @@ status
 odoo
 
 # CLAUDE files
+CLAUDE.md
+SECURITY.md
 /CLAUDE.md
 /SECURITY.md
 
